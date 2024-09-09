@@ -1,4 +1,9 @@
 package com.management.finance.transaction.dto;
 
-public record AddTransaction() {
+import com.management.finance.transaction.enums.TypeTransaction;
+
+public record AddTransaction(
+        Double amount,
+        TypeTransaction type
+) {
 }
