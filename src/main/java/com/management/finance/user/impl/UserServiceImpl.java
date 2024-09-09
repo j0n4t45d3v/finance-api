@@ -18,7 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private static final String NOT_FOUND_MESSAGE = "User not found";
+    public static final String NOT_FOUND_MESSAGE = "User not found";
     private final UserRepository userRepository;
 
     @Override
