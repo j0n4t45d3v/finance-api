@@ -4,12 +4,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
+import com.management.finance.error.exceptions.BaseHttpException;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
 public class ExceptionHandlerController {
 
+    @ExceptionHandler(BaseHttpException.class)
+    public ResponseEntity<ErrorResponseV0> handleBaseHttpException(BaseHttpException ex) {
+        var statusCode = ex.getCode();
+        var errorResponse = new ErrorResponseV0(
+            statusCode,
+            ex.getMessage(),
+            LocalDateTime.now()
+        );
+        return ResponseEntity.status(statusCode).body(errorResponse);
+    }
+    
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponseV0> handleRuntimeException(RuntimeException ex) {
         var errorResponse = new ErrorResponseV0(
