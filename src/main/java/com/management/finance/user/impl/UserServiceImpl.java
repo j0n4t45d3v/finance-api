@@ -22,7 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    public static final String NOT_FOUND_MESSAGE = "User not found";
+    private static final String NOT_FOUND_MESSAGE = "User not found";
     private final Mapper mapper;
     private final UserRepository userRepository;
 
