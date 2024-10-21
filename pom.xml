@@ -28,6 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<openapi.version>2.6.0</openapi.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -44,6 +45,11 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>${openapi.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
