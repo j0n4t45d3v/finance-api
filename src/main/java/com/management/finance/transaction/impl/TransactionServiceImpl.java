@@ -1,5 +1,8 @@
 package com.management.finance.transaction.impl;
 
+import com.management.finance.error.exceptions.BadRequestException;
+import com.management.finance.error.exceptions.InternalServerErrorException;
+import com.management.finance.error.exceptions.NotFoundException;
 import com.management.finance.transaction.Transaction;
 import com.management.finance.transaction.TransactionRepository;
 import com.management.finance.transaction.TransactionService;
@@ -25,7 +28,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public void add(Long userId, AddTransaction transactionDTO) {
         boolean userExists = this.userRepository.existsById(userId);
-        if(userExists) throw new RuntimeException(UserServiceImpl.NOT_FOUND_MESSAGE);
+        if(userExists) throw new NotFoundException(UserServiceImpl.NOT_FOUND_MESSAGE);
         Transaction transaction = this.mapToEntity(transactionDTO);
         User user = new User();
         user.setId(userId);
@@ -37,7 +40,7 @@ public class TransactionServiceImpl implements TransactionService {
     public List<Transaction> getAll(Long userId) {
         boolean userExists = this.userRepository.existsById(userId);
         if (!userExists) {
-            throw new RuntimeException(UserServiceImpl.NOT_FOUND_MESSAGE);
+            throw new NotFoundException(UserServiceImpl.NOT_FOUND_MESSAGE);
         }
         return this.transactionRepository.findAllByUserId(userId);
     }
@@ -46,7 +49,7 @@ public class TransactionServiceImpl implements TransactionService {
     public void deleteById(Long id) {
         boolean exists = this.transactionRepository.existsById(id);
         if (!exists) {
-            throw new RuntimeException("Transaction not found");
+            throw new NotFoundException("Transaction not found");
         }
         this.transactionRepository.deleteById(id);
     }
@@ -54,13 +57,13 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public void editTransaction(Long id, Long userId, EditTransaction transactionEdited) {
         boolean userExists = this.userRepository.existsById(userId);
-        if (!userExists) throw new RuntimeException(UserServiceImpl.NOT_FOUND_MESSAGE);
+        if (!userExists) throw new NotFoundException(UserServiceImpl.NOT_FOUND_MESSAGE);
 
         Transaction existingTransaction = this.transactionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+                .orElseThrow(() -> new NotFoundException("Transaction not found"));
 
         if (!existingTransaction.getUser().getId().equals(userId)) {
-            throw new RuntimeException("Transaction does not belong to the user");
+            throw new BadRequestException("Transaction does not belong to the user");
         }
         existingTransaction.setAmount(transactionEdited.amount());
         existingTransaction.setType(transactionEdited.type());
@@ -75,6 +78,6 @@ public class TransactionServiceImpl implements TransactionService {
     private Transaction mapToEntity(Record transactionDTO) {
         return this.mapper
                 .recordToEntity(transactionDTO, Transaction.class)
-                .orElseThrow(() -> new RuntimeException("Mapping failed"));
+                .orElseThrow(() -> new InternalServerErrorException("Mapping failed"));
     }
 }
