@@ -29,12 +29,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ReturnUser register(RegisterUser user) {
-        if(!user.confirmPasswordEqualsPassword()) {
+        if (!user.confirmPasswordEqualsPassword()) {
             throw new BadRequestException("Confirm password is not equal password");
         }
         boolean userAlreadyExists = this.userRepository.existsByEmail(user.email());
-        if(userAlreadyExists) {
-            throw new RuntimeException("User already exists");
+        if (userAlreadyExists) {
             throw new ConflictException("User already exists");
         }
         User userMapped = this.mapToEntity(user);
@@ -85,8 +84,7 @@ public class UserServiceImpl implements UserService {
 
     private void userNotExist(Long id) {
         boolean userExists = this.userRepository.existsById(id);
-        if(!userExists) {
-            throw new NotFoundException(NOT_FOUND_MESSAGE);
+        if (!userExists) {
             throw this.notFoundException();
         }
     }
@@ -97,7 +95,7 @@ public class UserServiceImpl implements UserService {
 
     private User mapToEntity(Record user) {
         Optional<User> dtoToEntity = this.mapper.recordToEntity(user, User.class);
-        if(dtoToEntity.isEmpty()) 
+        if (dtoToEntity.isEmpty())
             throw new InternalServerErrorException("Failed in mapper record to entity");
         return dtoToEntity.get();
     }
