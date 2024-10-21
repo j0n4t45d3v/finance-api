@@ -55,10 +55,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         if (!transactionFounded.getUser().getId().equals(userId))
             throw new BadRequestException("Transaction does not belong to the user");
-        }
-        existingTransaction.setAmount(transactionEdited.amount());
-        existingTransaction.setType(transactionEdited.type());
-        this.transactionRepository.save(existingTransaction);
+        transactionFounded.setAmount(transactionEdited.amount());
+        transactionFounded.setType(transactionEdited.type());
+        this.transactionRepository.save(transactionFounded);
     }
 
     @Override
