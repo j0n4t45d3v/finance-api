@@ -43,9 +43,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public void deleteById(Long id) {
         boolean exists = this.transactionRepository.existsById(id);
-        if (!exists) {
-            throw new NotFoundException("Transaction not found");
-        }
+        if (!exists) throw this.transactionNotFound();
         this.transactionRepository.deleteById(id);
     }
 
@@ -76,5 +74,9 @@ public class TransactionServiceImpl implements TransactionService {
         return this.mapper
                 .recordToEntity(transactionDTO, Transaction.class)
                 .orElseThrow(() -> new InternalServerErrorException("Mapping failed"));
+    }
+
+    private NotFoundException transactionNotFound() {
+        return new NotFoundException("Transaction not found");
     }
 }
