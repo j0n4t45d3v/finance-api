@@ -1,6 +1,7 @@
 package com.management.finance.user.impl;
 
 import com.management.finance.error.exceptions.BadRequestException;
+import com.management.finance.error.exceptions.ConflictException;
 import com.management.finance.error.exceptions.InternalServerErrorException;
 import com.management.finance.error.exceptions.NotFoundException;
 import com.management.finance.user.User;
@@ -34,6 +35,7 @@ public class UserServiceImpl implements UserService {
         boolean userAlreadyExists = this.userRepository.existsByEmail(user.email());
         if(userAlreadyExists) {
             throw new RuntimeException("User already exists");
+            throw new ConflictException("User already exists");
         }
         User userMapped = this.mapToEntity(user);
         //TODO: implement encryp password
