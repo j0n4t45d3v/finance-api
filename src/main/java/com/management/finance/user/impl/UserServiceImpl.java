@@ -55,18 +55,14 @@ public class UserServiceImpl implements UserService {
     public ReturnUser getById(Long id) {
         return this.userRepository.findById(id)
                 .map(ReturnUser::of)
-                .orElseThrow(
-                        () -> new NotFoundException(NOT_FOUND_MESSAGE)
-                );
+                .orElseThrow(this::notFoundException);
     }
 
     @Override
     public ReturnUser getByEmail(String email) {
         return this.userRepository.findByEmail(email)
                 .map(ReturnUser::of)
-                .orElseThrow(
-                        () -> new NotFoundException(NOT_FOUND_MESSAGE)
-                );
+                .orElseThrow(this::notFoundException);
     }
 
     @Override
@@ -80,9 +76,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void update(UpdateUser userUpdated, Long id) {
         User userFound = this.userRepository.findById(id)
-                .orElseThrow(
-                        () -> new NotFoundException(NOT_FOUND_MESSAGE)
-                );
+                .orElseThrow(this::notFoundException);
         userFound.setEmail(userUpdated.email());
         userFound.setPassword(userUpdated.password());
         this.userRepository.save(userFound);
@@ -93,7 +87,12 @@ public class UserServiceImpl implements UserService {
         boolean userExists = this.userRepository.existsById(id);
         if(!userExists) {
             throw new NotFoundException(NOT_FOUND_MESSAGE);
+            throw this.notFoundException();
         }
+    }
+
+    private NotFoundException notFoundException() {
+        return new NotFoundException(NOT_FOUND_MESSAGE);
     }
 
     private User mapToEntity(Record user) {
