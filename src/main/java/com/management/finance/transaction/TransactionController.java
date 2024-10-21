@@ -2,6 +2,7 @@ package com.management.finance.transaction;
 
 import com.management.finance.transaction.dto.AddTransaction;
 import com.management.finance.transaction.dto.EditTransaction;
+import com.management.finance.transaction.dto.ReturnTransaction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,8 @@ public class TransactionController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<List<Transaction>> getTransactions(@PathVariable Long userId) {
-        List<Transaction> transactions = transactionService.getAll(userId);
+    public ResponseEntity<List<ReturnTransaction>> getTransactions(@PathVariable Long userId) {
+        List<ReturnTransaction> transactions = transactionService.getAll(userId);
         return ResponseEntity.ok(transactions);
     }
 

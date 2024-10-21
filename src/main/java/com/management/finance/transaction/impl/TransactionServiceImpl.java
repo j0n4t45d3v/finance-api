@@ -8,6 +8,7 @@ import com.management.finance.transaction.TransactionRepository;
 import com.management.finance.transaction.TransactionService;
 import com.management.finance.transaction.dto.AddTransaction;
 import com.management.finance.transaction.dto.EditTransaction;
+import com.management.finance.transaction.dto.ReturnTransaction;
 import com.management.finance.user.User;
 import com.management.finance.user.UserService;
 import com.management.finance.util.Mapper;
@@ -35,9 +36,12 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<Transaction> getAll(Long userId) {
+    public List<ReturnTransaction> getAll(Long userId) {
         this.userNotExists(userId);
-        return this.transactionRepository.findAllByUserId(userId);
+        return this.transactionRepository.findAllByUserId(userId)
+                .stream()
+                .map(ReturnTransaction::new)
+                .toList();
     }
 
     @Override
