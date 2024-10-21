@@ -19,6 +19,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     public static final String NOT_FOUND_MESSAGE = "User not found";
+    private final Mapper mapper;
     private final UserRepository userRepository;
 
     @Override
@@ -91,10 +92,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private User mapToEntity(Record user) {
-        Optional<User> dtoToEntity = Mapper.recordToEntity(user, User.class);
-        if(dtoToEntity.isEmpty()){
-            throw new RuntimeException("Failed in register user");
-        }
+        Optional<User> dtoToEntity = this.mapper.recordToEntity(user, User.class);
+        if(dtoToEntity.isEmpty()) throw new RuntimeException("Failed in register user");
         return dtoToEntity.get();
     }
 }

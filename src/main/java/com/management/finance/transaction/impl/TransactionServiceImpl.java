@@ -19,6 +19,7 @@ import java.util.List;
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
+    private final Mapper mapper;
     private final UserRepository userRepository;
 
     @Override
@@ -72,7 +73,8 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     private Transaction mapToEntity(Record transactionDTO) {
-        return Mapper.recordToEntity(transactionDTO, Transaction.class)
+        return this.mapper
+                .recordToEntity(transactionDTO, Transaction.class)
                 .orElseThrow(() -> new RuntimeException("Mapping failed"));
     }
 }
