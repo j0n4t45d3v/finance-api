@@ -1,5 +1,8 @@
 package com.management.finance.user.impl;
 
+import com.management.finance.error.exceptions.BadRequestException;
+import com.management.finance.error.exceptions.InternalServerErrorException;
+import com.management.finance.error.exceptions.NotFoundException;
 import com.management.finance.user.User;
 import com.management.finance.user.UserRepository;
 import com.management.finance.user.UserService;
@@ -26,7 +29,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ReturnUser register(RegisterUser user) {
         if(!user.confirmPasswordEqualsPassword()) {
-            throw new RuntimeException("Confirm password is not equal password");
+            throw new BadRequestException("Confirm password is not equal password");
         }
         boolean userAlreadyExists = this.userRepository.existsByEmail(user.email());
         if(userAlreadyExists) {
@@ -51,7 +54,7 @@ public class UserServiceImpl implements UserService {
         return this.userRepository.findById(id)
                 .map(ReturnUser::of)
                 .orElseThrow(
-                        () -> new RuntimeException(NOT_FOUND_MESSAGE)
+                        () -> new NotFoundException(NOT_FOUND_MESSAGE)
                 );
     }
 
@@ -60,7 +63,7 @@ public class UserServiceImpl implements UserService {
         return this.userRepository.findByEmail(email)
                 .map(ReturnUser::of)
                 .orElseThrow(
-                        () -> new RuntimeException(NOT_FOUND_MESSAGE)
+                        () -> new NotFoundException(NOT_FOUND_MESSAGE)
                 );
     }
 
@@ -76,7 +79,7 @@ public class UserServiceImpl implements UserService {
     public void update(UpdateUser userUpdated, Long id) {
         User userFound = this.userRepository.findById(id)
                 .orElseThrow(
-                        () -> new RuntimeException(NOT_FOUND_MESSAGE)
+                        () -> new NotFoundException(NOT_FOUND_MESSAGE)
                 );
         userFound.setEmail(userUpdated.email());
         userFound.setPassword(userUpdated.password());
@@ -87,13 +90,14 @@ public class UserServiceImpl implements UserService {
     private void userNotExist(Long id) {
         boolean userExists = this.userRepository.existsById(id);
         if(!userExists) {
-            throw new RuntimeException(NOT_FOUND_MESSAGE);
+            throw new NotFoundException(NOT_FOUND_MESSAGE);
         }
     }
 
     private User mapToEntity(Record user) {
         Optional<User> dtoToEntity = this.mapper.recordToEntity(user, User.class);
-        if(dtoToEntity.isEmpty()) throw new RuntimeException("Failed in register user");
+        if(dtoToEntity.isEmpty()) 
+            throw new InternalServerErrorException("Failed in mapper record to entity");
         return dtoToEntity.get();
     }
 }
