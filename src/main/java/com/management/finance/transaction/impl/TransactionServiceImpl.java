@@ -9,8 +9,7 @@ import com.management.finance.transaction.TransactionService;
 import com.management.finance.transaction.dto.AddTransaction;
 import com.management.finance.transaction.dto.EditTransaction;
 import com.management.finance.user.User;
-import com.management.finance.user.UserRepository;
-import com.management.finance.user.impl.UserServiceImpl;
+import com.management.finance.user.UserService;
 import com.management.finance.util.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,12 +22,11 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final Mapper mapper;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     public void add(Long userId, AddTransaction transactionDTO) {
-        boolean userExists = this.userRepository.existsById(userId);
-        if(userExists) throw new NotFoundException(UserServiceImpl.NOT_FOUND_MESSAGE);
+        this.userNotExists(userId);
         Transaction transaction = this.mapToEntity(transactionDTO);
         User user = new User();
         user.setId(userId);
@@ -38,10 +36,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<Transaction> getAll(Long userId) {
-        boolean userExists = this.userRepository.existsById(userId);
-        if (!userExists) {
-            throw new NotFoundException(UserServiceImpl.NOT_FOUND_MESSAGE);
-        }
+        this.userNotExists(userId);
         return this.transactionRepository.findAllByUserId(userId);
     }
 
@@ -56,13 +51,11 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public void editTransaction(Long id, Long userId, EditTransaction transactionEdited) {
-        boolean userExists = this.userRepository.existsById(userId);
-        if (!userExists) throw new NotFoundException(UserServiceImpl.NOT_FOUND_MESSAGE);
+        this.userNotExists(userId);
+        Transaction transactionFounded = this.transactionRepository.findById(id)
+                .orElseThrow(this::transactionNotFound);
 
-        Transaction existingTransaction = this.transactionRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Transaction not found"));
-
-        if (!existingTransaction.getUser().getId().equals(userId)) {
+        if (!transactionFounded.getUser().getId().equals(userId))
             throw new BadRequestException("Transaction does not belong to the user");
         }
         existingTransaction.setAmount(transactionEdited.amount());
@@ -73,6 +66,10 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public byte[] report(Long userId) {
         return new byte[0];
+    }
+
+    private void userNotExists(Long userId) {
+        this.userService.getById(userId);
     }
 
     private Transaction mapToEntity(Record transactionDTO) {
