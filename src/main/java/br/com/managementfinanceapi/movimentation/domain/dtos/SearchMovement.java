@@ -1,0 +1,23 @@
+package br.com.managementfinanceapi.movimentation.domain.dtos;
+
+import java.time.LocalDate;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import jakarta.validation.constraints.NotNull;
+
+public record SearchMovement(
+  @NotNull(message = "userId é obrigatório")
+  @RequestParam(name = "userId")
+  Long userId,
+  Pageable pageable,
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "yyyy-MM-dd")
+  @RequestParam(required = false, name = "startDate")
+  LocalDate startDate,
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "yyyy-MM-dd")
+  @RequestParam(required = false, name = "endDate")
+  LocalDate endDate
+) {
+}
