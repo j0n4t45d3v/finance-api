@@ -7,6 +7,7 @@ import br.com.managementfinanceapi.user.domain.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -16,18 +17,22 @@ public class Category extends TimestampEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String name;
+  @Column(name = "credit_limit")
+  private BigDecimal creditLimit;
   @ManyToOne
   @JoinColumn(name = "user_id", referencedColumnName = "id")
   private User user;
 
-  public Category(Long id, String name, User user) {
+  public Category(Long id, String name, BigDecimal creditLimit, User user) {
     this.id = id;
     this.name = name;
+    this.creditLimit = creditLimit;
     this.user = user;
   }
 
   public Category(CreateCategory category) {
     this.name = category.name();
+    this.creditLimit = category.creditLimit();
     User user = new User();
     user.setId(category.userId());
     this.user = user;

@@ -1,0 +1,1 @@
+alter table categories add column credit_limit numeric(15, 2);
