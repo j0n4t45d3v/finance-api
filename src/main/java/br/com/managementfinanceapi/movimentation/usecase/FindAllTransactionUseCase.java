@@ -7,23 +7,23 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.managementfinanceapi.movimentation.domain.dtos.SearchMovement;
-import br.com.managementfinanceapi.movimentation.gateways.FindAllMovementGateway;
-import br.com.managementfinanceapi.movimentation.repository.MovementRepository;
+import br.com.managementfinanceapi.movimentation.domain.dtos.SearchTransaction;
+import br.com.managementfinanceapi.movimentation.gateways.FindAllTransactionGateway;
+import br.com.managementfinanceapi.movimentation.repository.TransactionRepository;
 
 @Service
-public class FindAllMovementUseCase implements FindAllMovementGateway {
+public class FindAllTransactionUseCase implements FindAllTransactionGateway {
 
-  private static final Logger log = LoggerFactory.getLogger(FindAllMovementUseCase.class);
-  private final MovementRepository movementRepository;
+  private static final Logger log = LoggerFactory.getLogger(FindAllTransactionUseCase.class);
+  private final TransactionRepository transactionRepository;
 
-  public FindAllMovementUseCase(MovementRepository movementRepository) {
-    this.movementRepository = movementRepository;
+  public FindAllTransactionUseCase(TransactionRepository transactionRepository) {
+    this.transactionRepository = transactionRepository;
   }
 
   @Override
-  public Page<TransactionDto> findAll(SearchMovement filters, Pageable page) {
-    return this.movementRepository.findAllByUserIdAndDateBetween(
+  public Page<TransactionDto> findAll(SearchTransaction filters, Pageable page) {
+    return this.transactionRepository.findAllByUserIdAndDateBetween(
         filters.userId(),
         filters.startDate().atTime(0, 0),
         filters.endDate().atTime(23, 59),

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.constraints.NotNull;
 
-public record SearchMovement(
+public record SearchTransaction(
   @NotNull(message = "userId é obrigatório")
   @RequestParam(name = "userId")
   Long userId,

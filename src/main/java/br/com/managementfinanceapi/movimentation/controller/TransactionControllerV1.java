@@ -14,40 +14,39 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.managementfinanceapi.infra.http.dto.ResponseV0;
-import br.com.managementfinanceapi.movimentation.domain.Transaction;
-import br.com.managementfinanceapi.movimentation.domain.dtos.AddMovement;
-import br.com.managementfinanceapi.movimentation.domain.dtos.SearchMovement;
-import br.com.managementfinanceapi.movimentation.gateways.AddMovementGateway;
-import br.com.managementfinanceapi.movimentation.gateways.FindAllMovementGateway;
+import br.com.managementfinanceapi.movimentation.domain.dtos.AddTransaction;
+import br.com.managementfinanceapi.movimentation.domain.dtos.SearchTransaction;
+import br.com.managementfinanceapi.movimentation.gateways.AddTransactionGateway;
+import br.com.managementfinanceapi.movimentation.gateways.FindAllTransactionGateway;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/v1/movements")
-public class MovementControllerV1 {
+@RequestMapping("/v1/transactions")
+public class TransactionControllerV1 {
 
-  private static final Logger log = LoggerFactory.getLogger(MovementControllerV1.class);
+  private static final Logger log = LoggerFactory.getLogger(TransactionControllerV1.class);
 
-  private final AddMovementGateway addMovementGateway;
-  private final FindAllMovementGateway findAllMovementGateway;
+  private final AddTransactionGateway addTransactionGateway;
+  private final FindAllTransactionGateway findAllTransactionGateway;
 
-  public MovementControllerV1(AddMovementGateway addMovementGateway, FindAllMovementGateway findAllMovementGateway) {
-    this.addMovementGateway = addMovementGateway;
-    this.findAllMovementGateway = findAllMovementGateway;
+  public TransactionControllerV1(AddTransactionGateway addTransactionGateway, FindAllTransactionGateway findAllTransactionGateway) {
+    this.addTransactionGateway = addTransactionGateway;
+    this.findAllTransactionGateway = findAllTransactionGateway;
   }
 
   @PostMapping("/add")
-  public ResponseEntity<ResponseV0<String>> add(@RequestBody AddMovement body) {
-    this.addMovementGateway.add(body);
+  public ResponseEntity<ResponseV0<String>> add(@RequestBody AddTransaction body) {
+    this.addTransactionGateway.add(body);
     ResponseV0<String> addMovementResponse = ResponseV0.ok("Transação salva com sucesso");
     return ResponseEntity.ok(addMovementResponse);
   }
 
   @GetMapping
   public ResponseEntity<ResponseV0<Page<TransactionDto>>> getAll(
-    @Valid @ModelAttribute SearchMovement filters,
+    @Valid @ModelAttribute SearchTransaction filters,
     Pageable page
   ) {
-    var result = this.findAllMovementGateway.findAll(filters, page);
+    var result = this.findAllTransactionGateway.findAll(filters, page);
     var addMovementResponse = ResponseV0.ok(result);
     log.info("userId: {}", filters.userId());
     log.info("startDate: {}", filters.startDate());

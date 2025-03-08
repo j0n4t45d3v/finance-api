@@ -3,13 +3,12 @@ package br.com.managementfinanceapi.movimentation.domain;
 import br.com.managementfinanceapi.category.domain.Category;
 import br.com.managementfinanceapi.common.baseentity.TimestampEntity;
 import br.com.managementfinanceapi.movimentation.domain.converters.TransactionTypeConverter;
-import br.com.managementfinanceapi.movimentation.domain.dtos.AddMovement;
+import br.com.managementfinanceapi.movimentation.domain.dtos.AddTransaction;
 import br.com.managementfinanceapi.movimentation.domain.enums.TransactionType;
 import br.com.managementfinanceapi.user.domain.User;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -54,7 +53,7 @@ public class Transaction extends TimestampEntity {
   public Transaction() {
   }
 
-  public Transaction(AddMovement body, User user, Category category) {
+  public Transaction(AddTransaction body, User user, Category category) {
     this.amount = body.amount();
     this.type = body.type();
     this.description = body.description();
