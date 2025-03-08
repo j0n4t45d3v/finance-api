@@ -1,6 +1,6 @@
-package br.com.managementfinanceapi.movimentation.domain.dtos;
+package br.com.managementfinanceapi.transaction.domain.dtos;
 
-import br.com.managementfinanceapi.movimentation.domain.enums.TransactionType;
+import br.com.managementfinanceapi.transaction.domain.enums.TransactionType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

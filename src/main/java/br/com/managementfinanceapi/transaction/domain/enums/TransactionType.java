@@ -1,4 +1,4 @@
-package br.com.managementfinanceapi.movimentation.domain.enums;
+package br.com.managementfinanceapi.transaction.domain.enums;
 
 public enum TransactionType {
   INCOME('I'),

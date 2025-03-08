@@ -1,6 +1,6 @@
-package br.com.managementfinanceapi.movimentation.controller;
+package br.com.managementfinanceapi.transaction.controller;
 
-import br.com.managementfinanceapi.movimentation.domain.dtos.TransactionDto;
+import br.com.managementfinanceapi.transaction.domain.dtos.TransactionDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.managementfinanceapi.infra.http.dto.ResponseV0;
-import br.com.managementfinanceapi.movimentation.domain.dtos.AddTransaction;
-import br.com.managementfinanceapi.movimentation.domain.dtos.SearchTransaction;
-import br.com.managementfinanceapi.movimentation.gateways.AddTransactionGateway;
-import br.com.managementfinanceapi.movimentation.gateways.FindAllTransactionGateway;
+import br.com.managementfinanceapi.transaction.domain.dtos.AddTransaction;
+import br.com.managementfinanceapi.transaction.domain.dtos.SearchTransaction;
+import br.com.managementfinanceapi.transaction.gateways.AddTransactionGateway;
+import br.com.managementfinanceapi.transaction.gateways.FindAllTransactionGateway;
 import jakarta.validation.Valid;
 
 @RestController

@@ -1,15 +1,15 @@
-package br.com.managementfinanceapi.movimentation.usecase;
+package br.com.managementfinanceapi.transaction.usecase;
 
-import br.com.managementfinanceapi.movimentation.domain.dtos.TransactionDto;
+import br.com.managementfinanceapi.transaction.domain.dtos.TransactionDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.managementfinanceapi.movimentation.domain.dtos.SearchTransaction;
-import br.com.managementfinanceapi.movimentation.gateways.FindAllTransactionGateway;
-import br.com.managementfinanceapi.movimentation.repository.TransactionRepository;
+import br.com.managementfinanceapi.transaction.domain.dtos.SearchTransaction;
+import br.com.managementfinanceapi.transaction.gateways.FindAllTransactionGateway;
+import br.com.managementfinanceapi.transaction.repository.TransactionRepository;
 
 @Service
 public class FindAllTransactionUseCase implements FindAllTransactionGateway {

@@ -1,10 +1,10 @@
-package br.com.managementfinanceapi.movimentation.usecase;
+package br.com.managementfinanceapi.transaction.usecase;
 
 import br.com.managementfinanceapi.category.domain.Category;
-import br.com.managementfinanceapi.movimentation.gateways.AddTransactionGateway;
-import br.com.managementfinanceapi.movimentation.domain.Transaction;
-import br.com.managementfinanceapi.movimentation.domain.dtos.AddTransaction;
-import br.com.managementfinanceapi.movimentation.repository.TransactionRepository;
+import br.com.managementfinanceapi.transaction.gateways.AddTransactionGateway;
+import br.com.managementfinanceapi.transaction.domain.Transaction;
+import br.com.managementfinanceapi.transaction.domain.dtos.AddTransaction;
+import br.com.managementfinanceapi.transaction.repository.TransactionRepository;
 import br.com.managementfinanceapi.user.domain.User;
 import br.com.managementfinanceapi.user.domain.dto.UserResponse;
 import br.com.managementfinanceapi.user.gateways.FindOneUser;

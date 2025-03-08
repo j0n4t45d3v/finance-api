@@ -1,6 +1,6 @@
-package br.com.managementfinanceapi.movimentation.domain.dtos;
+package br.com.managementfinanceapi.transaction.domain.dtos;
 
-import br.com.managementfinanceapi.movimentation.domain.Transaction;
+import br.com.managementfinanceapi.transaction.domain.Transaction;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;

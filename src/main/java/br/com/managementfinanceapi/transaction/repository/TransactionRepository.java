@@ -1,6 +1,6 @@
-package br.com.managementfinanceapi.movimentation.repository;
+package br.com.managementfinanceapi.transaction.repository;
 
-import br.com.managementfinanceapi.movimentation.domain.Transaction;
+import br.com.managementfinanceapi.transaction.domain.Transaction;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

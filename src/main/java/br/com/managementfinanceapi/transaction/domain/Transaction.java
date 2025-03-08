@@ -1,10 +1,10 @@
-package br.com.managementfinanceapi.movimentation.domain;
+package br.com.managementfinanceapi.transaction.domain;
 
 import br.com.managementfinanceapi.category.domain.Category;
 import br.com.managementfinanceapi.common.baseentity.TimestampEntity;
-import br.com.managementfinanceapi.movimentation.domain.converters.TransactionTypeConverter;
-import br.com.managementfinanceapi.movimentation.domain.dtos.AddTransaction;
-import br.com.managementfinanceapi.movimentation.domain.enums.TransactionType;
+import br.com.managementfinanceapi.transaction.domain.converters.TransactionTypeConverter;
+import br.com.managementfinanceapi.transaction.domain.dtos.AddTransaction;
+import br.com.managementfinanceapi.transaction.domain.enums.TransactionType;
 import br.com.managementfinanceapi.user.domain.User;
 import jakarta.persistence.*;
 

@@ -1,6 +1,6 @@
-package br.com.managementfinanceapi.movimentation.domain.converters;
+package br.com.managementfinanceapi.transaction.domain.converters;
 
-import br.com.managementfinanceapi.movimentation.domain.enums.TransactionType;
+import br.com.managementfinanceapi.transaction.domain.enums.TransactionType;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import org.slf4j.Logger;

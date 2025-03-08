@@ -1,4 +1,4 @@
-package br.com.managementfinanceapi.movimentation.domain.dtos;
+package br.com.managementfinanceapi.transaction.domain.dtos;
 
 import java.time.LocalDate;
 
