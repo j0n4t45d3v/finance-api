@@ -3,7 +3,6 @@ package br.com.managementfinanceapi.category.usecase;
 import br.com.managementfinanceapi.category.domain.Category;
 import br.com.managementfinanceapi.category.gateway.FindAllCategoriesGateway;
 import br.com.managementfinanceapi.category.repository.CategoryRepository;
-import br.com.managementfinanceapi.movimentation.domain.enums.TransactionType;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -2,13 +2,10 @@ package br.com.managementfinanceapi.category.domain;
 
 import br.com.managementfinanceapi.category.domain.dto.CreateCategory;
 import br.com.managementfinanceapi.common.baseentity.TimestampEntity;
-import br.com.managementfinanceapi.movimentation.domain.Transaction;
 import br.com.managementfinanceapi.user.domain.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 @Table(name = "categories")
