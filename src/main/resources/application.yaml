@@ -27,6 +27,15 @@ spring:
     password: postgres
     locations: classpath:db/migration
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: openapi, swagger-ui
+springdoc:
+  swagger-ui:
+    path: /v1/documentation
+
 server:
   servlet:
     context-path: /api
