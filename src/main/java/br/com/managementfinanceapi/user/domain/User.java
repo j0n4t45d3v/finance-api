@@ -41,6 +41,10 @@ public class User extends TimestampEntity implements UserDetails {
     this(userFound.id(), userFound.email(), null);
   }
 
+  public User(Long userId){
+    this.id = userId;
+  }
+
   public UserResponse toResponse() {
     return new UserResponse(this.id, this.email);
   }
