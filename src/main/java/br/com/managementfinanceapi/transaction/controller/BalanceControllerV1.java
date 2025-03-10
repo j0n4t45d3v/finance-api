@@ -1,0 +1,27 @@
+package br.com.managementfinanceapi.transaction.controller;
+
+import br.com.managementfinanceapi.infra.http.dto.ResponseV0;
+import br.com.managementfinanceapi.user.domain.dto.UserBalanceDto;
+import br.com.managementfinanceapi.transaction.gateways.AddCurrentAccountBalanceGateway;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/v1/balances")
+public class BalanceControllerV1 {
+
+  private final AddCurrentAccountBalanceGateway addCurrentAccountBalanceGateway;
+
+  public BalanceControllerV1(AddCurrentAccountBalanceGateway addCurrentAccountBalanceGateway) {
+    this.addCurrentAccountBalanceGateway = addCurrentAccountBalanceGateway;
+  }
+
+  @PostMapping("/{userId}/initial_balance")
+  public ResponseEntity<ResponseV0<String>> addCurrentAccountBalance(
+      @PathVariable("userId") Long userId,
+      @RequestBody UserBalanceDto balance
+  ) {
+    this.addCurrentAccountBalanceGateway.execute(userId, balance);
+    return ResponseEntity.ok(ResponseV0.ok("Saldo registrado com sucesso"));
+  }
+}
