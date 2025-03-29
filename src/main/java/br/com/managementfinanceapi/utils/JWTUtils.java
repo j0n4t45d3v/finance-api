@@ -53,15 +53,13 @@ public class JWTUtils {
   }
 
   private boolean getIssuerIsValid(DecodedJWT jwtDecoded) {
-    boolean issuerIsValid = jwtDecoded.getIssuer().equals(this.issuer);
-    return issuerIsValid;
+    return jwtDecoded.getIssuer().equals(this.issuer);
   }
 
 
   private boolean getTokenExpired(DecodedJWT jwtDecoded) {
     Instant instant = Instant.now();
-    boolean tokenExpired = jwtDecoded.getExpiresAtAsInstant().isAfter(instant);
-    return tokenExpired;
+    return jwtDecoded.getExpiresAtAsInstant().isAfter(instant);
   }
 
   public String getSubject(String token) {
