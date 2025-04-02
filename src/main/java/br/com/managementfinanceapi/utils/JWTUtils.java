@@ -73,7 +73,7 @@ public class JWTUtils {
 
   public long getExpireAt(String token) {
     DecodedJWT jwtDecoded = JWT.decode(token);
-    return jwtDecoded.getExpiresAtAsInstant().getNano();
+    return jwtDecoded.getExpiresAt().getTime();
   }
 
 }
