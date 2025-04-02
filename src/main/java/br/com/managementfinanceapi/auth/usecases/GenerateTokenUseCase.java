@@ -19,7 +19,7 @@ public class GenerateTokenUseCase implements GenerateTokenGateway {
   @Override
   public TokenResponse all(UserDetails userDetails) {
     Token accessToken = this.accessToken(userDetails);
-    Token refreshToken = this.accessToken(userDetails);
+    Token refreshToken = this.refreshToken(userDetails);
     return new TokenResponse(accessToken, refreshToken);
   }
 
