@@ -4,7 +4,6 @@ import br.com.managementfinanceapi.common.baseentity.TimestampEntity;
 import br.com.managementfinanceapi.user.domain.dto.CreateUser;
 import br.com.managementfinanceapi.user.domain.dto.UserResponse;
 import br.com.managementfinanceapi.user.domain.dvo.Password;
-import br.com.managementfinanceapi.user.exceptions.InvalidPassword;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -68,10 +67,8 @@ public class User extends TimestampEntity implements UserDetails {
     return password.getValue();
   }
 
-  public void validatePassword(String confirmPassword) {
-    if (!this.password.matches(confirmPassword)) {
-      throw new InvalidPassword("A senhas não são iguais");
-    }
+  public boolean differentPassword(String confirmPassword) {
+    return !this.password.matches(confirmPassword);
   }
 
   public void changePassword(String password) {
