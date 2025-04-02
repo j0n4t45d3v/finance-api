@@ -46,7 +46,7 @@ public class JWTUtils {
   public boolean tokenIsValid(String token) {
     try {
       DecodedJWT jwtDecoded = JWT.decode(token);
-      return getTokenExpired(jwtDecoded) && this.getIssuerIsValid(jwtDecoded);
+      return !this.tokenIsExpired(jwtDecoded) && this.getIssuerIsValid(jwtDecoded);
     } catch (JWTDecodeException e) {
       return false;
     }
@@ -57,7 +57,7 @@ public class JWTUtils {
   }
 
 
-  private boolean getTokenExpired(DecodedJWT jwtDecoded) {
+  private boolean tokenIsExpired(DecodedJWT jwtDecoded) {
     Instant instant = Instant.now();
     return jwtDecoded.getExpiresAtAsInstant().isAfter(instant);
   }
