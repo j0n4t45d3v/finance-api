@@ -12,12 +12,17 @@ public record SearchTransaction(
   @NotNull(message = "userId é obrigatório")
   @RequestParam(name = "userId")
   Long userId,
-  Pageable pageable,
+
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "yyyy-MM-dd")
-  @RequestParam(required = false, name = "startDate")
+  @RequestParam(name = "startDate")
+  @NotNull(message = "startDate é obrigatório")
   LocalDate startDate,
+
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "yyyy-MM-dd")
-  @RequestParam(required = false, name = "endDate")
-  LocalDate endDate
+  @RequestParam(name = "endDate")
+  @NotNull(message = "endDate é obrigatório")
+  LocalDate endDate,
+
+  Pageable pageable
 ) {
 }
