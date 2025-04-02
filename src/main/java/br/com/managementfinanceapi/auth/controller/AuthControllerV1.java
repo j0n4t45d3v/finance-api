@@ -1,14 +1,17 @@
 package br.com.managementfinanceapi.auth.controller;
 
 import br.com.managementfinanceapi.auth.domain.dto.Login;
+import br.com.managementfinanceapi.auth.gateway.GenerateTokenGateway;
 import br.com.managementfinanceapi.auth.gateway.LoginGateway;
 import br.com.managementfinanceapi.infra.http.dto.ResponseV0;
 import br.com.managementfinanceapi.user.domain.dto.CreateUser;
 import br.com.managementfinanceapi.user.gateways.RegisterUser;
-import br.com.managementfinanceapi.utils.JWTUtils;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
@@ -17,34 +20,36 @@ public class AuthControllerV1 {
 
   private final RegisterUser registerUser;
   private final LoginGateway loginGateway;
-  private final JWTUtils jwtUtils;
+  private final GenerateTokenGateway generateToken;
 
-  public AuthControllerV1(RegisterUser registerUser, LoginGateway loginGateway, JWTUtils jwtUtils) {
+  public AuthControllerV1(
+      RegisterUser registerUser,
+      LoginGateway loginGateway,
+      GenerateTokenGateway generateToken
+  ) {
     this.registerUser = registerUser;
     this.loginGateway = loginGateway;
-    this.jwtUtils = jwtUtils;
+    this.generateToken = generateToken;
   }
 
   public record Token(String token, Long expiresIn) {}
   public record TokenResponse(Token accessToken, Token refreshToken) {}
 
   @PostMapping("/register")
-  public ResponseEntity<ResponseV0<Token>> register(@Valid @RequestBody CreateUser body) {
+  public ResponseEntity<ResponseV0<TokenResponse>> register(@Valid @RequestBody CreateUser body) {
     var userCreated = this.registerUser.execute(body);
-    var tokenGenerated = this.jwtUtils.generateToken(userCreated);
-    var tokenResponse = new Token(tokenGenerated, tokenGenerated, 0L);
-    var response = ResponseV0.created(tokenResponse);
+    var response =this.generateToken.all(userCreated);
     var uri = UriComponentsBuilder
         .fromPath("/v1/users/{id}")
         .buildAndExpand(userCreated.getId())
         .toUri();
-    return ResponseEntity.created(uri).body(response);
+    return ResponseEntity.created(uri).body(ResponseV0.created(response));
   }
 
   @PostMapping("/login")
-  public ResponseEntity<ResponseV0<Token>> login(@Valid @RequestBody Login body) {
-    var token = this.loginGateway.execute(body);
-    var response = ResponseV0.ok(token);
-    return ResponseEntity.ok(response);
+  public ResponseEntity<ResponseV0<TokenResponse>> login(@Valid @RequestBody Login body) {
+    var login = this.loginGateway.execute(body);
+    var response =this.generateToken.all(login);
+    return ResponseEntity.ok(ResponseV0.ok(response));
   }
 }
