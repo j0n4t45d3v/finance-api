@@ -1,8 +1,8 @@
 package br.com.managementfinanceapi.auth.gateway;
 
-import br.com.managementfinanceapi.auth.controller.AuthControllerV1.Token;
 import br.com.managementfinanceapi.auth.domain.dto.Login;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public interface LoginGateway {
-  Token execute(Login login); 
+  UserDetails execute(Login login);
 }
