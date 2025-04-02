@@ -40,12 +40,12 @@ public class AddTransactionUseCase implements AddTransactionGateway {
   public void add(AddTransaction body) {
     log.info("(add transaction) transaction received: {}", body);
 
-    UserResponse userResponse = this.findOneUser.byId(body.userId());
+    User userResponse = this.findOneUser.byId(body.userId());
     log.info("(add transaction) user found: {}", userResponse);
 
     Category category = new Category();
     category.setId(body.categoryId());
-    Transaction transaction = new Transaction(body, new User(userResponse), category);
+    Transaction transaction = new Transaction(body, userResponse, category);
     Transaction transactionCreated = this.transactionRepository.save(transaction);
     log.info("(add transaction) transaction added: {}", transactionCreated);
 
