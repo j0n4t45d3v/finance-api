@@ -1,7 +1,6 @@
 package br.com.managementfinanceapi.user.usecases;
 
 import br.com.managementfinanceapi.user.domain.User;
-import br.com.managementfinanceapi.user.domain.dto.UserResponse;
 import br.com.managementfinanceapi.user.gateways.ChangePassword;
 import br.com.managementfinanceapi.user.gateways.FindOneUser;
 import br.com.managementfinanceapi.user.repository.UserRepository;
@@ -20,8 +19,7 @@ public class ChangePasswordUseCase implements ChangePassword {
 
   @Override
   public void change(String email, String password) {
-    UserResponse userFound = this.findOneUser.byEmail(email);
-    User user = new User(userFound);
+    User user = this.findOneUser.byEmail(email);
     user.changePassword(password);
     this.userRepository.save(user);
   }

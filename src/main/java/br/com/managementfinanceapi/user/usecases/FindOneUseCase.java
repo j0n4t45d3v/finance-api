@@ -19,21 +19,15 @@ public class FindOneUseCase implements FindOneUser {
   }
 
   @Override
-  public UserResponse byEmail(String email) {
+  public User byEmail(String email) {
     Optional<User> userFound = this.repository.findByEmail(email);
-    return this.normalizeResult(userFound);
+    return userFound.orElseThrow(UserNotFound::new);
   }
 
   @Override
-  public UserResponse byId(Long id) {
+  public User byId(Long id) {
     Optional<User> userFound = this.repository.findById(id);
-    return this.normalizeResult(userFound);
-  }
-
-  private UserResponse normalizeResult(Optional<User> optionalUser) {
-    return optionalUser
-        .map(User::toResponse)
-        .orElseThrow(UserNotFound::new);
+    return userFound.orElseThrow(UserNotFound::new);
   }
 
 }

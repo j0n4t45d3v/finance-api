@@ -22,14 +22,18 @@ public class UserControllerV1 {
 
   @GetMapping("/id/{id}")
   public ResponseEntity<ResponseV0<UserResponse>> findById(@PathVariable("id") Long id) {
-    UserResponse resultFounded = this.findOneUser.byId(id);
-    return ResponseEntity.ok(ResponseV0.ok(resultFounded));
+    var resultFounded = this.findOneUser.byId(id);
+    var parseUsertoUserResponse = UserResponse.from(resultFounded);
+    var response = ResponseV0.ok(parseUsertoUserResponse);
+    return ResponseEntity.ok(response);
   }
 
   @GetMapping("/email/{email}")
   public ResponseEntity<ResponseV0<UserResponse>> findById(@PathVariable("email") String email) {
-    UserResponse resultFounded = this.findOneUser.byEmail(email);
-    return ResponseEntity.ok(ResponseV0.ok(resultFounded));
+    var resultFounded = this.findOneUser.byEmail(email);
+    var parseUsertoUserResponse = UserResponse.from(resultFounded);
+    var response = ResponseV0.ok(parseUsertoUserResponse);
+    return ResponseEntity.ok(response);
   }
 
   @PutMapping("/change_password/{email}")

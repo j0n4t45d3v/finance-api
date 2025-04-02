@@ -1,8 +1,8 @@
 package br.com.managementfinanceapi.user.gateways;
 
-import br.com.managementfinanceapi.user.domain.dto.UserResponse;
+import br.com.managementfinanceapi.user.domain.User;
 
 public interface FindOneUser {
-  UserResponse byEmail(String email);
-  UserResponse byId(Long id);
+  User byEmail(String email);
+  User byId(Long id);
 }
