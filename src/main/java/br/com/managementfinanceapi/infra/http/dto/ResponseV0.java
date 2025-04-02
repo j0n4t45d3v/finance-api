@@ -27,16 +27,21 @@ public record ResponseV0<T>(
     return new ResponseV0<>(200, LocalDateTime.now(), message, data);
   }
 
-  public static ResponseV0<ErrorV0> error(int statusError, Exception error) {
+  public static ResponseV0<ErrorV0<?>> error(int statusError, Exception error) {
     return ResponseV0.error(statusError, error.getMessage());
   }
 
-  public static ResponseV0<ErrorV0> error(int statusError, ErrorV0 error) {
+  public static ResponseV0<ErrorV0<?>> error(int statusError, ErrorV0<?> error) {
     return new ResponseV0<>(statusError, LocalDateTime.now(), null, error);
   }
 
-  public static ResponseV0<ErrorV0> error(int statusError, String messageError) {
-    ErrorV0 errorV0 = ErrorV0.of(messageError);
+  public static ResponseV0<ErrorV0<?>> error(int statusError, String messageError) {
+    ErrorV0<?> errorV0 = ErrorV0.of(messageError);
+    return new ResponseV0<>(statusError, LocalDateTime.now(),null, errorV0);
+  }
+
+  public static <T> ResponseV0<ErrorV0<T>> error(int statusError, T error) {
+    ErrorV0<T> errorV0 = ErrorV0.of(error);
     return new ResponseV0<>(statusError, LocalDateTime.now(),null, errorV0);
   }
 }

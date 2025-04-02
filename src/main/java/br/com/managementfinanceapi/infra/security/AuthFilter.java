@@ -78,8 +78,8 @@ public class AuthFilter extends OncePerRequestFilter {
       int status
   ) throws IOException{
     ServletOutputStream out = response.getOutputStream();
-    ErrorV0 error = ErrorV0.of(message);
-    ResponseV0<ErrorV0> errorResponse = ResponseV0.error(status, error);
+    ErrorV0<?> error = ErrorV0.of(message);
+    ResponseV0<ErrorV0<?>> errorResponse = ResponseV0.error(status, error);
     byte[] errorParseToJson = this.mapper.writeValueAsBytes(errorResponse);
     out.write(errorParseToJson);
     response.setStatus(status);

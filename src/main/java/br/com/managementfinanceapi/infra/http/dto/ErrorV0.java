@@ -3,10 +3,17 @@ package br.com.managementfinanceapi.infra.http.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-public record ErrorV0(
-    String message
+public record ErrorV0<T>(
+    @JsonInclude(Include.NON_NULL)
+    String message,
+    @JsonInclude(Include.NON_NULL)
+    T error
 ) {
-  public static ErrorV0 of(String message) {
-    return new ErrorV0(message);
+  public static <T> ErrorV0<T> of(String message) {
+    return new ErrorV0<>(message, null);
+  }
+
+  public static <T> ErrorV0<T> of(T data) {
+    return new ErrorV0<>(null, data);
   }
 }
