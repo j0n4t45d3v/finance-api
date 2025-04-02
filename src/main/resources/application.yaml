@@ -43,7 +43,8 @@ server:
 
 security:
   jwt:
-    expire-time: 60
+    #expire-time in seconds
+    expire-time: 30
     issuer: delimajonatas875@gmail.com
     secret: b2Hj0H1|@4OavVWdCd1qzEj7'022p\S9Kh
   jwt-refresh:
