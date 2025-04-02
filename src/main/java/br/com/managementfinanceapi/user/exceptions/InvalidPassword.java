@@ -8,6 +8,6 @@ public class InvalidPassword extends BadRequestException {
   }
 
   public InvalidPassword() {
-    super("A senha deve ter pelomenos de 8 á 20 caracteres e conter numeros e letras minusculas e maiusculas!");
+    super("A senha deve ter pelo menos de 8 á 20 caracteres e conter numeros e letras minusculas e maiusculas!");
   }
 }
