@@ -25,7 +25,8 @@ public class AuthControllerV1 {
     this.jwtUtils = jwtUtils;
   }
 
-  public record Token(String accessToken, String refreshToken, Long expiresIn) {}
+  public record Token(String token, Long expiresIn) {}
+  public record TokenResponse(Token accessToken, Token refreshToken) {}
 
   @PostMapping("/register")
   public ResponseEntity<ResponseV0<Token>> register(@Valid @RequestBody CreateUser body) {
