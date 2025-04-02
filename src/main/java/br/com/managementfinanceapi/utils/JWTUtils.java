@@ -23,19 +23,30 @@ public class JWTUtils {
   private String issuer;
 
   @Value("${security.jwt.expire-time}")
-  private long expiredIn;
+  private long accessExpiredTime;
 
-  public String generateToken(UserDetails user) {
+  @Value("${security.jwt-refresh.expire-time}")
+  private long refreshExpiredTime;
+
+  public String generateAccessToken(UserDetails user) {
+    return this.generateToken(user, this.getExpiredAt(this.accessExpiredTime));
+  }
+
+  public String generateRefreshToken(UserDetails user) {
+    return this.generateToken(user, this.getExpiredAt(this.refreshExpiredTime));
+  }
+
+  public String generateToken(UserDetails user, Instant expiredAt) {
     return JWT.create()
         .withIssuer(this.issuer)
         .withSubject(user.getUsername())
-        .withExpiresAt(this.getExpiredAt())
+        .withExpiresAt(expiredAt)
         .sign(this.signKey());
   }
 
-  private Instant getExpiredAt() {
+  private Instant getExpiredAt(long plusSeconds) {
     return LocalDateTime.now()
-    .plusSeconds(this.expiredIn)
+    .plusSeconds(plusSeconds)
     .toInstant(ZoneOffset.UTC);
   }
 
