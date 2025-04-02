@@ -74,8 +74,8 @@ public class User extends TimestampEntity implements UserDetails {
     }
   }
 
-  public void changePassword(Password password) {
-    this.password = password;
+  public void changePassword(String password) {
+    this.password = Password.from(password);
   }
 
   @Override
