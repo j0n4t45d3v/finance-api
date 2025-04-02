@@ -34,7 +34,7 @@ management:
         include: openapi, swagger-ui
 springdoc:
   swagger-ui:
-    path: /v1/documentation
+    path: /doc/v1
 
 server:
   servlet:
