@@ -1,7 +1,7 @@
 package br.com.managementfinanceapi.auth.usecases;
 
-import br.com.managementfinanceapi.auth.controller.AuthControllerV1.Token;
-import br.com.managementfinanceapi.auth.controller.AuthControllerV1.TokenResponse;
+import br.com.managementfinanceapi.auth.domain.dto.Token;
+import br.com.managementfinanceapi.auth.domain.dto.TokenResponse;
 import br.com.managementfinanceapi.auth.gateway.GenerateTokenGateway;
 import br.com.managementfinanceapi.utils.JWTUtils;
 import org.springframework.security.core.userdetails.UserDetails;

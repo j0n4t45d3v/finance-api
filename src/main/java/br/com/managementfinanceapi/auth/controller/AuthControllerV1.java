@@ -1,6 +1,7 @@
 package br.com.managementfinanceapi.auth.controller;
 
 import br.com.managementfinanceapi.auth.domain.dto.Login;
+import br.com.managementfinanceapi.auth.domain.dto.TokenResponse;
 import br.com.managementfinanceapi.auth.gateway.GenerateTokenGateway;
 import br.com.managementfinanceapi.auth.gateway.LoginGateway;
 import br.com.managementfinanceapi.infra.http.dto.ResponseV0;
@@ -31,9 +32,6 @@ public class AuthControllerV1 {
     this.loginGateway = loginGateway;
     this.generateToken = generateToken;
   }
-
-  public record Token(String token, Long expiresIn) {}
-  public record TokenResponse(Token accessToken, Token refreshToken) {}
 
   @PostMapping("/register")
   public ResponseEntity<ResponseV0<TokenResponse>> register(@Valid @RequestBody CreateUser body) {
