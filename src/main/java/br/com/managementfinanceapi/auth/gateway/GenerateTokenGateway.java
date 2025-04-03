@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public interface GenerateTokenGateway {
   TokenResponse all(UserDetails userDetails);
+  TokenResponse refresh(String refreshToken);
   Token accessToken(UserDetails userDetails);
   Token refreshToken(UserDetails userDetails);
 }

@@ -1,17 +1,18 @@
 package br.com.managementfinanceapi.utils;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Optional;
 
 @Component
 public class JWTUtils {
@@ -28,18 +29,25 @@ public class JWTUtils {
   @Value("${security.jwt-refresh.expire-time}")
   private long refreshExpiredTime;
 
+  enum TypeToken {
+    ACCESS, REFRESH
+  }
+
   public String generateAccessToken(UserDetails user) {
-    return this.generateToken(user, this.getExpiredAt(this.accessExpiredTime));
+    Instant expiredAt = this.getExpiredAt(this.accessExpiredTime);
+    return this.generateToken(user, expiredAt, TypeToken.ACCESS);
   }
 
   public String generateRefreshToken(UserDetails user) {
-    return this.generateToken(user, this.getExpiredAt(this.refreshExpiredTime));
+    Instant expiredAt = this.getExpiredAt(this.refreshExpiredTime);
+    return this.generateToken(user, expiredAt, TypeToken.REFRESH);
   }
 
-  public String generateToken(UserDetails user, Instant expiredAt) {
+  private String generateToken(UserDetails user, Instant expiredAt, TypeToken type) {
     return JWT.create()
         .withIssuer(this.issuer)
         .withSubject(user.getUsername())
+        .withClaim("token_type",type.name())
         .withExpiresAt(expiredAt)
         .sign(this.signKey());
   }
@@ -67,10 +75,12 @@ public class JWTUtils {
     return jwtDecoded.getIssuer().equals(this.issuer);
   }
 
-
   private boolean tokenIsExpired(DecodedJWT jwtDecoded) {
-    Instant instant = Instant.now();
-    return jwtDecoded.getExpiresAtAsInstant().isAfter(instant);
+    Instant now = LocalDateTime.now()
+        .toInstant(ZoneOffset.UTC);
+
+    Instant expiredAt = jwtDecoded.getExpiresAtAsInstant();
+    return expiredAt.isBefore(now);
   }
 
   public String getSubject(String token) {
@@ -81,6 +91,12 @@ public class JWTUtils {
       return "";
     }
   }
+
+  public Optional<Claim> getClaim(String token, String claim) {
+      DecodedJWT jwtDecoded = JWT.decode(token);
+      return Optional.ofNullable(jwtDecoded.getClaim(claim));
+  }
+
 
   public long getExpireAt(String token) {
     DecodedJWT jwtDecoded = JWT.decode(token);

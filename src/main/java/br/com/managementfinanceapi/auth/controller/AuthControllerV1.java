@@ -47,7 +47,14 @@ public class AuthControllerV1 {
   @PostMapping("/login")
   public ResponseEntity<ResponseV0<TokenResponse>> login(@Valid @RequestBody Login body) {
     var login = this.loginGateway.execute(body);
-    var response =this.generateToken.all(login);
+    var response = this.generateToken.all(login);
+    return ResponseEntity.ok(ResponseV0.ok(response));
+  }
+
+  public record RefreshBody (String token) {}
+  @PostMapping("/refresh")
+  public ResponseEntity<ResponseV0<TokenResponse>> refresh(@RequestBody RefreshBody body) {
+    var response = this.generateToken.refresh(body.token());
     return ResponseEntity.ok(ResponseV0.ok(response));
   }
 }
