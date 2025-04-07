@@ -2,6 +2,7 @@ package br.com.managementfinanceapi.transaction.repository;
 
 import br.com.managementfinanceapi.transaction.domain.Balance;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -15,6 +16,8 @@ public interface BalanceRepository extends JpaRepository<Balance, Long> {
   Stream<Balance> findAllByUserId(Long userId);
 
   Optional<Balance> findByUserIdAndMonthAndYear(Long userId, short month, short year);
+
+  @Query(name = "Balance.findAllBalancesWithMonthANdYearGreater")
   List<Balance> findAllBalancesWithMonthANdYearGreater(
       @Param("month") short month,
       @Param("year") short year,
