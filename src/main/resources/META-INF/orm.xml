@@ -10,4 +10,27 @@
     <query>select b from Balance b where b.month > :month and b.year > :year and b.user.id = :userId</query>
   </named-query>
 
+  <named-query name="Category.findTotalByCategory">
+    <query>
+      SELECT
+        new br.com.managementfinanceapi.category.domain.dto.TotalByCategoryView(
+          c.name,
+          c.creditLimit,
+          SUM(t.amount) as value
+        )
+      FROM
+        Category c
+      INNER JOIN
+        Transaction t
+        ON t.category.id = c.id AND
+           t.user.id = c.user.id
+      WHERE
+            MONTH(t.date) = :month AND
+            YEAR(t.date) = :year AND
+            c.user.id = :userId
+      GROUP BY c.name, c.creditLimit
+      ORDER BY value, c.name
+    </query>
+  </named-query>
+
 </entity-mappings>
