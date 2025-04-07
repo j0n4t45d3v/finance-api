@@ -31,17 +31,4 @@ public class FindAllTransactionUseCase implements FindAllTransactionGateway {
     ).map(TransactionDto::new);
   }
 
-  /* public Page<Transaction> findAllInMonth(MonthFilter filters, Pageable page) {
-
-    return this.movementRepository.findAllByUserIdAndDateBetween(
-        filters.userId(),
-        filters.startDate(),
-        filters.endDate(),
-        page
-    );
-  }
-
-  private LocalDate firstDayInMonth(int month) {
-    
-  } */
 }
