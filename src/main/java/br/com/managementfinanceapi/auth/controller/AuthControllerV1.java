@@ -1,6 +1,7 @@
 package br.com.managementfinanceapi.auth.controller;
 
 import br.com.managementfinanceapi.auth.domain.dto.Login;
+import br.com.managementfinanceapi.auth.domain.dto.RefreshBody;
 import br.com.managementfinanceapi.auth.domain.dto.TokenResponse;
 import br.com.managementfinanceapi.auth.gateway.GenerateTokenGateway;
 import br.com.managementfinanceapi.auth.gateway.LoginGateway;
@@ -51,7 +52,6 @@ public class AuthControllerV1 {
     return ResponseEntity.ok(ResponseV0.ok(response));
   }
 
-  public record RefreshBody (String token) {}
   @PostMapping("/refresh")
   public ResponseEntity<ResponseV0<TokenResponse>> refresh(@RequestBody RefreshBody body) {
     var response = this.generateToken.refresh(body.token());
