@@ -1,6 +1,6 @@
 package br.com.managementfinanceapi.infra.security;
 
-import br.com.managementfinanceapi.auth.usecases.GetUserDetailsUseCase;
+import br.com.managementfinanceapi.application.core.usecase.user.GetUserDetailsUseCase;
 import br.com.managementfinanceapi.infra.http.dto.ErrorV0;
 import br.com.managementfinanceapi.infra.http.dto.ResponseV0;
 import br.com.managementfinanceapi.utils.JWTUtils;
