@@ -1,6 +1,5 @@
 package br.com.managementfinanceapi.application.core.domain.user;
 
-import br.com.managementfinanceapi.application.core.domain.user.dto.UserResponse;
 import br.com.managementfinanceapi.application.core.domain.user.dvo.Password;
 
 public class UserDomain {
