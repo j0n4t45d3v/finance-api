@@ -1,6 +1,6 @@
 package br.com.managementfinanceapi.adapter.out.repository.user;
 
-import br.com.managementfinanceapi.adapter.in.entity.user.UserEntity;
+import br.com.managementfinanceapi.adapter.out.entity.user.UserEntity;
 import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 import br.com.managementfinanceapi.application.port.out.user.SaveUserPort;
 import br.com.managementfinanceapi.adapter.common.mapper.Mapper;

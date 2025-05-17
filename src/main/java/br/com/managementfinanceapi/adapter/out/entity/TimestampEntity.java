@@ -1,4 +1,4 @@
-package br.com.managementfinanceapi.adapter.in.entity;
+package br.com.managementfinanceapi.adapter.out.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;

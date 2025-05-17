@@ -1,6 +1,6 @@
-package br.com.managementfinanceapi.adapter.in.entity.user;
+package br.com.managementfinanceapi.adapter.out.entity.user;
 
-import br.com.managementfinanceapi.adapter.in.entity.TimestampEntity;
+import br.com.managementfinanceapi.adapter.out.entity.TimestampEntity;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

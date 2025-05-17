@@ -1,7 +1,7 @@
 package br.com.managementfinanceapi.application.core.domain.category;
 
 import br.com.managementfinanceapi.application.core.domain.category.dto.CreateCategory;
-import br.com.managementfinanceapi.adapter.in.entity.TimestampEntity;
+import br.com.managementfinanceapi.adapter.out.entity.TimestampEntity;
 import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 import jakarta.persistence.*;
 

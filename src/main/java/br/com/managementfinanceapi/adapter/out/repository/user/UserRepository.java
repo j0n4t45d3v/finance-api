@@ -1,6 +1,6 @@
 package br.com.managementfinanceapi.adapter.out.repository.user;
 
-import br.com.managementfinanceapi.adapter.in.entity.user.UserEntity;
+import br.com.managementfinanceapi.adapter.out.entity.user.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

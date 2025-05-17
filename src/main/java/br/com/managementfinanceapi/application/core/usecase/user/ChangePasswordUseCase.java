@@ -3,7 +3,6 @@ package br.com.managementfinanceapi.application.core.usecase.user;
 import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 import br.com.managementfinanceapi.application.port.in.user.ChangePasswordPort;
 import br.com.managementfinanceapi.application.port.in.user.SearchUserPort;
-import br.com.managementfinanceapi.adapter.out.repository.user.UserRepository;
 import br.com.managementfinanceapi.application.port.out.user.SaveUserPort;
 import org.springframework.stereotype.Service;
 
