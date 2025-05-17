@@ -1,5 +1,7 @@
-package br.com.managementfinanceapi.application.core.domain.user.dto;
+package br.com.managementfinanceapi.adapter.in.dto.user;
 
+import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
+import br.com.managementfinanceapi.application.core.domain.user.dvo.Password;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
@@ -21,6 +23,10 @@ public record CreateUser(
 
   private boolean patternPassword() {
     return true;
+  }
+
+  public UserDomain toDomain() {
+    return new UserDomain(this.email(), Password.from(this.password()));
   }
 
 }

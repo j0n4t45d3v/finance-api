@@ -1,36 +1,29 @@
 package br.com.managementfinanceapi.application.core.usecase.user;
 
-import br.com.managementfinanceapi.application.core.domain.user.User;
-import br.com.managementfinanceapi.infra.error.exceptions.user.InvalidPassword;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
+import br.com.managementfinanceapi.application.port.in.user.LoginPort;
+import br.com.managementfinanceapi.application.port.in.user.SearchUserPort;
+import br.com.managementfinanceapi.infra.error.exceptions.user.InvalidCredentials;
+import br.com.managementfinanceapi.infra.error.exceptions.user.UserNotFound;
 
-import br.com.managementfinanceapi.application.core.domain.user.dto.auth.Login;
-import br.com.managementfinanceapi.application.port.in.user.LoginGateway;
+public class LoginUseCase implements LoginPort {
 
-@Service
-public class LoginUseCase implements LoginGateway {
+  private final SearchUserPort searchUserPort;
 
-  private final UserDetailsService userDetailsService; 
-
-  public LoginUseCase(UserDetailsService userDetailsService) {
-    this.userDetailsService = userDetailsService;
+  public LoginUseCase(SearchUserPort searchUserPort) {
+    this.searchUserPort = searchUserPort;
   }
 
   @Override
-  public UserDetails execute(Login login) {
+  public UserDomain execute(UserDomain login) {
     try {
-      User userDetails = (User) this.userDetailsService
-          .loadUserByUsername(login.email());
-
-      if(userDetails.differentPassword(login.password())) {
-        throw new InvalidPassword("Usuário ou senha inválida");
+      UserDomain userFound = this.searchUserPort.byEmail(login.getEmail());
+      if (userFound.notMatchPassword(login.getPassword())) {
+        throw new InvalidCredentials("Usuário ou senha inválida");
       }
-      return userDetails;
-    } catch (UsernameNotFoundException e) {
-      throw new InvalidPassword("Usuário ou senha inválida");
+      return userFound;
+    } catch (UserNotFound e) {
+      throw new InvalidCredentials("Usuário ou senha inválida");
     }
   }
 

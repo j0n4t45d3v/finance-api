@@ -1,13 +1,13 @@
 package br.com.managementfinanceapi.adapter.in.controller.user;
 
-import br.com.managementfinanceapi.application.core.domain.user.dto.auth.Login;
-import br.com.managementfinanceapi.application.core.domain.user.dto.auth.RefreshBody;
-import br.com.managementfinanceapi.application.core.domain.user.dto.auth.TokenResponse;
-import br.com.managementfinanceapi.application.port.in.user.GenerateTokenGateway;
-import br.com.managementfinanceapi.application.port.in.user.LoginGateway;
+import br.com.managementfinanceapi.adapter.in.dto.auth.Login;
+import br.com.managementfinanceapi.adapter.in.dto.auth.RefreshBody;
+import br.com.managementfinanceapi.adapter.in.dto.auth.TokenResponse;
+import br.com.managementfinanceapi.application.port.in.user.GenerateTokenPort;
+import br.com.managementfinanceapi.application.port.in.user.LoginPort;
 import br.com.managementfinanceapi.infra.http.dto.ResponseV0;
-import br.com.managementfinanceapi.application.core.domain.user.dto.CreateUser;
-import br.com.managementfinanceapi.application.port.in.user.RegisterUser;
+import br.com.managementfinanceapi.adapter.in.dto.user.CreateUser;
+import br.com.managementfinanceapi.application.port.in.user.RegisterUserPort;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,24 +20,24 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequestMapping("/v1/auth")
 public class AuthControllerV1 {
 
-  private final RegisterUser registerUser;
-  private final LoginGateway loginGateway;
-  private final GenerateTokenGateway generateToken;
+  private final RegisterUserPort registerUserPort;
+  private final LoginPort loginGateway;
+  private final GenerateTokenPort generateToken;
 
   public AuthControllerV1(
-      RegisterUser registerUser,
-      LoginGateway loginGateway,
-      GenerateTokenGateway generateToken
+      RegisterUserPort registerUserPort,
+      LoginPort loginGateway,
+      GenerateTokenPort generateToken
   ) {
-    this.registerUser = registerUser;
+    this.registerUserPort = registerUserPort;
     this.loginGateway = loginGateway;
     this.generateToken = generateToken;
   }
 
   @PostMapping("/register")
   public ResponseEntity<ResponseV0<TokenResponse>> register(@Valid @RequestBody CreateUser body) {
-    var userCreated = this.registerUser.execute(body);
-    var response =this.generateToken.all(userCreated);
+    var userCreated = this.registerUserPort.execute(body.toDomain(), body.confirmPassword());
+    var response = this.generateToken.all(userCreated);
     var uri = UriComponentsBuilder
         .fromPath("/v1/users/{id}")
         .buildAndExpand(userCreated.getId())
@@ -47,7 +47,7 @@ public class AuthControllerV1 {
 
   @PostMapping("/login")
   public ResponseEntity<ResponseV0<TokenResponse>> login(@Valid @RequestBody Login body) {
-    var login = this.loginGateway.execute(body);
+    var login = this.loginGateway.execute(body.tDomain());
     var response = this.generateToken.all(login);
     return ResponseEntity.ok(ResponseV0.ok(response));
   }

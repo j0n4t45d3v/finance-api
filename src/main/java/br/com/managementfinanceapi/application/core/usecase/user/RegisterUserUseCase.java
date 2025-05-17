@@ -1,32 +1,30 @@
 package br.com.managementfinanceapi.application.core.usecase.user;
 
-import br.com.managementfinanceapi.application.core.domain.user.User;
-import br.com.managementfinanceapi.application.core.domain.user.dto.CreateUser;
+import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
+import br.com.managementfinanceapi.application.port.out.user.SaveUserPort;
+import br.com.managementfinanceapi.application.port.out.user.FindUserPort;
 import br.com.managementfinanceapi.infra.error.exceptions.user.EmailAlreadyUsed;
 import br.com.managementfinanceapi.infra.error.exceptions.user.InvalidPassword;
-import br.com.managementfinanceapi.application.port.in.user.RegisterUser;
-import br.com.managementfinanceapi.adapter.out.repository.user.UserRepository;
-import org.springframework.stereotype.Service;
+import br.com.managementfinanceapi.application.port.in.user.RegisterUserPort;
 
-@Service
-public class RegisterUserUseCase implements RegisterUser {
+public class RegisterUserUseCase implements RegisterUserPort {
 
-  private final UserRepository repository;
+  private final SaveUserPort saveUserPort;
+  private final FindUserPort findUserPort;
 
-  public RegisterUserUseCase(UserRepository repository) {
-    this.repository = repository;
+  public RegisterUserUseCase(SaveUserPort saveUserPort, FindUserPort findUserPort) {
+    this.saveUserPort = saveUserPort;
+    this.findUserPort = findUserPort;
   }
 
   @Override
-  public User execute(CreateUser body) {
-    if (this.repository.findByEmail(body.email()).isPresent()) {
+  public UserDomain execute(UserDomain body, String confirmPassword) {
+    if (this.findUserPort.byEmail(body.getEmail()).isPresent()) {
       throw new EmailAlreadyUsed();
     }
-    User user = new User(body);
-
-    if(user.differentPassword(body.confirmPassword())) {
-      throw new InvalidPassword("Confirmar senha está diferente da senha");
+    if(body.notMatchPassword(confirmPassword)) {
+      throw new InvalidPassword("As senhas são divergentes");
     }
-    return this.repository.save(user);
+    return this.saveUserPort.execute(body);
   }
 }

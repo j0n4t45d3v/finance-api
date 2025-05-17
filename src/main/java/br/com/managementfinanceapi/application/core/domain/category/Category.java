@@ -2,7 +2,7 @@ package br.com.managementfinanceapi.application.core.domain.category;
 
 import br.com.managementfinanceapi.application.core.domain.category.dto.CreateCategory;
 import br.com.managementfinanceapi.adapter.in.entity.TimestampEntity;
-import br.com.managementfinanceapi.application.core.domain.user.User;
+import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -18,21 +18,21 @@ public class Category extends TimestampEntity {
   private BigDecimal creditLimit;
   @ManyToOne
   @JoinColumn(name = "user_id", referencedColumnName = "id")
-  private User user;
+  private UserDomain userDomain;
 
-  public Category(Long id, String name, BigDecimal creditLimit, User user) {
+  public Category(Long id, String name, BigDecimal creditLimit, UserDomain userDomain) {
     this.id = id;
     this.name = name;
     this.creditLimit = creditLimit;
-    this.user = user;
+    this.userDomain = userDomain;
   }
 
   public Category(CreateCategory category) {
     this.name = category.name();
     this.creditLimit = category.creditLimit();
-    User user = new User();
-    user.setId(category.userId());
-    this.user = user;
+    UserDomain userDomain = new UserDomain();
+    userDomain.setId(category.userId());
+    this.userDomain = userDomain;
   }
 
   public Category() {
@@ -50,7 +50,7 @@ public class Category extends TimestampEntity {
     return name;
   }
 
-  public User getUser() {
-    return user;
+  public UserDomain getUser() {
+    return userDomain;
   }
 }

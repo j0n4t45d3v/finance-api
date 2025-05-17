@@ -1,5 +1,6 @@
-package br.com.managementfinanceapi.infra.utils;
+package br.com.managementfinanceapi.adapter.in.jwt;
 
+import br.com.managementfinanceapi.application.port.in.JWTPort;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
@@ -15,7 +16,7 @@ import java.time.ZoneOffset;
 import java.util.Optional;
 
 @Component
-public class JWTUtils {
+public class JWTUtils implements JWTPort {
 
   @Value("${security.jwt.secret}")
   private String secret;
@@ -29,7 +30,7 @@ public class JWTUtils {
   @Value("${security.jwt-refresh.expire-time}")
   private long refreshExpiredTime;
 
-  enum TypeToken {
+  public enum TypeToken {
     ACCESS, REFRESH
   }
 

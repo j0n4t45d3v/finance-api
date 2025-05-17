@@ -2,9 +2,9 @@ package br.com.managementfinanceapi.application.core.usecase.transaction;
 
 import br.com.managementfinanceapi.application.core.domain.transaction.Balance;
 import br.com.managementfinanceapi.application.core.domain.transaction.dtos.UpdateBalance;
+import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 import br.com.managementfinanceapi.application.port.in.transaction.UpdateBalanceOfMonthGateway;
 import br.com.managementfinanceapi.adapter.out.repository.transaction.BalanceRepository;
-import br.com.managementfinanceapi.application.core.domain.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -46,7 +46,7 @@ public class UpdateBalanceOfMonthUseCase implements UpdateBalanceOfMonthGateway 
   private Balance defaultBalance(final UpdateBalance updateBalance) {
     return new Balance(
         updateBalance.amount(),
-        new User(updateBalance.userId()),
+        new UserDomain(updateBalance.userId()),
         updateBalance.month(),
         updateBalance.year()
     );

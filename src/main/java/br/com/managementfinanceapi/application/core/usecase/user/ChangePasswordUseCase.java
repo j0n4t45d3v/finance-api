@@ -1,26 +1,27 @@
 package br.com.managementfinanceapi.application.core.usecase.user;
 
-import br.com.managementfinanceapi.application.core.domain.user.User;
-import br.com.managementfinanceapi.application.port.in.user.ChangePassword;
-import br.com.managementfinanceapi.application.port.in.user.FindOneUser;
+import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
+import br.com.managementfinanceapi.application.port.in.user.ChangePasswordPort;
+import br.com.managementfinanceapi.application.port.in.user.SearchUserPort;
 import br.com.managementfinanceapi.adapter.out.repository.user.UserRepository;
+import br.com.managementfinanceapi.application.port.out.user.SaveUserPort;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ChangePasswordUseCase implements ChangePassword {
+public class ChangePasswordUseCase implements ChangePasswordPort {
 
-  private final FindOneUser findOneUser;
-  private final UserRepository userRepository;
+  private final SearchUserPort searchUserPort;
+  private final SaveUserPort saveUserPort;
 
-  public ChangePasswordUseCase(FindOneUser findOneUser, UserRepository userRepository) {
-    this.findOneUser = findOneUser;
-    this.userRepository = userRepository;
+  public ChangePasswordUseCase(SearchUserPort searchUserPort, SaveUserPort saveUserPort) {
+    this.searchUserPort = searchUserPort;
+    this.saveUserPort = saveUserPort;
   }
 
   @Override
   public void change(String email, String password) {
-    User user = this.findOneUser.byEmail(email);
-    user.changePassword(password);
-    this.userRepository.save(user);
+    UserDomain userDomain = this.searchUserPort.byEmail(email);
+    userDomain.changePassword(password);
+    this.saveUserPort.execute(userDomain);
   }
 }

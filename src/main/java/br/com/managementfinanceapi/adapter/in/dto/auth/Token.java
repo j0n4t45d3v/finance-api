@@ -1,4 +1,4 @@
-package br.com.managementfinanceapi.application.core.domain.user.dto.auth;
+package br.com.managementfinanceapi.adapter.in.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

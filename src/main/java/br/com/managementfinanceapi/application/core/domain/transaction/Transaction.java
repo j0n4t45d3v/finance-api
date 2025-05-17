@@ -5,7 +5,7 @@ import br.com.managementfinanceapi.adapter.in.entity.TimestampEntity;
 import br.com.managementfinanceapi.application.core.domain.transaction.converters.TransactionTypeConverter;
 import br.com.managementfinanceapi.application.core.domain.transaction.dtos.AddTransaction;
 import br.com.managementfinanceapi.application.core.domain.transaction.enums.TransactionType;
-import br.com.managementfinanceapi.application.core.domain.user.User;
+import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -27,7 +27,7 @@ public class Transaction extends TimestampEntity {
   private LocalDateTime date;
   @ManyToOne
   @JoinColumn(name = "user_id", referencedColumnName = "id")
-  private User user;
+  private UserDomain userDomain;
   @ManyToOne
   @JoinColumn(name = "category_id", referencedColumnName = "id")
   private Category category;
@@ -38,7 +38,7 @@ public class Transaction extends TimestampEntity {
       TransactionType type,
       String description,
       LocalDateTime date,
-      User user,
+      UserDomain userDomain,
       Category category
   ) {
     this.id = id;
@@ -46,19 +46,19 @@ public class Transaction extends TimestampEntity {
     this.type = type;
     this.description = description;
     this.date = date;
-    this.user = user;
+    this.userDomain = userDomain;
     this.category = category;
   }
 
   public Transaction() {
   }
 
-  public Transaction(AddTransaction body, User user, Category category) {
+  public Transaction(AddTransaction body, UserDomain userDomain, Category category) {
     this.amount = body.amount();
     this.type = body.type();
     this.description = body.description();
     this.date = body.date();
-    this.user = user;
+    this.userDomain = userDomain;
     this.category = category;
   }
 
@@ -82,8 +82,8 @@ public class Transaction extends TimestampEntity {
     return date;
   }
 
-  public User getUser() {
-    return user;
+  public UserDomain getUser() {
+    return userDomain;
   }
 
   public Category getCategory() {

@@ -1,9 +1,6 @@
-package br.com.managementfinanceapi.application.core.domain.user;
+package br.com.managementfinanceapi.adapter.in.entity.user;
 
 import br.com.managementfinanceapi.adapter.in.entity.TimestampEntity;
-import br.com.managementfinanceapi.application.core.domain.user.dto.CreateUser;
-import br.com.managementfinanceapi.application.core.domain.user.dto.UserResponse;
-import br.com.managementfinanceapi.application.core.domain.user.dvo.Password;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,42 +10,29 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User extends TimestampEntity implements UserDetails {
+public class UserEntity extends TimestampEntity implements UserDetails {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   @Column(unique = true)
   private String email;
-  @Embedded
-  private Password password;
+  private String password;
 
-  public User(Long id, String email, Password password) {
+  public UserEntity(Long id, String email, String password) {
     this.id = id;
     this.email = email;
     this.password = password;
   }
 
-  public User(String email, Password password) {
+  public UserEntity(String email, String password) {
     this.email = email;
     this.password = password;
   }
 
-  public User(CreateUser createUser) {
-    this(createUser.email(), Password.from(createUser.password()));
-  }
+  public UserEntity() {}
 
-  public User() {}
-
-  public User(UserResponse userFound) {
-    this(userFound.id(), userFound.email(), null);
-  }
-
-  public User(Long userId){
+  public UserEntity(Long userId){
     this.id = userId;
-  }
-
-  public UserResponse toResponse() {
-    return new UserResponse(this.id, this.email);
   }
 
   public void setId(Long id) {
@@ -64,7 +48,7 @@ public class User extends TimestampEntity implements UserDetails {
   }
 
   public String getPassword() {
-    return password.getValue();
+    return password;
   }
 
   public boolean differentPassword(String confirmPassword) {
@@ -72,7 +56,7 @@ public class User extends TimestampEntity implements UserDetails {
   }
 
   public void changePassword(String password) {
-    this.password = Password.from(password);
+    this.password = password;
   }
 
   @Override

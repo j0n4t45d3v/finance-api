@@ -1,66 +1,69 @@
 package br.com.managementfinanceapi.application.core.usecase.user;
 
-import br.com.managementfinanceapi.application.core.domain.user.dto.auth.Token;
-import br.com.managementfinanceapi.application.core.domain.user.dto.auth.TokenResponse;
+import br.com.managementfinanceapi.adapter.in.dto.auth.Token;
+import br.com.managementfinanceapi.adapter.in.dto.auth.TokenResponse;
+import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
+import br.com.managementfinanceapi.application.port.in.JWTPort;
 import br.com.managementfinanceapi.infra.error.exceptions.auth.InvalidTokenException;
-import br.com.managementfinanceapi.application.port.in.user.GenerateTokenGateway;
-import br.com.managementfinanceapi.application.port.in.user.FindOneUser;
-import br.com.managementfinanceapi.utils.JWTUtils;
+import br.com.managementfinanceapi.application.port.in.user.GenerateTokenPort;
+import br.com.managementfinanceapi.application.port.in.user.SearchUserPort;
+import br.com.managementfinanceapi.adapter.in.jwt.JWTUtils;
 import com.auth0.jwt.interfaces.Claim;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
-@Service
-public class GenerateTokenUseCase implements GenerateTokenGateway {
+public class GenerateTokenUseCase implements GenerateTokenPort {
 
-  private final JWTUtils jwtUtils;
-  private final FindOneUser findOneUser;
+  private final JWTPort jwtUtils;
+  private final SearchUserPort searchUserPort;
 
   public GenerateTokenUseCase(
       JWTUtils jwtUtils,
-      FindOneUser findOneUser
+      SearchUserPort searchUserPort
   ) {
     this.jwtUtils = jwtUtils;
-    this.findOneUser = findOneUser;
+    this.searchUserPort = searchUserPort;
   }
 
   @Override
   public TokenResponse refresh(String refreshToken) {
-    if (!this.jwtUtils.tokenIsValid(refreshToken)) {
-      throw new InvalidTokenException();
-    }
-    String tokenType = this.jwtUtils
-        .getClaim(refreshToken, "token_type")
-        .map(Claim::asString)
-        .orElseThrow(InvalidTokenException::new);
-
-    if(!Objects.equals(tokenType, "REFRESH")) {
-      throw new InvalidTokenException();
-    }
-
-    String subject = this.jwtUtils.getSubject(refreshToken);
-    UserDetails user = this.findOneUser.byEmail(subject);
-    return this.all(user);
+//    if (!this.jwtUtils.tokenIsValid(refreshToken)) {
+//      throw new InvalidTokenException();
+//    }
+//    String tokenType = this.jwtUtils
+//        .getClaim(refreshToken, "token_type")
+//        .map(Claim::asString)
+//        .orElseThrow(InvalidTokenException::new);
+//
+//    if(!Objects.equals(tokenType, "REFRESH")) {
+//      throw new InvalidTokenException();
+//    }
+//
+//    String subject = this.jwtUtils.getSubject(refreshToken);
+//    UserDetails user = this.searchUserPort.byEmail(subject);
+//    return this.all(user);
+    return null;
   }
 
   @Override
-  public TokenResponse all(UserDetails userDetails) {
+  public TokenResponse all(UserDomain userDetails) {
     Token accessToken = this.accessToken(userDetails);
     Token refreshToken = this.refreshToken(userDetails);
     return new TokenResponse(accessToken, refreshToken);
   }
 
   @Override
-  public Token accessToken(UserDetails userDetails) {
-    var tokenGenerated = this.jwtUtils.generateAccessToken(userDetails);
-    return new Token(tokenGenerated, this.jwtUtils.getExpireAt(tokenGenerated));
+  public Token accessToken(UserDomain userDetails) {
+    // var tokenGenerated = this.jwtUtils.generateAccessToken(userDetails);
+    // return new Token(tokenGenerated, this.jwtUtils.getExpireAt(tokenGenerated));
+    return null;
   }
 
   @Override
-  public Token refreshToken(UserDetails userDetails) {
-    var refreshTokenGenerated = this.jwtUtils.generateRefreshToken(userDetails);
-    return new Token(refreshTokenGenerated, this.jwtUtils.getExpireAt(refreshTokenGenerated));
+  public Token refreshToken(UserDomain userDetails) {
+    // var refreshTokenGenerated = this.jwtUtils.generateRefreshToken(userDetails);
+    // return new Token(refreshTokenGenerated, this.jwtUtils.getExpireAt(refreshTokenGenerated));
+    return null;
   }
 }

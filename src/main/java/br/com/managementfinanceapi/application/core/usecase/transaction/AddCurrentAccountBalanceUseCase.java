@@ -3,7 +3,7 @@ package br.com.managementfinanceapi.application.core.usecase.transaction;
 import br.com.managementfinanceapi.infra.error.exceptions.BadRequestException;
 import br.com.managementfinanceapi.adapter.out.repository.transaction.TransactionRepository;
 import br.com.managementfinanceapi.application.core.domain.transaction.Balance;
-import br.com.managementfinanceapi.application.core.domain.user.User;
+import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 import br.com.managementfinanceapi.application.core.domain.user.dto.UserBalanceDto;
 import br.com.managementfinanceapi.application.port.in.transaction.AddCurrentAccountBalanceGateway;
 import br.com.managementfinanceapi.adapter.out.repository.transaction.BalanceRepository;
@@ -37,9 +37,9 @@ public class AddCurrentAccountBalanceUseCase implements AddCurrentAccountBalance
     LocalDate dateNow = LocalDate.now();
     short month = (short) dateNow.getMonthValue();
     short year = (short) dateNow.getYear();
-    User user = new User();
-    user.setId(userId);
-    Balance newBalance = new Balance(null, balance.amount(), user, month, year);
+    UserDomain userDomain = new UserDomain();
+    userDomain.setId(userId);
+    Balance newBalance = new Balance(null, balance.amount(), userDomain, month, year);
     this.repository.save(newBalance);
   }
 }
