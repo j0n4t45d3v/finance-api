@@ -3,7 +3,7 @@ package br.com.managementfinanceapi.infra.security;
 import br.com.managementfinanceapi.application.core.usecase.user.GetUserDetailsUseCase;
 import br.com.managementfinanceapi.infra.http.dto.ErrorV0;
 import br.com.managementfinanceapi.infra.http.dto.ResponseV0;
-import br.com.managementfinanceapi.utils.JWTUtils;
+import br.com.managementfinanceapi.adapter.in.jwt.JWTUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;

@@ -1,5 +1,5 @@
 package br.com.managementfinanceapi.application.port.in.user;
 
-public interface ChangePassword {
+public interface ChangePasswordPort {
   void change(String email, String password);
 }
