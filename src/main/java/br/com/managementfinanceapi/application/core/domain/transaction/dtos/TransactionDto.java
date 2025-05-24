@@ -1,6 +1,7 @@
 package br.com.managementfinanceapi.application.core.domain.transaction.dtos;
 
-import br.com.managementfinanceapi.application.core.domain.transaction.Transaction;
+import br.com.managementfinanceapi.application.core.domain.transaction.TransactionDomain;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
@@ -16,7 +17,7 @@ public record TransactionDto(
     @JsonProperty("user_id")
     Long userId
 ) {
-  public TransactionDto(Transaction transaction) {
+  public TransactionDto(TransactionDomain transaction) {
     this(
         transaction.getId(),
         transaction.getDescription(),

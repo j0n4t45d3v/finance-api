@@ -6,30 +6,27 @@
     version="2.2">
   <package>br.com.managementfinanceapi</package>
 
-  <named-query name="Balance.findAllBalancesWithMonthANdYearGreater">
-    <query>select b from Balance b where b.month > :month and b.year > :year and b.user.id = :userId</query>
+  <named-query name="Balance.findAllBalancesAfterMonthYear">
+    <query>select b from Balance b where b.month > :month and b.year > :year and b.userDomain.id = :userId</query>
   </named-query>
 
   <named-query name="Category.findTotalByCategory">
     <query>
-      SELECT
+      select
       new br.com.managementfinanceapi.application.core.domain.category.dto.TotalByCategoryView(
-      c.name,
-      c.creditLimit,
-      SUM(t.amount) as value
+        c.name,
+        c.creditLimit,
+        sum(t.amount) as value
       )
-      FROM
-      Category c
-      INNER JOIN
-      Transaction t
-      ON t.category.id = c.id AND
-      t.user.id = c.user.id
-      WHERE
-      MONTH(t.date) = :month AND
-      YEAR(t.date) = :year AND
-      c.user.id = :userId
-      GROUP BY c.name, c.creditLimit
-      ORDER BY value, c.name
+      from Category c
+      inner join Transaction t
+        ON t.category.id = c.id AND
+           t.userDomain.id = c.userDomain.id
+      where month(t.date) = :month 
+        and year(t.date) = :year 
+        and c.userDomain.id = :userId
+      group by c.name, c.creditLimit
+      order by value, c.name
     </query>
   </named-query>
 

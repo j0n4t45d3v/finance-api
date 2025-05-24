@@ -1,4 +1,4 @@
-package br.com.managementfinanceapi.application.core.domain.transaction.dtos;
+package br.com.managementfinanceapi.adapter.in.dto.transaction;
 
 import java.time.LocalDate;
 

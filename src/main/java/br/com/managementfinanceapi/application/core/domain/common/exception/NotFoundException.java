@@ -1,4 +1,4 @@
-package br.com.managementfinanceapi.infra.error.exceptions;
+package br.com.managementfinanceapi.application.core.domain.common.exception;
 
 public class NotFoundException extends BaseException{
 

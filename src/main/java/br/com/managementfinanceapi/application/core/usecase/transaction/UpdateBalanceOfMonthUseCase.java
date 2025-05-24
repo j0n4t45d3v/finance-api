@@ -1,9 +1,11 @@
 package br.com.managementfinanceapi.application.core.usecase.transaction;
 
-import br.com.managementfinanceapi.application.core.domain.transaction.Balance;
+import br.com.managementfinanceapi.application.core.domain.transaction.BalanceDomain;
 import br.com.managementfinanceapi.application.core.domain.transaction.dtos.UpdateBalance;
 import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
-import br.com.managementfinanceapi.application.port.in.transaction.UpdateBalanceOfMonthGateway;
+import br.com.managementfinanceapi.application.port.in.transaction.UpdateBalanceOfMonthPort;
+import br.com.managementfinanceapi.application.port.out.transaction.SaveBalanceRepositoryPort;
+import br.com.managementfinanceapi.application.port.out.transaction.SearchBalanceRepositoryPort;
 import br.com.managementfinanceapi.adapter.out.repository.transaction.BalanceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,57 +14,44 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class UpdateBalanceOfMonthUseCase implements UpdateBalanceOfMonthGateway {
+public class UpdateBalanceOfMonthUseCase implements UpdateBalanceOfMonthPort {
 
-  private static final Logger log = LoggerFactory.getLogger(UpdateBalanceOfMonthUseCase.class);
-  private final BalanceRepository repository;
+  private final SearchBalanceRepositoryPort searchBalanceRepositoryPort;
+  private final SaveBalanceRepositoryPort saveBalanceRepositoryPort;
 
-  public UpdateBalanceOfMonthUseCase(BalanceRepository repository) {
-    this.repository = repository;
+  public UpdateBalanceOfMonthUseCase(
+    SearchBalanceRepositoryPort searchBalanceRepositoryPort,
+    SaveBalanceRepositoryPort saveBalanceRepositoryPort
+  ) {
+    this.searchBalanceRepositoryPort = searchBalanceRepositoryPort;
+    this.saveBalanceRepositoryPort = saveBalanceRepositoryPort;
   }
 
   @Override
-  public void execute(final UpdateBalance updateBalance) {
-    Optional<Balance> balanceFound = this.repository.findByUserIdAndMonthAndYear(
-        updateBalance.userId(),
-        updateBalance.month(),
-        updateBalance.year()
-    );
-    log.info("(update balance) exists balance in month: {}", balanceFound.isPresent());
+  public void execute(final BalanceDomain balance) {
+    Optional<BalanceDomain> balanceFound = this.searchBalanceRepositoryPort.userBalanceForMonthYear(
+        balance.getUser().getId(),
+        balance.getMonth(),
+        balance.getYear());
 
-    Balance balance = balanceFound.map(b -> {
-      b.addAmount(updateBalance.amount());
-      log.info("(update balance) add amount {} in balance {}", updateBalance.amount(), b.getId());
+    BalanceDomain balanceUpdated = balanceFound.map(b -> {
+      b.addAmount(balance.getAmount());
       return b;
-    }).orElseGet(() -> this.defaultBalance(updateBalance));
+    }).orElse(balance);
 
-    Balance balanceCreatedOrUpdated = this.repository.save(balance);
-    log.info("(update balance) created/updated balance: {}", balanceCreatedOrUpdated);
-
-    this.readjustSubsequentBalances(updateBalance);
+    this.saveBalanceRepositoryPort.one(balanceUpdated);
+    this.readjustSubsequentBalances(balance);
   }
 
-  private Balance defaultBalance(final UpdateBalance updateBalance) {
-    return new Balance(
-        updateBalance.amount(),
-        new UserDomain(updateBalance.userId()),
-        updateBalance.month(),
-        updateBalance.year()
-    );
-  }
+  private void readjustSubsequentBalances(final BalanceDomain balance) {
+    List<BalanceDomain> balances = this.searchBalanceRepositoryPort.userBalancesAfterMonthYear(
+        balance.getMonth(),
+        balance.getYear(),
+        balance.getUser().getId());
 
-  private void readjustSubsequentBalances(final UpdateBalance updateBalance) {
-    List<Balance> balances = this.repository.findAllBalancesWithMonthANdYearGreater(
-        updateBalance.month(),
-        updateBalance.year(),
-        updateBalance.userId()
-    );
-    log.info("(update balance) exists subsequent balances: {}", !balances.isEmpty());
-
-    for (Balance currentBalance : balances) {
-      currentBalance.addAmount(updateBalance.amount());
+    for (BalanceDomain currentBalance : balances) {
+      currentBalance.addAmount(balance.getAmount());
     }
-    this.repository.saveAll(balances);
+    this.saveBalanceRepositoryPort.all(balances);
   }
 }

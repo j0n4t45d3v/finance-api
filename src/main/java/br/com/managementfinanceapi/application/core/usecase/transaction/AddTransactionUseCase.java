@@ -1,64 +1,46 @@
 package br.com.managementfinanceapi.application.core.usecase.transaction;
 
-import br.com.managementfinanceapi.application.core.domain.category.Category;
-import br.com.managementfinanceapi.application.core.domain.transaction.dtos.UpdateBalance;
-import br.com.managementfinanceapi.application.core.domain.transaction.enums.TransactionType;
-import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
-import br.com.managementfinanceapi.application.port.in.transaction.AddTransactionGateway;
-import br.com.managementfinanceapi.application.core.domain.transaction.Transaction;
-import br.com.managementfinanceapi.application.core.domain.transaction.dtos.AddTransaction;
-import br.com.managementfinanceapi.application.port.in.transaction.UpdateBalanceOfMonthGateway;
-import br.com.managementfinanceapi.adapter.out.repository.transaction.TransactionRepository;
-import br.com.managementfinanceapi.application.port.in.user.SearchUserPort;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Service
-public class AddTransactionUseCase implements AddTransactionGateway {
+import br.com.managementfinanceapi.application.core.domain.transaction.BalanceDomain;
+import br.com.managementfinanceapi.application.core.domain.transaction.TransactionDomain;
+import br.com.managementfinanceapi.application.port.in.transaction.AddTransactionPort;
+import br.com.managementfinanceapi.application.port.in.transaction.UpdateBalanceOfMonthPort;
+import br.com.managementfinanceapi.application.port.in.user.SearchUserPort;
+import br.com.managementfinanceapi.application.port.out.transaction.SaveTransactionRepositoryPort;
 
-  private static final Logger log = LoggerFactory.getLogger(AddTransactionUseCase.class);
-  private final TransactionRepository transactionRepository;
+public class AddTransactionUseCase implements AddTransactionPort {
+
+  private final SaveTransactionRepositoryPort saveTransactionRepositoryPort;
   private final SearchUserPort searchUserPort;
-  private final UpdateBalanceOfMonthGateway updateBalanceOfMonth;
+  private final UpdateBalanceOfMonthPort updateBalanceOfMonth;
 
   public AddTransactionUseCase(
-      TransactionRepository transactionRepository,
+      SaveTransactionRepositoryPort saveTransactionRepositoryPort,
       SearchUserPort searchUserPort,
-      UpdateBalanceOfMonthGateway updateBalanceOfMonth
+      UpdateBalanceOfMonthPort updateBalanceOfMonth
   ) {
-    this.transactionRepository = transactionRepository;
+    this.saveTransactionRepositoryPort = saveTransactionRepositoryPort;
     this.searchUserPort = searchUserPort;
     this.updateBalanceOfMonth = updateBalanceOfMonth;
   }
 
   @Override
-  public void add(AddTransaction body) {
-    log.info("(add transaction) transaction received: {}", body);
-
-    UserDomain userDomainResponse = this.searchUserPort.byId(body.userId());
-    log.info("(add transaction) user found: {}", userDomainResponse);
-
-    Category category = new Category();
-    category.setId(body.categoryId());
-    Transaction transaction = new Transaction(body, userDomainResponse, category);
-    Transaction transactionCreated = this.transactionRepository.save(transaction);
-    log.info("(add transaction) transaction added: {}", transactionCreated);
-
-    this.updateBalanceOfMonth.execute(this.updateBalanceBody(body));
+  public void add(TransactionDomain transaction) {
+    this.searchUserPort.byId(transaction.getUser().getId());
+    this.saveTransactionRepositoryPort.execute(transaction);
+    this.updateBalanceOfMonth.execute(this.updateBalanceBody(transaction));
   }
 
-  private UpdateBalance updateBalanceBody(AddTransaction transaction) {
-    LocalDate date = transaction.date().toLocalDate();
+  private BalanceDomain updateBalanceBody(TransactionDomain transaction) {
+    LocalDate date = transaction.getDate().toLocalDate();
     short month = (short) date.getMonth().getValue();
     short year = (short) date.getYear();
-    BigDecimal amount = transaction.amount();
-    if (transaction.type().equals(TransactionType.EXPENSE)) {
+    BigDecimal amount = transaction.getAmount();
+    if (transaction.isExpence()) {
       amount = amount.multiply(BigDecimal.valueOf(-1));
     }
-    return new UpdateBalance(amount, month, year, transaction.userId());
+    return new BalanceDomain(amount, transaction.getUser(), month, year);
   }
 }
