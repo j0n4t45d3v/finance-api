@@ -1,9 +1,9 @@
-package br.com.managementfinanceapi.adapter.out.repository.user;
+package br.com.managementfinanceapi.adapter.out.mapper.user;
 
 import br.com.managementfinanceapi.adapter.out.entity.user.UserEntity;
 import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 import br.com.managementfinanceapi.application.core.domain.user.dvo.Password;
-import br.com.managementfinanceapi.adapter.common.mapper.Mapper;
+import br.com.managementfinanceapi.adapter.out.mapper.Mapper;
 import org.springframework.stereotype.Component;
 
 @Component
