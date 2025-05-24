@@ -1,11 +1,14 @@
 package br.com.managementfinanceapi.adapter.out.mapper.transaction;
 
+import org.springframework.stereotype.Component;
+
 import br.com.managementfinanceapi.adapter.out.entity.transaction.TransactionEntity;
 import br.com.managementfinanceapi.adapter.out.entity.user.UserEntity;
 import br.com.managementfinanceapi.adapter.out.mapper.Mapper;
 import br.com.managementfinanceapi.application.core.domain.transaction.TransactionDomain;
 import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 
+@Component
 public class TransactionMapper implements Mapper<TransactionEntity, TransactionDomain> {
 
   private final Mapper<UserEntity, UserDomain> userMapper;
