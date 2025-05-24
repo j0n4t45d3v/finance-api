@@ -1,4 +1,4 @@
-package br.com.managementfinanceapi.adapter.common.mapper;
+package br.com.managementfinanceapi.adapter.out.mapper;
 
 public interface Mapper<E, D> {
   E toEntity (D domain);
