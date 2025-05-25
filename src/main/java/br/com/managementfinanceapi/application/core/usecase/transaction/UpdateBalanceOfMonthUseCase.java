@@ -1,18 +1,12 @@
 package br.com.managementfinanceapi.application.core.usecase.transaction;
 
+import java.util.List;
+import java.util.Optional;
+
 import br.com.managementfinanceapi.application.core.domain.transaction.BalanceDomain;
-import br.com.managementfinanceapi.application.core.domain.transaction.dtos.UpdateBalance;
-import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 import br.com.managementfinanceapi.application.port.in.transaction.UpdateBalanceOfMonthPort;
 import br.com.managementfinanceapi.application.port.out.transaction.SaveBalanceRepositoryPort;
 import br.com.managementfinanceapi.application.port.out.transaction.SearchBalanceRepositoryPort;
-import br.com.managementfinanceapi.adapter.out.repository.transaction.BalanceRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 public class UpdateBalanceOfMonthUseCase implements UpdateBalanceOfMonthPort {
 

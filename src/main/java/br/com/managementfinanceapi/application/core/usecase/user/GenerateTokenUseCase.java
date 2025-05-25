@@ -3,28 +3,20 @@ package br.com.managementfinanceapi.application.core.usecase.user;
 import br.com.managementfinanceapi.adapter.in.dto.auth.Token;
 import br.com.managementfinanceapi.adapter.in.dto.auth.TokenResponse;
 import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
-import br.com.managementfinanceapi.application.port.in.JWTPort;
-import br.com.managementfinanceapi.infra.error.exceptions.auth.InvalidTokenException;
 import br.com.managementfinanceapi.application.port.in.user.GenerateTokenPort;
-import br.com.managementfinanceapi.application.port.in.user.SearchUserPort;
-import br.com.managementfinanceapi.adapter.in.jwt.JWTUtils;
-import com.auth0.jwt.interfaces.Claim;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Objects;
 
 public class GenerateTokenUseCase implements GenerateTokenPort {
 
-  private final JWTPort jwtUtils;
-  private final SearchUserPort searchUserPort;
-
-  public GenerateTokenUseCase(
-      JWTUtils jwtUtils,
-      SearchUserPort searchUserPort
-  ) {
-    this.jwtUtils = jwtUtils;
-    this.searchUserPort = searchUserPort;
-  }
+  // private final JWTPort jwtUtils;
+  // private final SearchUserPort searchUserPort;
+  //
+  // public GenerateTokenUseCase(
+  //     JWTUtils jwtUtils,
+  //     SearchUserPort searchUserPort
+  // ) {
+  //   this.jwtUtils = jwtUtils;
+  //   this.searchUserPort = searchUserPort;
+  // }
 
   @Override
   public TokenResponse refresh(String refreshToken) {
