@@ -1,10 +1,16 @@
 package br.com.managementfinanceapi.adapter.in.controller.transaction;
 
-import br.com.managementfinanceapi.infra.http.dto.ResponseV0;
-import br.com.managementfinanceapi.application.core.domain.user.dto.CreateBalanceDto;
-import br.com.managementfinanceapi.application.port.in.transaction.AddCurrentAccountBalancePort;
 
-import org.springframework.http.ResponseEntity; import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import br.com.managementfinanceapi.adapter.in.dto.ResponseV0;
+import br.com.managementfinanceapi.adapter.in.dto.transaction.CreateBalanceDto;
+import br.com.managementfinanceapi.application.port.in.transaction.AddCurrentAccountBalancePort;;
 
 @RestController
 @RequestMapping("/v1/balances")
