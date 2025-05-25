@@ -1,4 +1,4 @@
-package br.com.managementfinanceapi.application.core.domain.user.dto;
+package br.com.managementfinanceapi.adapter.in.dto.user;
 
 import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 

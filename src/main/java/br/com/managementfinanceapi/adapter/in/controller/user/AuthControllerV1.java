@@ -5,7 +5,7 @@ import br.com.managementfinanceapi.adapter.in.dto.auth.RefreshBody;
 import br.com.managementfinanceapi.adapter.in.dto.auth.TokenResponse;
 import br.com.managementfinanceapi.application.port.in.user.GenerateTokenPort;
 import br.com.managementfinanceapi.application.port.in.user.LoginPort;
-import br.com.managementfinanceapi.infra.http.dto.ResponseV0;
+import br.com.managementfinanceapi.adapter.in.dto.ResponseV0;
 import br.com.managementfinanceapi.adapter.in.dto.user.CreateUser;
 import br.com.managementfinanceapi.application.port.in.user.RegisterUserPort;
 import jakarta.validation.Valid;

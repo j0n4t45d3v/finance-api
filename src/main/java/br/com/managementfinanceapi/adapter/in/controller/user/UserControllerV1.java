@@ -1,8 +1,8 @@
 package br.com.managementfinanceapi.adapter.in.controller.user;
 
-import br.com.managementfinanceapi.infra.http.dto.ResponseV0;
+import br.com.managementfinanceapi.adapter.in.dto.ResponseV0;
 import br.com.managementfinanceapi.adapter.in.dto.user.EditPassword;
-import br.com.managementfinanceapi.application.core.domain.user.dto.UserResponse;
+import br.com.managementfinanceapi.adapter.in.dto.user.UserResponse;
 import br.com.managementfinanceapi.application.port.in.user.ChangePasswordPort;
 import br.com.managementfinanceapi.application.port.in.user.SearchUserPort;
 import org.springframework.http.ResponseEntity;

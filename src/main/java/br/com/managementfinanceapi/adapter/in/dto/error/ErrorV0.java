@@ -1,4 +1,4 @@
-package br.com.managementfinanceapi.infra.http.dto;
+package br.com.managementfinanceapi.adapter.in.dto.error;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

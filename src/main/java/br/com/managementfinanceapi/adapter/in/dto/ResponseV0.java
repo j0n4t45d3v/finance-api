@@ -1,6 +1,8 @@
-package br.com.managementfinanceapi.infra.http.dto;
+package br.com.managementfinanceapi.adapter.in.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+
+import br.com.managementfinanceapi.adapter.in.dto.error.ErrorV0;
 
 import java.time.LocalDateTime;
 

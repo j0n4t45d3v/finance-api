@@ -1,8 +1,7 @@
-package br.com.managementfinanceapi.infra.error;
+package br.com.managementfinanceapi.adapter.in.controller.error;
 
-import br.com.managementfinanceapi.infra.error.exceptions.BaseException;
-import br.com.managementfinanceapi.infra.http.dto.ErrorV0;
-import br.com.managementfinanceapi.infra.http.dto.ResponseV0;
+
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import java.util.List;
+import br.com.managementfinanceapi.adapter.in.dto.ResponseV0;
+import br.com.managementfinanceapi.adapter.in.dto.error.ErrorV0;
+import br.com.managementfinanceapi.application.core.domain.common.exception.BaseException;
 
 @ControllerAdvice
 public class ErrorHandlerV0 {
