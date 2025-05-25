@@ -2,7 +2,7 @@ package br.com.managementfinanceapi.application.core.usecase.user;
 
 import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 import br.com.managementfinanceapi.application.port.out.user.FindUserPort;
-import br.com.managementfinanceapi.infra.error.exceptions.user.UserNotFound;
+import br.com.managementfinanceapi.application.core.domain.user.exception.UserNotFound;
 import br.com.managementfinanceapi.application.port.in.user.SearchUserPort;
 
 import java.util.Optional;

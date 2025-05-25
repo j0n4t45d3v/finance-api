@@ -1,6 +1,6 @@
 package br.com.managementfinanceapi.application.core.domain.user.dvo;
 
-import br.com.managementfinanceapi.infra.error.exceptions.user.InvalidPassword;
+import br.com.managementfinanceapi.application.core.domain.user.exception.InvalidPassword;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

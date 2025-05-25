@@ -3,8 +3,8 @@ package br.com.managementfinanceapi.application.core.usecase.user;
 import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 import br.com.managementfinanceapi.application.port.in.user.LoginPort;
 import br.com.managementfinanceapi.application.port.in.user.SearchUserPort;
-import br.com.managementfinanceapi.infra.error.exceptions.user.InvalidCredentials;
-import br.com.managementfinanceapi.infra.error.exceptions.user.UserNotFound;
+import br.com.managementfinanceapi.application.core.domain.user.exception.InvalidCredentials;
+import br.com.managementfinanceapi.application.core.domain.user.exception.UserNotFound;
 
 public class LoginUseCase implements LoginPort {
 
