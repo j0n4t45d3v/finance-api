@@ -2,9 +2,11 @@ package br.com.managementfinanceapi.adapter.out.mapper.transaction;
 
 import org.springframework.stereotype.Component;
 
+import br.com.managementfinanceapi.adapter.out.entity.category.CategoryEntity;
 import br.com.managementfinanceapi.adapter.out.entity.transaction.TransactionEntity;
 import br.com.managementfinanceapi.adapter.out.entity.user.UserEntity;
 import br.com.managementfinanceapi.adapter.out.mapper.Mapper;
+import br.com.managementfinanceapi.application.core.domain.category.CategoryDomain;
 import br.com.managementfinanceapi.application.core.domain.transaction.TransactionDomain;
 import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 
@@ -12,9 +14,14 @@ import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 public class TransactionMapper implements Mapper<TransactionEntity, TransactionDomain> {
 
   private final Mapper<UserEntity, UserDomain> userMapper;
+  private final Mapper<CategoryEntity, CategoryDomain> categoryMapper;
 
-  public TransactionMapper(Mapper<UserEntity, UserDomain> userMapper) {
+  public TransactionMapper(
+    Mapper<UserEntity, UserDomain> userMapper,
+    Mapper<CategoryEntity, CategoryDomain> categoryMapper
+  ) {
     this.userMapper = userMapper;
+    this.categoryMapper = categoryMapper;
   }
 
   @Override
@@ -26,7 +33,7 @@ public class TransactionMapper implements Mapper<TransactionEntity, TransactionD
         domain.getDescription(),
         domain.getDate(),
         this.userMapper.toEntity(domain.getUser()),
-        domain.getCategory()
+        this.categoryMapper.toEntity(domain.getCategory())
     );
   }
 
@@ -39,7 +46,7 @@ public class TransactionMapper implements Mapper<TransactionEntity, TransactionD
         entity.getDescription(),
         entity.getDate(),
         this.userMapper.toDomain(entity.getUser()),
-        entity.getCategory()
+        this.categoryMapper.toDomain(entity.getCategory())
     );
   }
 

@@ -2,13 +2,9 @@ package br.com.managementfinanceapi.adapter.in.controller.category;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Locale.Category;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,8 +14,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.managementfinanceapi.adapter.in.dto.ResponseV0;
 import br.com.managementfinanceapi.adapter.in.dto.category.CreateCategory;
-import br.com.managementfinanceapi.adapter.in.dto.category.FiltersTotalByCategory;
-import br.com.managementfinanceapi.adapter.in.dto.category.TotalByCategoryView;
 import br.com.managementfinanceapi.application.core.domain.category.CategoryDomain;
 import br.com.managementfinanceapi.application.port.in.category.CreateCategoryPort;
 import br.com.managementfinanceapi.application.port.in.category.SearchCategoryPort;

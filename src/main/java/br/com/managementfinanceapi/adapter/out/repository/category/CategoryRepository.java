@@ -9,15 +9,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import br.com.managementfinanceapi.adapter.in.dto.category.TotalByCategoryView;
 import br.com.managementfinanceapi.adapter.out.entity.category.CategoryEntity;
-import br.com.managementfinanceapi.application.core.domain.category.dto.TotalByCategoryView;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> {
   Optional<CategoryEntity> findByUserIdAndName(Long id, String name);
   boolean existsByName(String name);
 
-  @Query(name="Category.findTotalByCategory")
+  @Query(name="CategoryEntity.findTotalByCategory")
   Page<TotalByCategoryView> findTotalByCategory(
       @Param("month") Integer month,
       @Param("year") Integer year,
