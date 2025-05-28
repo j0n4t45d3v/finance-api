@@ -3,11 +3,14 @@ package br.com.managementfinanceapi.adapter.out.repository.transaction;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Component;
+
 import br.com.managementfinanceapi.adapter.out.entity.transaction.BalanceEntity;
 import br.com.managementfinanceapi.adapter.out.mapper.Mapper;
 import br.com.managementfinanceapi.application.core.domain.transaction.BalanceDomain;
 import br.com.managementfinanceapi.application.port.out.transaction.SearchBalanceRepositoryPort;
 
+@Component
 public class SearchBalanceRepositoryImpl implements SearchBalanceRepositoryPort {
 
   private final BalanceRepository repository;

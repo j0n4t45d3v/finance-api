@@ -16,7 +16,7 @@ public interface BalanceRepository extends JpaRepository<BalanceEntity, Long> {
 
   Optional<BalanceEntity> findByUserIdAndMonthAndYear(Long userId, short month, short year);
 
-  @Query(name = "Balance.findAllBalancesAfterMonthYear")
+  @Query(name = "BalanceEntity.findAllBalancesAfterMonthYear")
   List<BalanceEntity> findAllBalancesAfterMonthYear(
       @Param("month") short month,
       @Param("year") short year,
