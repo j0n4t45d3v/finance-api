@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
 
 import br.com.managementfinanceapi.adapter.out.entity.transaction.TransactionEntity;
 import br.com.managementfinanceapi.adapter.out.mapper.Mapper;
@@ -15,6 +16,7 @@ import br.com.managementfinanceapi.application.core.domain.transaction.Transacti
 import br.com.managementfinanceapi.application.core.domain.transaction.dvo.SearchAllFilters;
 import br.com.managementfinanceapi.application.port.out.transaction.SearchTransactionRespositoryPort;
 
+@Component
 public class SearchTransactionRepositoryImpl implements SearchTransactionRespositoryPort{
   private final TransactionRepository repository;
 
