@@ -1,26 +1,31 @@
 package br.com.managementfinanceapi.application.core.usecase.category;
 
-import br.com.managementfinanceapi.application.core.domain.category.Category;
-import br.com.managementfinanceapi.application.core.domain.category.dto.CreateCategory;
-import br.com.managementfinanceapi.infra.error.exceptions.category.CategoryAlreadyExistsException;
-import br.com.managementfinanceapi.application.port.in.category.CreateCategoryGateway;
-import br.com.managementfinanceapi.adapter.out.repository.category.CategoryRepository;
-import org.springframework.stereotype.Service;
+import br.com.managementfinanceapi.application.core.domain.category.CategoryDomain;
+import br.com.managementfinanceapi.application.core.domain.category.exception.CategoryAlreadyExistsException;
+import br.com.managementfinanceapi.application.port.in.category.CreateCategoryPort;
+import br.com.managementfinanceapi.application.port.out.category.ExistsCategoryRepositoryPort;
+import br.com.managementfinanceapi.application.port.out.category.SaveCategoryRepositoryPort;
 
-@Service
-public class CreateCategoryUseCase implements CreateCategoryGateway {
+public class CreateCategoryUseCase implements CreateCategoryPort {
 
-  private final CategoryRepository repository;
+  private final SaveCategoryRepositoryPort saveCategoryRepositoryPort;
+  private final ExistsCategoryRepositoryPort existsCategoryRepositoryPort;
 
-  public CreateCategoryUseCase(CategoryRepository repository) {
-    this.repository = repository;
+  public CreateCategoryUseCase(
+    SaveCategoryRepositoryPort saveCategoryRepositoryPort,
+    ExistsCategoryRepositoryPort existsCategoryRepositoryPort
+  ) {
+    this.saveCategoryRepositoryPort = saveCategoryRepositoryPort;
+    this.existsCategoryRepositoryPort = existsCategoryRepositoryPort;
   }
 
   @Override
-  public Category execute(CreateCategory category) {
-    boolean categoryAlreadyExists = this.repository.existsByName(category.name());
+  public CategoryDomain execute(CategoryDomain category) {
+    boolean categoryAlreadyExists = 
+      this.existsCategoryRepositoryPort.byName(category.getName());
+
     if(categoryAlreadyExists) throw new CategoryAlreadyExistsException();
-    Category categoryEntity = new Category(category);
-    return this.repository.save(categoryEntity);
+
+    return this.saveCategoryRepositoryPort.execute(category);
   }
 }

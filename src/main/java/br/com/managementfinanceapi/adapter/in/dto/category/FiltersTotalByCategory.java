@@ -1,4 +1,4 @@
-package br.com.managementfinanceapi.application.core.domain.category.dto;
+package br.com.managementfinanceapi.adapter.in.dto.category;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

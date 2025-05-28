@@ -3,7 +3,7 @@ package br.com.managementfinanceapi.application.core.domain.transaction;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import br.com.managementfinanceapi.application.core.domain.category.Category;
+import br.com.managementfinanceapi.application.core.domain.category.CategoryDomain;
 import br.com.managementfinanceapi.application.core.domain.transaction.enums.TransactionType;
 import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 
@@ -15,7 +15,7 @@ public class TransactionDomain {
   private String description;
   private LocalDateTime date;
   private UserDomain user;
-  private Category category;
+  private CategoryDomain category;
 
   public TransactionDomain(
       Long id,
@@ -24,7 +24,7 @@ public class TransactionDomain {
       String description,
       LocalDateTime date,
       UserDomain user,
-      Category category
+      CategoryDomain category
   ) {
     this.id = id;
     this.amount = value;
@@ -62,7 +62,7 @@ public class TransactionDomain {
     return user;
   }
 
-  public Category getCategory() {
+  public CategoryDomain getCategory() {
     return category;
   }
 

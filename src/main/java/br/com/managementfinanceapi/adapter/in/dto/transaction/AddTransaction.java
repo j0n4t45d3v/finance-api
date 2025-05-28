@@ -17,7 +17,7 @@ public record AddTransaction(
     Long categoryId) {
   public TransactionDomain toDomain() {
 
-    Category category = new Category();
+    CategoryDomain category = new CategoryDomain();
     category.setId(this.categoryId);
     return new TransactionDomain(
         null,

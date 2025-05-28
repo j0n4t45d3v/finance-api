@@ -1,53 +1,59 @@
 package br.com.managementfinanceapi.adapter.in.controller.category;
 
-import br.com.managementfinanceapi.application.core.domain.category.Category;
-import br.com.managementfinanceapi.application.core.domain.category.dto.CreateCategory;
-import br.com.managementfinanceapi.application.core.domain.category.dto.FiltersTotalByCategory;
-import br.com.managementfinanceapi.application.core.domain.category.dto.TotalByCategoryView;
-import br.com.managementfinanceapi.application.port.in.category.CreateCategoryGateway;
-import br.com.managementfinanceapi.application.port.in.category.FindAllCategoriesGateway;
-import br.com.managementfinanceapi.application.port.in.category.SearchTotalByCategoryGateway;
-import br.com.managementfinanceapi.infra.http.dto.ResponseV0;
-import jakarta.validation.Valid;
+import java.net.URI;
+import java.util.List;
+import java.util.Locale.Category;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
+import br.com.managementfinanceapi.adapter.in.dto.ResponseV0;
+import br.com.managementfinanceapi.adapter.in.dto.category.CreateCategory;
+import br.com.managementfinanceapi.adapter.in.dto.category.FiltersTotalByCategory;
+import br.com.managementfinanceapi.adapter.in.dto.category.TotalByCategoryView;
+import br.com.managementfinanceapi.application.core.domain.category.CategoryDomain;
+import br.com.managementfinanceapi.application.port.in.category.CreateCategoryPort;
+import br.com.managementfinanceapi.application.port.in.category.SearchCategoryPort;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/v1/categories")
 public class CategoryControllerV1 {
-  private final CreateCategoryGateway createCategoryGateway;
-  private final FindAllCategoriesGateway findAllCategoriesGateway;
-  private final SearchTotalByCategoryGateway searchTotalByCategoryGateway;
 
-  public CategoryControllerV1(CreateCategoryGateway createCategoryGateway, FindAllCategoriesGateway findAllCategoriesGateway, SearchTotalByCategoryGateway searchTotalByCategoryGateway) {
+  private final CreateCategoryPort createCategoryGateway;
+  private final SearchCategoryPort searchCategoryPort;
+
+  public CategoryControllerV1(
+    CreateCategoryPort createCategoryGateway,
+    SearchCategoryPort searchCategoryPort
+  ) {
     this.createCategoryGateway = createCategoryGateway;
-    this.findAllCategoriesGateway = findAllCategoriesGateway;
-    this.searchTotalByCategoryGateway = searchTotalByCategoryGateway;
+    this.searchCategoryPort = searchCategoryPort;
   }
 
   @PostMapping
-  public ResponseEntity<ResponseV0<Category>> create(@Valid @RequestBody CreateCategory category) {
-    var categoryCreated = this.createCategoryGateway.execute(category);
-    ResponseV0<Category> response = ResponseV0.created("Category created successfully", categoryCreated);
-    return ResponseEntity.status(201).body(response);
+  public ResponseEntity<ResponseV0<?>> create(@Valid @RequestBody CreateCategory category) {
+    CategoryDomain categoryCreated = this.createCategoryGateway.execute(category.toDomain());
+    ResponseV0<String> response = ResponseV0.created("Category created successfully");
+    URI uri = UriComponentsBuilder
+                .fromPath("/:userId/:id")
+                .build(categoryCreated.getUser().getId(), categoryCreated.getId());
+    return ResponseEntity.created(uri).body(response);
   }
 
-  @GetMapping
-  public ResponseEntity<ResponseV0<List<Category>>> getAllByRecipe() {
-    var categoryCreated = this.findAllCategoriesGateway.execute();
+  @GetMapping("/:userId")
+  public ResponseEntity<ResponseV0<List<CategoryDomain>>> getAll(@PathVariable("userId") Long userId) {
+    var categoryCreated = this.searchCategoryPort.all();
     return ResponseEntity.ok(ResponseV0.ok(categoryCreated));
   }
 
-  @GetMapping("/transactions")
-  public ResponseEntity<ResponseV0<Page<TotalByCategoryView>>> getAllTransactionsGroupedInCategory(
-      @Valid @ModelAttribute FiltersTotalByCategory filters,
-      Pageable page
-  ) {
-    var result = this.searchTotalByCategoryGateway.execute(filters, page);
-    return ResponseEntity.ok(ResponseV0.ok(result));
-  }
 }

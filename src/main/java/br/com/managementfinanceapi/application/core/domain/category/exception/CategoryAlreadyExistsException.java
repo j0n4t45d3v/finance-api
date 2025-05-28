@@ -1,6 +1,6 @@
-package br.com.managementfinanceapi.infra.error.exceptions.category;
+package br.com.managementfinanceapi.application.core.domain.category.exception;
 
-import br.com.managementfinanceapi.infra.error.exceptions.ConflictException;
+import br.com.managementfinanceapi.application.core.domain.common.exception.ConflictException;
 
 public class CategoryAlreadyExistsException extends ConflictException {
   public CategoryAlreadyExistsException(String message) {

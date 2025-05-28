@@ -4,10 +4,18 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import br.com.managementfinanceapi.adapter.out.entity.TimestampEntity;
+import br.com.managementfinanceapi.adapter.out.entity.category.CategoryEntity;
 import br.com.managementfinanceapi.adapter.out.entity.user.UserEntity;
-import br.com.managementfinanceapi.application.core.domain.category.Category;
 import br.com.managementfinanceapi.application.core.domain.transaction.enums.TransactionType;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "transactions")
@@ -27,7 +35,7 @@ public class TransactionEntity extends TimestampEntity{
   private UserEntity user;
   @ManyToOne
   @JoinColumn(name = "category_id", referencedColumnName = "id")
-  private Category category;
+  private CategoryEntity category;
 
   public TransactionEntity(
       Long id,
@@ -36,7 +44,7 @@ public class TransactionEntity extends TimestampEntity{
       String description,
       LocalDateTime date,
       UserEntity user,
-      Category category
+      CategoryEntity category
   ) {
     this.id = id;
     this.amount = value;
@@ -74,7 +82,7 @@ public class TransactionEntity extends TimestampEntity{
     return this.user;
   }
 
-  public Category getCategory() {
+  public CategoryEntity getCategory() {
     return this.category;
   }
 }
