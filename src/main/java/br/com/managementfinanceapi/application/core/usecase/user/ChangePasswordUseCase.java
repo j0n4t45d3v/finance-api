@@ -4,9 +4,7 @@ import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 import br.com.managementfinanceapi.application.port.in.user.ChangePasswordPort;
 import br.com.managementfinanceapi.application.port.in.user.SearchUserPort;
 import br.com.managementfinanceapi.application.port.out.user.SaveUserPort;
-import org.springframework.stereotype.Service;
 
-@Service
 public class ChangePasswordUseCase implements ChangePasswordPort {
 
   private final SearchUserPort searchUserPort;

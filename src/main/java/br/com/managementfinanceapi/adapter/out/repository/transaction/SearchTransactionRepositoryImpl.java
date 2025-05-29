@@ -54,8 +54,10 @@ public class SearchTransactionRepositoryImpl implements SearchTransactionResposi
 
   @Override
   public Page<TransactionDomain> allByUser(Long userId) {
+
+    Pageable pageable = PageRequest.of(1, 20);
     org.springframework.data.domain.Page<TransactionDomain> transactions =
-      this.repository.findAllByUserId(userId).map(this.mapper::toDomain);
+      this.repository.findAllByUserId(userId, pageable).map(this.mapper::toDomain);
     return new Page<>(
       transactions.getContent(),
       transactions.getNumber(),

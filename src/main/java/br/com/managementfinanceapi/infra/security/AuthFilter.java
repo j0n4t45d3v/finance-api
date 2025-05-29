@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -28,9 +29,9 @@ public class AuthFilter extends OncePerRequestFilter {
   private static final Logger log = LoggerFactory.getLogger(AuthFilter.class);
   private final JWTUtils jwt;
   private final ObjectMapper mapper;
-  private final GetUserDetailsUseCase userDetails;
+  private final UserDetailsService userDetails;
 
-  public AuthFilter(JWTUtils jwt, ObjectMapper mapper, GetUserDetailsUseCase userDetails) {
+  public AuthFilter(JWTUtils jwt, ObjectMapper mapper, UserDetailsService userDetails) {
     this.jwt = jwt;
     this.mapper = mapper;
     this.userDetails = userDetails;

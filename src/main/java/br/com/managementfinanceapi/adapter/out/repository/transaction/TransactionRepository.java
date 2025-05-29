@@ -13,5 +13,5 @@ import java.time.LocalDateTime;
 @Repository
 public interface TransactionRepository extends JpaRepository<TransactionEntity, Long> {
   Page<TransactionEntity> findAllByUserIdAndDateBetween(Long userId, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
-  Page<TransactionEntity> findAllByUserId(Long userId);
+  Page<TransactionEntity> findAllByUserId(Long userId, Pageable pageable);
 }
