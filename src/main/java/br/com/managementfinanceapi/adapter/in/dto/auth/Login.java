@@ -12,6 +12,6 @@ public record Login(
   String password
 ) { 
   public UserDomain tDomain() {
-    return new UserDomain(this.email(), Password.from(this.password()));
+    return new UserDomain(this.email(), Password.fromRaw(this.password()));
   }
 }

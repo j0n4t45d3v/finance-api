@@ -13,6 +13,7 @@ import br.com.managementfinanceapi.application.port.in.user.LoginPort;
 import br.com.managementfinanceapi.application.port.in.user.RegisterUserPort;
 import br.com.managementfinanceapi.application.port.in.user.SearchUserPort;
 import br.com.managementfinanceapi.application.port.out.user.SaveUserPort;
+import br.com.managementfinanceapi.application.port.out.security.HashPasswordPort;
 import br.com.managementfinanceapi.application.port.out.user.FindUserPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,8 +23,12 @@ import org.springframework.stereotype.Component;
 public class UserBean {
 
   @Bean
-  public RegisterUserPort registerUser(SaveUserPort saveUserPort, FindUserPort findUserPort) {
-    return new RegisterUserUseCase(saveUserPort, findUserPort);
+  public RegisterUserPort registerUser(
+    SaveUserPort saveUserPort, 
+    FindUserPort findUserPort,
+    HashPasswordPort hashPasswordPort
+  ) {
+    return new RegisterUserUseCase(saveUserPort, findUserPort, hashPasswordPort);
   }
 
   @Bean
@@ -32,8 +37,8 @@ public class UserBean {
   }
 
   @Bean
-  public LoginPort login(SearchUserPort searchUserPort) {
-    return new LoginUseCase(searchUserPort);
+  public LoginPort login(SearchUserPort searchUserPort, HashPasswordPort hashPasswordPort) {
+    return new LoginUseCase(searchUserPort, hashPasswordPort);
   }
 
   @Bean

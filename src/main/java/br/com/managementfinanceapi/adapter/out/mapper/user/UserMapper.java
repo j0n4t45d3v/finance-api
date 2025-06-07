@@ -16,6 +16,6 @@ public class UserMapper implements Mapper<UserEntity, UserDomain> {
 
   @Override
   public UserDomain toDomain(UserEntity entity) {
-    return new UserDomain(entity.getId(), entity.getEmail(), Password.from(entity.getPassword()));
+    return new UserDomain(entity.getId(), entity.getEmail(), Password.fromEncoded(entity.getPassword()));
   }
 }

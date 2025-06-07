@@ -1,6 +1,7 @@
 package br.com.managementfinanceapi.application.core.domain.user;
 
 import br.com.managementfinanceapi.application.core.domain.user.dvo.Password;
+import br.com.managementfinanceapi.application.port.out.security.HashPasswordPort;
 
 public class UserDomain {
   private Long id;
@@ -41,11 +42,11 @@ public class UserDomain {
     return password.getValue();
   }
 
-  public boolean notMatchPassword(String confirmPassword) {
-    return !this.password.matches(confirmPassword);
+  public void encodePassword(HashPasswordPort encoderStrategy) {
+    this.password = this.password.encode(encoderStrategy);
   }
 
   public void changePassword(String password) {
-    this.password = Password.from(password);
+    this.password = Password.fromRaw(password);
   }
 }

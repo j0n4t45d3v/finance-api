@@ -26,7 +26,7 @@ public record CreateUser(
   }
 
   public UserDomain toDomain() {
-    return new UserDomain(this.email(), Password.from(this.password()));
+    return new UserDomain(this.email(), Password.fromRaw(this.password()));
   }
 
 }
