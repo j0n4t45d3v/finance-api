@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record TokenResponse(
     @JsonProperty("access_token")
-    Token accessToken,
+    String accessToken,
     @JsonProperty("refresh_token")
-    Token refreshToken
+    String refreshToken
 ) {}

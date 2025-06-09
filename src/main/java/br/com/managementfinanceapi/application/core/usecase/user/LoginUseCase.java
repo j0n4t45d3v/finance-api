@@ -1,7 +1,6 @@
 package br.com.managementfinanceapi.application.core.usecase.user;
 
 import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
-import br.com.managementfinanceapi.application.core.domain.user.dvo.Login;
 import br.com.managementfinanceapi.application.core.domain.user.exception.InvalidCredentials;
 import br.com.managementfinanceapi.application.core.domain.user.exception.UserNotFound;
 import br.com.managementfinanceapi.application.port.in.user.LoginPort;
@@ -22,13 +21,13 @@ public class LoginUseCase implements LoginPort {
   }
 
   @Override
-  public Login execute(UserDomain login) {
+  public UserDomain execute(UserDomain login) {
     try {
       UserDomain userFound = this.searchUserPort.byEmail(login.getEmail());
       if (this.hashPasswordPort.matchers(userFound.getPassword(), login.getPassword())) {
         throw new InvalidCredentials("Usuário ou senha inválida");
       }
-      return new Login("", "");
+      return userFound;
     } catch (UserNotFound e) {
       throw new InvalidCredentials("Usuário ou senha inválida");
     }

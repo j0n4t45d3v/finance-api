@@ -1,4 +1,4 @@
-package br.com.managementfinanceapi.adapter.out.secury;
+package br.com.managementfinanceapi.adapter.out.security;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -7,7 +7,7 @@ import br.com.managementfinanceapi.application.core.domain.user.dvo.Password;
 import br.com.managementfinanceapi.application.port.out.security.HashPasswordPort;
 
 @Component
-public class HashPassword implements HashPasswordPort{
+public class HashPassword implements HashPasswordPort {
 
   private final PasswordEncoder passwordEncoder;
 
@@ -24,5 +24,5 @@ public class HashPassword implements HashPasswordPort{
   public boolean matchers(String encoderPassword, String comparePassword) {
     return this.passwordEncoder.matches(encoderPassword, comparePassword);
   }
-  
+
 }

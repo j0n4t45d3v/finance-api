@@ -2,13 +2,11 @@ package br.com.managementfinanceapi.infra.bean.user;
 
 import br.com.managementfinanceapi.adapter.out.repository.user.UserRepository;
 import br.com.managementfinanceapi.application.core.usecase.user.ChangePasswordUseCase;
-import br.com.managementfinanceapi.application.core.usecase.user.GenerateTokenUseCase;
 import br.com.managementfinanceapi.application.core.usecase.user.GetUserDetailsUseCase;
 import br.com.managementfinanceapi.application.core.usecase.user.LoginUseCase;
 import br.com.managementfinanceapi.application.core.usecase.user.RegisterUserUseCase;
 import br.com.managementfinanceapi.application.core.usecase.user.SearchUseCase;
 import br.com.managementfinanceapi.application.port.in.user.ChangePasswordPort;
-import br.com.managementfinanceapi.application.port.in.user.GenerateTokenPort;
 import br.com.managementfinanceapi.application.port.in.user.LoginPort;
 import br.com.managementfinanceapi.application.port.in.user.RegisterUserPort;
 import br.com.managementfinanceapi.application.port.in.user.SearchUserPort;
@@ -39,11 +37,6 @@ public class UserBean {
   @Bean
   public LoginPort login(SearchUserPort searchUserPort, HashPasswordPort hashPasswordPort) {
     return new LoginUseCase(searchUserPort, hashPasswordPort);
-  }
-
-  @Bean
-  public GenerateTokenPort generateToken() {
-    return new GenerateTokenUseCase();
   }
 
   @Bean

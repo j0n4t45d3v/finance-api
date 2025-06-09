@@ -1,8 +1,8 @@
 package br.com.managementfinanceapi.infra.security;
 
 import br.com.managementfinanceapi.adapter.in.dto.error.ErrorV0;
+import br.com.managementfinanceapi.application.port.out.security.jwt.TokenReaderPort;
 import br.com.managementfinanceapi.adapter.in.dto.ResponseV0;
-import br.com.managementfinanceapi.adapter.in.jwt.JWTUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
@@ -26,12 +26,12 @@ import java.io.IOException;
 public class AuthFilter extends OncePerRequestFilter {
 
   private static final Logger log = LoggerFactory.getLogger(AuthFilter.class);
-  private final JWTUtils jwt;
+  private final TokenReaderPort tokenReader;
   private final ObjectMapper mapper;
   private final UserDetailsService userDetails;
 
-  public AuthFilter(JWTUtils jwt, ObjectMapper mapper, UserDetailsService userDetails) {
-    this.jwt = jwt;
+  public AuthFilter(TokenReaderPort tokenReader, ObjectMapper mapper, UserDetailsService userDetails) {
+    this.tokenReader = tokenReader;
     this.mapper = mapper;
     this.userDetails = userDetails;
   }
@@ -45,12 +45,15 @@ public class AuthFilter extends OncePerRequestFilter {
     String authorization = request.getHeader("Authorization");
     if (authorization != null && authorization.startsWith("Bearer ")) {
       String token = authorization.substring(7);
-      if (!this.jwt.tokenIsValid(token)) {
-        log.info("Token inválido: {}", token);
+      if (this.tokenReader.isExpired(token)) {
+        this.errorResponseFilter(response, "Token Expirado!", 403);
+        return;
+      }
+      String username = this.tokenReader.getSubject(token);
+      if(username == null ||username.isEmpty()) {
         this.errorResponseFilter(response, "Token inválido!", 403);
         return;
       }
-      String username = this.jwt.getSubject(token);
       try {
         UserDetails user = this.userDetails.loadUserByUsername(username);
         UsernamePasswordAuthenticationToken userAuthenticate =
