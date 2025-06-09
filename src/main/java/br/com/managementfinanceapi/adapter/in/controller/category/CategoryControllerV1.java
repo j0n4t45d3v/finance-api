@@ -39,12 +39,12 @@ public class CategoryControllerV1 {
     CategoryDomain categoryCreated = this.createCategoryGateway.execute(category.toDomain());
     ResponseV0<String> response = ResponseV0.created("Category created successfully");
     URI uri = UriComponentsBuilder
-                .fromPath("/:userId/:id")
+                .fromPath("/{userId}/{id}")
                 .build(categoryCreated.getUser().getId(), categoryCreated.getId());
     return ResponseEntity.created(uri).body(response);
   }
 
-  @GetMapping("/:userId")
+  @GetMapping("/{userId}")
   public ResponseEntity<ResponseV0<List<CategoryDomain>>> getAll(@PathVariable("userId") Long userId) {
     var categoryCreated = this.searchCategoryPort.all();
     return ResponseEntity.ok(ResponseV0.ok(categoryCreated));
