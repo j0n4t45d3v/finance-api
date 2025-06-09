@@ -27,6 +27,7 @@ public class FindUserPortImpl implements FindUserPort {
 
   @Override
   public Optional<UserDomain> byId(Long id) {
-    return Optional.empty();
+    Optional<UserEntity> userFound = this.repository.findById(id);
+    return userFound.map(this.mapper::toDomain);
   }
 }
