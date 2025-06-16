@@ -30,7 +30,7 @@ public class RegisterUserUseCase implements RegisterUserPort {
       throw new EmailAlreadyUsed();
     }
     body.encodePassword(this.hashPasswordPort);
-    if(hashPasswordPort.matchers(body.getPassword(), confirmPassword)) {
+    if(!hashPasswordPort.matchers(body.getPassword(), confirmPassword)) {
       throw new InvalidPassword("As senhas são divergentes");
     }
     return this.saveUserPort.execute(body);
