@@ -1,0 +1,44 @@
+spring:
+
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: false
+    validate-on-migrate: true
+    url: ${DATABASE_URL}
+    user: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    locations: classpath:db/migration
+    out-of-order: true
+
+  devtools:
+    add-properties: false
+    livereload:
+      enabled: false
+    restart:
+      enabled: false
+
+server:
+  port: ${SERVER_PORT}
+
+security:
+  jwt:
+    expire-time: ${JWT_ACCESS_TOKEN_EXPIRE_TIME}
+    issuer: ${JWT_ISSUER}
+    secret: ${JWT_SECRET}
+  jwt-refresh:
+    expire-time: ${JWT_REFRESH_TOKEN_EXPIRE_TIME}
+
+logging:
+  level:
+    root: ERROR

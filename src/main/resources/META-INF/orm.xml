@@ -6,8 +6,28 @@
     version="2.2">
   <package>br.com.managementfinanceapi</package>
 
-  <named-query name="Balance.findAllBalancesWithMonthANdYearGreater">
-    <query>select b from Balance b where b.month > :month and b.year > :year and b.user.id = :userId</query>
+  <named-query name="BalanceEntity.findAllBalancesAfterMonthYear">
+    <query>select b from BalanceEntity b where b.month > :month and b.year > :year and b.user.id = :userId</query>
+  </named-query>
+
+  <named-query name="CategoryEntity.findTotalByCategory">
+    <query>
+      select
+      new br.com.managementfinanceapi.adapter.in.dto.category.TotalByCategoryView(
+        c.name,
+        c.creditLimit,
+        sum(t.amount) as value
+      )
+      from CategoryEntity c
+      inner join TransactionEntity t
+        ON t.category.id = c.id AND
+           t.user.id = c.user.id
+      where month(t.date) = :month 
+        and year(t.date) = :year 
+        and c.user.id = :userId
+      group by c.name, c.creditLimit
+      order by value, c.name
+    </query>
   </named-query>
 
 </entity-mappings>

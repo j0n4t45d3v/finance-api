@@ -1,9 +1,8 @@
 package br.com.managementfinanceapi.infra.security;
 
-import br.com.managementfinanceapi.auth.usecases.GetUserDetailsUseCase;
-import br.com.managementfinanceapi.infra.http.dto.ErrorV0;
-import br.com.managementfinanceapi.infra.http.dto.ResponseV0;
-import br.com.managementfinanceapi.utils.JWTUtils;
+import br.com.managementfinanceapi.adapter.in.dto.error.ErrorV0;
+import br.com.managementfinanceapi.application.port.out.security.jwt.TokenReaderPort;
+import br.com.managementfinanceapi.adapter.in.dto.ResponseV0;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
@@ -16,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -26,12 +26,12 @@ import java.io.IOException;
 public class AuthFilter extends OncePerRequestFilter {
 
   private static final Logger log = LoggerFactory.getLogger(AuthFilter.class);
-  private final JWTUtils jwt;
+  private final TokenReaderPort tokenReader;
   private final ObjectMapper mapper;
-  private final GetUserDetailsUseCase userDetails;
+  private final UserDetailsService userDetails;
 
-  public AuthFilter(JWTUtils jwt, ObjectMapper mapper, GetUserDetailsUseCase userDetails) {
-    this.jwt = jwt;
+  public AuthFilter(TokenReaderPort tokenReader, ObjectMapper mapper, UserDetailsService userDetails) {
+    this.tokenReader = tokenReader;
     this.mapper = mapper;
     this.userDetails = userDetails;
   }
@@ -45,12 +45,15 @@ public class AuthFilter extends OncePerRequestFilter {
     String authorization = request.getHeader("Authorization");
     if (authorization != null && authorization.startsWith("Bearer ")) {
       String token = authorization.substring(7);
-      if (!this.jwt.tokenIsValid(token)) {
-        log.info("Token inválido: {}", token);
+      if (this.tokenReader.isExpired(token)) {
+        this.errorResponseFilter(response, "Token Expirado!", 403);
+        return;
+      }
+      String username = this.tokenReader.getSubject(token);
+      if(username == null ||username.isEmpty()) {
         this.errorResponseFilter(response, "Token inválido!", 403);
         return;
       }
-      String username = this.jwt.getSubject(token);
       try {
         UserDetails user = this.userDetails.loadUserByUsername(username);
         UsernamePasswordAuthenticationToken userAuthenticate =
@@ -78,8 +81,8 @@ public class AuthFilter extends OncePerRequestFilter {
       int status
   ) throws IOException{
     ServletOutputStream out = response.getOutputStream();
-    ErrorV0 error = ErrorV0.of(message);
-    ResponseV0<ErrorV0> errorResponse = ResponseV0.error(status, error);
+    ErrorV0<?> error = ErrorV0.of(message);
+    ResponseV0<ErrorV0<?>> errorResponse = ResponseV0.error(status, error);
     byte[] errorParseToJson = this.mapper.writeValueAsBytes(errorResponse);
     out.write(errorParseToJson);
     response.setStatus(status);

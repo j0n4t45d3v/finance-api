@@ -1,31 +1,8 @@
 spring:
   application:
     name: management-finance-api
-
-  datasource:
-    url: jdbc:postgresql://localhost:5432/easy-finace
-    username: root
-    password: postgres
-    driver-class-name: org.postgresql.Driver
-
-
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
-    hibernate:
-      ddl-auto: none
-    properties:
-      hibernate:
-        format_sql: true
-
-  flyway:
-    enabled: true
-    baseline-on-migrate: true
-    validate-on-migrate: true
-    url: jdbc:postgresql://localhost:5432/easy-finace
-    user: root
-    password: postgres
-    locations: classpath:db/migration
+  profiles:
+    active: ${PROFILE:dev}
 
 management:
   endpoints:
@@ -34,15 +11,8 @@ management:
         include: openapi, swagger-ui
 springdoc:
   swagger-ui:
-    path: /v1/documentation
+    path: /doc/v1
 
 server:
   servlet:
     context-path: /api
-  port: 8080
-
-security:
-  jwt:
-    expire-time: 60
-    issuer: delimajonatas875@gmail.com
-    secret: b2Hj0H1|@4OavVWdCd1qzEj7'022p\S9Kh
