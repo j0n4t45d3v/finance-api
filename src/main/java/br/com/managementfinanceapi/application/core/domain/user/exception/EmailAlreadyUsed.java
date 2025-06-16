@@ -1,9 +1,9 @@
 package br.com.managementfinanceapi.application.core.domain.user.exception;
 
-import br.com.managementfinanceapi.application.core.domain.common.exception.BadRequestException;
+import br.com.managementfinanceapi.application.core.domain.common.exception.ConflictException;
 
-public class EmailAlreadyUsed extends BadRequestException {
+public class EmailAlreadyUsed extends ConflictException {
   public EmailAlreadyUsed() {
-    super("Email já está sendo usado por outro usuário!");
+    super("E-mail já está sendo usado por outro usuário!");
   }
 }
