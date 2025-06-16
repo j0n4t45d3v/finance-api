@@ -11,16 +11,17 @@
   </parent>
 
   <groupId>br.com</groupId>
-  <artifactId>management-finance-api</artifactId>
+  <artifactId>easy-finance-api</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>management-finance-api</name>
-  <description>management-finance-api</description>
+  <name>easy-finance-api</name>
+  <description>Api easy-finance</description>
 
   <properties>
     <java.version>17</java.version>
     <jwt.version>4.5.0</jwt.version>
     <openapi.version>2.8.5</openapi.version>
     <suite.junit.version>1.12.2</suite.junit.version>
+    <report.excel.version>5.3.0</report.excel.version>
   </properties>
 
   <dependencies>
@@ -55,6 +56,19 @@
       <version>${jwt.version}</version>
     </dependency>
 
+    <!-- EXCEL REPORT -->
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>${report.excel.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>${report.excel.version}</version>
+    </dependency>
+
     <!--DEVELOPMENT-->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -69,22 +83,26 @@
       <version>${openapi.version}</version>
     </dependency>
 
-    <!--DATABASE DRIVES-->
+    <!--MIGRATE DATABASE-->
     <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
     </dependency>
+
+    <!--DATABASE DRIVES-->
     <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-database-postgresql</artifactId>
       <version>11.2.0</version>
       <scope>runtime</scope>
     </dependency>
+
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <scope>runtime</scope>
     </dependency>
+
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
@@ -111,16 +129,6 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.flywaydb</groupId>
-        <artifactId>flyway-maven-plugin</artifactId>
-        <version>10.17.0</version>
-        <configuration>
-          <url>jdbc:postgresql://localhost:5432/easy-finace</url>
-          <user>root</user>
-          <password>postgres</password>
-        </configuration>
       </plugin>
     </plugins>
   </build>
