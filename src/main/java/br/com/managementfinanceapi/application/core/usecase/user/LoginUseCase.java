@@ -24,7 +24,7 @@ public class LoginUseCase implements LoginPort {
   public UserDomain execute(UserDomain login) {
     try {
       UserDomain userFound = this.searchUserPort.byEmail(login.getEmail());
-      if (this.hashPasswordPort.matchers(userFound.getPassword(), login.getPassword())) {
+      if (!this.hashPasswordPort.matchers(userFound.getPassword(), login.getPassword())) {
         throw new InvalidCredentials("Usuário ou senha inválida");
       }
       return userFound;
