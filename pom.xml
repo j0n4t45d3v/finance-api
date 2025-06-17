@@ -20,7 +20,7 @@
     <java.version>17</java.version>
     <jwt.version>4.5.0</jwt.version>
     <openapi.version>2.8.5</openapi.version>
-
+    <suite.junit.version>1.12.2</suite.junit.version>
   </properties>
 
   <dependencies>
@@ -95,6 +95,13 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-suite</artifactId>
+      <version>${suite.junit.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
