@@ -8,6 +8,6 @@ public class CategoryAlreadyExistsException extends ConflictException {
 
   }
   public CategoryAlreadyExistsException() {
-    super("Category already exists");
+    super("Categoria já existe!");
   }
 }
