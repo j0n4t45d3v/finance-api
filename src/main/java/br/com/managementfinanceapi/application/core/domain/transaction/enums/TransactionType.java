@@ -14,6 +14,10 @@ public enum TransactionType {
     return value;
   }
 
+  public String getDescription() {
+    return this.equals(TransactionType.EXPENSE) ? "Despesa" : "Receita";
+  }
+
   public static TransactionType valueOf(Character value) {
     for (TransactionType type : TransactionType.values()) {
       if (type.getValue().equals(value)) {
