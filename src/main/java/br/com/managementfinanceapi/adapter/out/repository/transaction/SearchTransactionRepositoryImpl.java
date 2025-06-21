@@ -39,8 +39,8 @@ public class SearchTransactionRepositoryImpl implements SearchTransactionResposi
     org.springframework.data.domain.Page<TransactionDomain> transactions =
       this.repository.findAllByUserIdAndDateBetween(
       filters.userId(),
-      range.start().atStartOfDay(),
-      range.end().atTime(LocalTime.of(23, 59)),
+      range.startWithTime(),
+      range.endWithTime(),
       pageable
     ).map(this.mapper::toDomain);
 
