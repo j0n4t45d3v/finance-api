@@ -25,8 +25,7 @@ public class ErrorHandlerV0 {
 
   @ExceptionHandler(BaseException.class)
   public ResponseEntity<ResponseV0<ErrorV0<?>>> handleBaseException(BaseException e) {
-    ResponseV0<ErrorV0<?>> responseError = ResponseV0.error(e.getCode(), e);
-    log.error("Custom Error: {}", e.getMessage());
+    ResponseV0<ErrorV0<?>> responseError = ResponseV0.error(e.getCode(), e.getMessage());
     return ResponseEntity.status(e.getCode()).body(responseError);
   }
 
@@ -47,13 +46,14 @@ public class ErrorHandlerV0 {
 
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
   public ResponseEntity<ResponseV0<ErrorV0<?>>> handleMethodNotAllowed(HttpRequestMethodNotSupportedException e) {
-    ResponseV0<ErrorV0<?>> responseError = ResponseV0.error(405, e);
+    ResponseV0<ErrorV0<?>> responseError = ResponseV0.error(405, e.getMessage());
     return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(responseError);
   }
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ResponseV0<ErrorV0<?>>> handleGenericException(Exception e) {
-    ResponseV0<ErrorV0<?>> responseError = ResponseV0.error(500, e);
+    ResponseV0<ErrorV0<?>> responseError = ResponseV0.error(500,"Internal Server Error");
+    log.error("Fatal={}", e.getMessage());
     return ResponseEntity.internalServerError().body(responseError);
   }
 }
