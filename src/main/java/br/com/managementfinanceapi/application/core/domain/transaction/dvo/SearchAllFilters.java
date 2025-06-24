@@ -12,11 +12,18 @@ public record SearchAllFilters(
 ) {
 
   public boolean isDateRangeValid() {
-    return this.dateRange().rangeIsValid();
+    return this.dateRange().rangeIsValid(); 
   }
 
   public boolean isUserIdMissing() {
     return this.userId() == null;
+  }
+
+  public PageFilter page() {
+    if (page == null) {
+      return new PageFilter(20, 0);
+    }
+    return this.page;
   }
 
 }
