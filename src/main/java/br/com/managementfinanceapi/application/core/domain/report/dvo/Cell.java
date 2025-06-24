@@ -45,6 +45,10 @@ public record Cell<T>(
     return List.of(styles);
   }
 
+  public boolean containingStyle(CellStyle style) {
+    return List.of(styles).contains(style);
+  }
+
   @Override
   public final String toString() {
       return this.value.toString();
