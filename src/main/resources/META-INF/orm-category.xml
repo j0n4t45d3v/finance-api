@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+    xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/orm_2_2.xsd"
+    version="2.2">
+  <package>br.com.managementfinanceapi</package>
+
+  <named-query name="CategoryEntity.findTotalByCategory">
+    <query>
+      select
+      new br.com.managementfinanceapi.adapter.in.dto.category.TotalByCategoryView(
+        c.name,
+        c.creditLimit,
+        sum(t.amount) as value
+      )
+      from CategoryEntity c
+      inner join TransactionEntity t
+        ON t.category.id = c.id AND
+           t.user.id = c.user.id
+      where month(t.date) = :month 
+        and year(t.date) = :year 
+        and c.user.id = :userId
+      group by c.name, c.creditLimit
+      order by value, c.name
+    </query>
+  </named-query>
+
+  <sql-result-set-mapping name="CategoryTransactionSummary">
+      <constructor-result target-class="br.com.managementfinanceapi.application.core.domain.category.dvo.CategoryTransactionSummary">
+          <column name="name" />
+          <column name="credit_limit" />
+          <column name="income" />
+          <column name="expence" />
+          <column name="total_income" />
+          <column name="total_expence" />
+      </constructor-result>
+  </sql-result-set-mapping>
+
+  <named-native-query name="CategoryEntity.findIncomesAndExpensesTotals" result-set-mapping="CategoryTransactionSummary">
+    <query>
+      <![CDATA[
+        with categorized_transactions
+          as (
+            select 
+              c.name,
+              c.credit_limit,
+              case t.type when 'I' then t.amount else 0 end as income_amount,
+              case t.type when 'E' then t.amount else 0 end as expence_amount
+            from 
+              categories c
+            inner join 
+              transactions t 
+                on t.category_id = c.id 
+               and t.user_id = c.user_id 
+            where t.date_transaction between :startDate 
+              and :endDate
+              and c.user_id = :userId
+          )
+        select 
+          ct.name,
+          ct.credit_limit,
+          sum(ct.income_amount) as income,
+          sum(ct.expence_amount) as expence,
+          (select sum(ct_sub.income_amount) from categorized_transactions ct_sub) as total_income,
+          (select sum(ct_sub.expence_amount) from categorized_transactions ct_sub) as total_expence
+        from 
+          categorized_transactions ct
+        group by
+          ct.name,
+          ct.credit_limit
+        ]]>
+    </query>
+  </named-native-query>
+
+</entity-mappings>
