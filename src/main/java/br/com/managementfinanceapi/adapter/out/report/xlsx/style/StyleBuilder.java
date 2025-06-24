@@ -8,6 +8,7 @@ import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 
@@ -26,6 +27,10 @@ public class StyleBuilder {
 
   static {
     MAP_STYLES.put(CellStyle.MONEY_FORMAT, StyleBuilder::setMoneyFormat);
+    MAP_STYLES.put(CellStyle.PERCENTEGE_FORMAT, StyleBuilder::setPercentegeFormat);
+    MAP_STYLES.put(CellStyle.WARN, (builder)  -> builder.setCellColor(IndexedColors.ORANGE));
+    MAP_STYLES.put(CellStyle.PAINT_INCOME, (builder)  -> builder.setCellColor(IndexedColors.LIGHT_GREEN));
+    MAP_STYLES.put(CellStyle.PAINT_EXPENCE, (builder)  -> builder.setCellColor(IndexedColors.LIGHT_ORANGE));
     MAP_STYLES.put(CellStyle.ALTERNETE_ROW, StyleBuilder::setAlternateRow);
     MAP_STYLES.put(CellStyle.H_ALIGN_END, StyleBuilder::setAlignRight);
     MAP_STYLES.put(CellStyle.H_ALIGN_START, StyleBuilder::setAlignLeft);
@@ -51,8 +56,19 @@ public class StyleBuilder {
     return this;
   }
 
+  public StyleBuilder setCellColor(IndexedColors color) {
+    this.style.setFillForegroundColor(color.getIndex());
+    this.style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+    return this;
+  }
+
   public StyleBuilder setMoneyFormat() {
     this.style.setDataFormat(this.createHelper.createDataFormat().getFormat("\"R$\" #,##0.00"));
+    return this;
+  }
+
+  public StyleBuilder setPercentegeFormat() {
+    this.style.setDataFormat(this.createHelper.createDataFormat().getFormat("0.00%"));
     return this;
   }
 
