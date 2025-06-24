@@ -12,7 +12,6 @@ import br.com.managementfinanceapi.adapter.in.dto.auth.Login;
 import br.com.managementfinanceapi.adapter.in.dto.auth.RefreshBody;
 import br.com.managementfinanceapi.adapter.in.dto.auth.TokenResponse;
 import br.com.managementfinanceapi.adapter.in.dto.user.CreateUser;
-import br.com.managementfinanceapi.adapter.out.security.jwt.TokenReader;
 import br.com.managementfinanceapi.application.port.in.user.LoginPort;
 import br.com.managementfinanceapi.application.port.in.user.RegisterUserPort;
 import br.com.managementfinanceapi.application.port.out.security.jwt.GenerateTokenPort;
