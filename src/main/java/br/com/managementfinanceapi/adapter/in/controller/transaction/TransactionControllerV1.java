@@ -15,7 +15,7 @@ import br.com.managementfinanceapi.application.core.domain.common.dvo.Page;
 import br.com.managementfinanceapi.application.core.domain.transaction.TransactionDomain;
 import br.com.managementfinanceapi.application.core.domain.transaction.dvo.SearchAllFilters;
 import br.com.managementfinanceapi.application.port.in.transaction.AddTransactionPort;
-import br.com.managementfinanceapi.application.port.out.transaction.SearchTransactionRespositoryPort;
+import br.com.managementfinanceapi.application.port.in.transaction.SearchTransactionPort;
 import jakarta.validation.Valid;
 
 @RestController
@@ -23,12 +23,12 @@ import jakarta.validation.Valid;
 public class TransactionControllerV1 {
 
   private final AddTransactionPort addTransactionPort;
-  private final SearchTransactionRespositoryPort searchTransactionRespositoryPort;
+  private final SearchTransactionPort searchTransactionRespositoryPort;
 
 
   public TransactionControllerV1(
     AddTransactionPort addTransactionPort,
-    SearchTransactionRespositoryPort searchTransactionRespositoryPort
+    SearchTransactionPort searchTransactionRespositoryPort
   ) {
     this.addTransactionPort = addTransactionPort;
     this.searchTransactionRespositoryPort = searchTransactionRespositoryPort;
