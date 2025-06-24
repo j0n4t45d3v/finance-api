@@ -4,9 +4,9 @@ import org.apache.poi.xssf.usermodel.XSSFColor;
 
 public enum Color {
   HEADER("#2F5597"), // Azul escuro
-  POSITIVO("#228B22"), // Verde escuro
-  NEGATIVO("#C00000"), // Vermelho escuro
-  TOTAL("#FFD966"), // Dourado claro
+  POSITIVE("#228B22"), // Verde escuro
+  NEGATIVE("#C00000"), // Vermelho escuro
+  WARN("#FFD966"), // Dourado claro
   ZEBRA("#EFEFEF"), // Cinza claro
   WHITE("#FFFFFF"); // branco
 
