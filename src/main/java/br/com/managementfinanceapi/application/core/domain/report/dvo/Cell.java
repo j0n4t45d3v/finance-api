@@ -2,6 +2,7 @@ package br.com.managementfinanceapi.application.core.domain.report.dvo;
 
 import static br.com.managementfinanceapi.application.core.domain.report.enums.CellStyle.H_ALIGN_CENTER;
 import static br.com.managementfinanceapi.application.core.domain.report.enums.CellStyle.MONEY_FORMAT;
+import static br.com.managementfinanceapi.application.core.domain.report.enums.CellStyle.PERCENTEGE_FORMAT;
 import static br.com.managementfinanceapi.application.core.domain.report.enums.CellStyle.TIMESTAMP_FORMAT;
 
 import java.math.BigDecimal;
@@ -25,6 +26,10 @@ public record Cell<T>(
 
   public static Cell<Object> ofMoney(BigDecimal value) {
     return new Cell<>(value, MONEY_FORMAT);
+  }
+
+  public static Cell<Object> ofPercentege(BigDecimal value) {
+    return new Cell<>(value, PERCENTEGE_FORMAT);
   }
 
   public List<CellStyle> getStyles() {
