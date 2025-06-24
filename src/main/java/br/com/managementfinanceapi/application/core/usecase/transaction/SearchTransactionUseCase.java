@@ -1,5 +1,11 @@
 package br.com.managementfinanceapi.application.core.usecase.transaction;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import br.com.managementfinanceapi.application.core.domain.common.dvo.DateRange;
 import br.com.managementfinanceapi.application.core.domain.common.dvo.Page;
 import br.com.managementfinanceapi.application.core.domain.common.exception.BadRequestException;
 import br.com.managementfinanceapi.application.core.domain.common.exception.InvalidDateRangeException;
@@ -10,6 +16,9 @@ import br.com.managementfinanceapi.application.port.in.transaction.SearchTransac
 import br.com.managementfinanceapi.application.port.out.transaction.SearchTransactionRespositoryPort;
 
 public class SearchTransactionUseCase implements SearchTransactionPort {
+
+  private static final Logger log = LoggerFactory.getLogger(SearchTransactionUseCase.class);
+
   private final SearchTransactionRespositoryPort searchRepositoryPort;
 
   public SearchTransactionUseCase(SearchTransactionRespositoryPort searchRepositoryPort) {
@@ -18,13 +27,30 @@ public class SearchTransactionUseCase implements SearchTransactionPort {
 
   @Override
   public Page<TransactionDomain> all(SearchAllFilters filters) {
+    log.info("periodo de data = {}", filters.dateRange());
+    if (filters.dateRange() == null) {
+      throw new InvalidDateRangeException("Periodo de data não informado!");
+    }
     if (!filters.isDateRangeValid()) {
       throw new InvalidDateRangeException("Data inicial é menor que a data final!");
     }
+    log.info("id do usuario = {}", filters.userId());
     if (filters.isUserIdMissing()) {
       throw new BadRequestException("Usuario não informado!");
     }
+    log.info("tipo de transação = {}", filters.typeTransaction());
     return this.searchRepositoryPort.all(filters);
+  }
+
+  @Override
+  public List<TransactionDomain> allByUser(Long userId, DateRange dateRange) {
+    if (dateRange == null) {
+      throw new InvalidDateRangeException("Periodo de data não informado!");
+    }
+    if (!dateRange.rangeIsValid()) {
+      throw new InvalidDateRangeException("Data inicial é menor que a data final!");
+    }
+    return this.searchRepositoryPort.allByUser(userId, dateRange);
   }
 
   @Override

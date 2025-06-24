@@ -50,6 +50,10 @@ public class TransactionDomain {
     return type;
   }
 
+  public String getTypeTransactionDescription() {
+    return this.type.getDescription();
+  }
+
   public String getDescription() {
     return description;
   }

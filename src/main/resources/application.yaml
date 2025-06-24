@@ -3,6 +3,10 @@ spring:
     name: management-finance-api
   profiles:
     active: ${PROFILE:dev}
+  jpa:
+    mapping-resources:
+      - META-INF/orm-category.xml
+      - META-INF/orm-balance.xml
 
 management:
   endpoints:

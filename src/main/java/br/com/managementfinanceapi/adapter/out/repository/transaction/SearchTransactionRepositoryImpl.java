@@ -1,6 +1,6 @@
 package br.com.managementfinanceapi.adapter.out.repository.transaction;
 
-import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
@@ -39,8 +39,8 @@ public class SearchTransactionRepositoryImpl implements SearchTransactionResposi
     org.springframework.data.domain.Page<TransactionDomain> transactions =
       this.repository.findAllByUserIdAndDateBetween(
       filters.userId(),
-      range.start().atStartOfDay(),
-      range.end().atTime(LocalTime.of(23, 59)),
+      range.startWithTime(),
+      range.endWithTime(),
       pageable
     ).map(this.mapper::toDomain);
 
@@ -69,5 +69,18 @@ public class SearchTransactionRepositoryImpl implements SearchTransactionResposi
   @Override
   public Optional<TransactionDomain> byId(Long id) {
     return this.repository.findById(id).map(this.mapper::toDomain);
+  }
+
+  @Override
+  public List<TransactionDomain> allByUser(Long userId, DateRange dateRange) {
+    return this.repository
+               .findAllByUserIdAndDateBetween(
+                 userId,
+                 dateRange.startWithTime(),
+                 dateRange.endWithTime()
+               )
+               .stream()
+               .map(this.mapper::toDomain)
+               .toList();
   }
 }
