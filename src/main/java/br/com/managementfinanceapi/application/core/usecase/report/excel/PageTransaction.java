@@ -3,7 +3,6 @@ package br.com.managementfinanceapi.application.core.usecase.report.excel;
 import java.math.BigDecimal;
 import java.util.List;
 
-import br.com.managementfinanceapi.application.core.domain.common.dvo.DateRange;
 import br.com.managementfinanceapi.application.core.domain.report.ReportTable;
 import br.com.managementfinanceapi.application.core.domain.report.dvo.Cell;
 import br.com.managementfinanceapi.application.core.domain.report.dvo.Footer;
@@ -12,20 +11,13 @@ import br.com.managementfinanceapi.application.core.domain.report.dvo.Row;
 import br.com.managementfinanceapi.application.core.domain.report.enums.CellStyle;
 import br.com.managementfinanceapi.application.core.domain.transaction.TransactionDomain;
 import br.com.managementfinanceapi.application.port.in.report.CreateReportPagePort;
-import br.com.managementfinanceapi.application.port.in.transaction.SearchTransactionPort;
 
-public class PageTransaction implements CreateReportPagePort {
+public class PageTransaction implements CreateReportPagePort<List<TransactionDomain>> {
 
-  private final SearchTransactionPort searchTransactionPort;
   private static final int NUM_COLUMNS = 5;
 
-  public PageTransaction(SearchTransactionPort searchTransactionPort) {
-    this.searchTransactionPort = searchTransactionPort;
-  }
-
   @Override
-  public ReportTable generate(Long userId, DateRange dateRange) {
-    List<TransactionDomain> transactions = this.searchTransactionPort.allByUser(userId, dateRange);
+  public ReportTable generate(List<TransactionDomain> transactions) {
     Header header = this.createHeader();
     List<Row<Object>> body = this.createBodyRows(transactions);
     Footer footer = createFooter(this.getTotalTransaction(transactions));
@@ -58,7 +50,7 @@ public class PageTransaction implements CreateReportPagePort {
           Row<Object> row = new Row<>(NUM_COLUMNS);
           row.addColumn(Cell.ofTimestamp(transaction.getDate()));
           row.addColumn(Cell.of(transaction.getDescription()));
-          row.addColumn(Cell.of(transaction.getTypeTransactionDescription(), CellStyle.H_ALIGN_CENTER));
+          row.addColumn(Cell.of(transaction.getTypeTransactionDescription(), CellStyle.H_ALIGN_CENTER, (transaction.isExpence() ? CellStyle.PAINT_EXPENCE: CellStyle.PAINT_INCOME)));
           row.addColumn(Cell.ofMoney(transaction.getAmount()));
           row.addColumn(Cell.ofMoney(BigDecimal.ZERO));
           return row;
