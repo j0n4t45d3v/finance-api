@@ -4,6 +4,7 @@ import static br.com.managementfinanceapi.application.core.domain.report.enums.C
 import static br.com.managementfinanceapi.application.core.domain.report.enums.CellStyle.MONEY_FORMAT;
 import static br.com.managementfinanceapi.application.core.domain.report.enums.CellStyle.PERCENTEGE_FORMAT;
 import static br.com.managementfinanceapi.application.core.domain.report.enums.CellStyle.TIMESTAMP_FORMAT;
+import static br.com.managementfinanceapi.application.core.domain.report.enums.CellStyle.WARN;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,8 +29,16 @@ public record Cell<T>(
     return new Cell<>(value, MONEY_FORMAT);
   }
 
+  public static Cell<Object> ofMoneyWarn(BigDecimal value) {
+    return new Cell<>(value, MONEY_FORMAT, WARN);
+  }
+
   public static Cell<Object> ofPercentege(BigDecimal value) {
     return new Cell<>(value, PERCENTEGE_FORMAT);
+  }
+
+  public static Cell<Object> ofPercentegeWarn(BigDecimal value) {
+    return new Cell<>(value, PERCENTEGE_FORMAT, WARN);
   }
 
   public List<CellStyle> getStyles() {
