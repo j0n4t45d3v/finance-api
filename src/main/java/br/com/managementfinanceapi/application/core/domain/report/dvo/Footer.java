@@ -20,6 +20,10 @@ public record Footer(
     this.columns.addColumn(Cell.ofMoney(value));
   }
 
+  public void columnPercentege(BigDecimal value) {
+    this.columns.addColumn(Cell.ofPercentege(value));
+  }
+
   public void columnEmpty() {
     this.columns.addColumn(Cell.of(""));
   }
