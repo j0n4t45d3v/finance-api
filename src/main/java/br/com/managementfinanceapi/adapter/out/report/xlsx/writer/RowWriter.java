@@ -1,12 +1,15 @@
 package br.com.managementfinanceapi.adapter.out.report.xlsx.writer;
 
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.stereotype.Component;
 
 import br.com.managementfinanceapi.adapter.out.report.xlsx.style.StyleBuilder;
+import br.com.managementfinanceapi.adapter.out.report.xlsx.style.StyleFontBuilder;
 import br.com.managementfinanceapi.adapter.out.report.xlsx.writer.cell.CellWriterContext;
 import br.com.managementfinanceapi.application.core.domain.report.dvo.Row;
+import br.com.managementfinanceapi.application.core.domain.report.enums.CellStyle;
 
 @Component
 public class RowWriter {
@@ -24,13 +27,15 @@ public class RowWriter {
     Object cellValue;
     StyleBuilder style;
     for (int column = 0; column < row.columns(); column++) {
-      cell = line.createCell(column);
+      cell = line.createCell(column); 
       cellValue = row.getCellValue(column);
-      style = StyleBuilder
-                  .builder(workbook)
-                  .setStyles(row.get(column).getStyles());
+      style = StyleBuilder.builder(workbook);
       this.cellWriter.write(cell, cellValue);
       this.alternateRow(style, line.getRowNum());
+      style.setStyles(row.get(column).getStyles());
+      if(row.get(column).containingStyle(CellStyle.WARN) || row.get(column).containingStyle(CellStyle.PAINT_EXPENCE)) {
+        style.setFont(StyleFontBuilder.builder(workbook).setColor(IndexedColors.WHITE).build());
+      }
       cell.setCellStyle(style.build());
     }
   }
