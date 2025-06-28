@@ -25,7 +25,7 @@ public class SearchCategoryUseCase implements SearchCategoryPort {
   @Override
   public CategoryDomain byName(Long userId, String name) {
     return this.searchCategoryRepositoryPort.byUserIdAndName(userId, name)
-        .orElseThrow(() -> new CategoryDoesNotExistsException());
+        .orElseThrow(CategoryDoesNotExistsException::new);
   }
 
   @Override
