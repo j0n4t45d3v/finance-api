@@ -28,17 +28,7 @@ public class SearchTransactionUseCase implements SearchTransactionPort {
   @Override
   public Page<TransactionDomain> all(SearchAllFilters filters) {
     log.info("periodo de data = {}", filters.dateRange());
-    if (filters.dateRange() == null) {
-      throw new InvalidDateRangeException("Periodo de data não informado!");
-    }
-    if (!filters.isDateRangeValid()) {
-      throw new InvalidDateRangeException("Data inicial é menor que a data final!");
-    }
-    log.info("id do usuario = {}", filters.userId());
-    if (filters.isUserIdMissing()) {
-      throw new BadRequestException("Usuario não informado!");
-    }
-    log.info("tipo de transação = {}", filters.typeTransaction());
+    filters.validate();
     return this.searchRepositoryPort.all(filters);
   }
 
@@ -47,7 +37,7 @@ public class SearchTransactionUseCase implements SearchTransactionPort {
     if (dateRange == null) {
       throw new InvalidDateRangeException("Periodo de data não informado!");
     }
-    if (!dateRange.rangeIsValid()) {
+    if (dateRange.isInvalidRange()) {
       throw new InvalidDateRangeException("Data inicial é menor que a data final!");
     }
     return this.searchRepositoryPort.allByUser(userId, dateRange);

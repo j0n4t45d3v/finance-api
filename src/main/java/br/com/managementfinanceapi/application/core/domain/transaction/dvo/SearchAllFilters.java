@@ -2,6 +2,8 @@ package br.com.managementfinanceapi.application.core.domain.transaction.dvo;
 
 import br.com.managementfinanceapi.application.core.domain.common.dvo.DateRange;
 import br.com.managementfinanceapi.application.core.domain.common.dvo.PageFilter;
+import br.com.managementfinanceapi.application.core.domain.common.exception.BadRequestException;
+import br.com.managementfinanceapi.application.core.domain.common.exception.InvalidDateRangeException;
 import br.com.managementfinanceapi.application.core.domain.transaction.enums.TransactionType;
 
 public record SearchAllFilters(
@@ -11,12 +13,24 @@ public record SearchAllFilters(
   PageFilter page
 ) {
 
-  public boolean isDateRangeValid() {
-    return this.dateRange().rangeIsValid(); 
+  public void validate() {
+    if (this.isUserIdMissing()) {
+      throw new BadRequestException("Usuario não informado!");
+    }
+    if (this.isDateRangeMissing()) {
+      throw new InvalidDateRangeException("Periodo de data não informado!");
+    }
+    if (this.dateRange.isInvalidRange()) {
+      throw new InvalidDateRangeException("Data inicial é menor que a data final!");
+    }
   }
 
   public boolean isUserIdMissing() {
-    return this.userId() == null;
+    return this.userId == null;
+  }
+
+  public boolean isDateRangeMissing() {
+    return this.dateRange == null;
   }
 
   public PageFilter page() {

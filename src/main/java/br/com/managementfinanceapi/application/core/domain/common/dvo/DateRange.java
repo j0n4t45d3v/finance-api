@@ -9,8 +9,16 @@ public record DateRange(
   LocalDate end
 ) {
 
-  public boolean rangeIsValid() {
+  public boolean isInvalidRange() {
+    return !(this.isStartDateLessToEndDate() || this.isStartDateEqualsToEndDate());
+  }
+
+  public boolean isStartDateLessToEndDate() {
     return this.start().isBefore(this.end());
+  }
+
+  public boolean isStartDateEqualsToEndDate() {
+    return this.start().isEqual(this.end());
   }
 
   public LocalDateTime startWithTime() {
