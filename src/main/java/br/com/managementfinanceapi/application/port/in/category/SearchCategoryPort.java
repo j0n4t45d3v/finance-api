@@ -9,5 +9,6 @@ import br.com.managementfinanceapi.application.core.domain.common.dvo.DateRange;
 public interface SearchCategoryPort {
   List<CategoryDomain> all();
   CategoryDomain byName(Long userId, String name);
+  CategoryDomain byId(Long userId, Long id);
   List<CategoryTransactionSummary> getSummaryIncomeAndExpencesTotals(Long userId, DateRange dateRange);
 }

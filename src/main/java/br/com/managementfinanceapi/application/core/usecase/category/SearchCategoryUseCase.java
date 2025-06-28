@@ -33,4 +33,10 @@ public class SearchCategoryUseCase implements SearchCategoryPort {
     return this.searchCategoryRepositoryPort
     .getSummaryIncomeAndExpencesTotals(userId, dateRange.startWithTime(), dateRange.endWithTime());
   }
+
+  @Override
+  public CategoryDomain byId(Long userId, Long id) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'byId'");
+  }
 }

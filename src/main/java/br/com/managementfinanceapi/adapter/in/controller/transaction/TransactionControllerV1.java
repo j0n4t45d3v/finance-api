@@ -14,7 +14,7 @@ import br.com.managementfinanceapi.adapter.in.dto.transaction.AddTransaction;
 import br.com.managementfinanceapi.application.core.domain.common.dvo.Page;
 import br.com.managementfinanceapi.application.core.domain.transaction.TransactionDomain;
 import br.com.managementfinanceapi.application.core.domain.transaction.dvo.SearchAllFilters;
-import br.com.managementfinanceapi.application.port.in.transaction.AddTransactionPort;
+import br.com.managementfinanceapi.application.port.in.transaction.CreateTransactionPort;
 import br.com.managementfinanceapi.application.port.in.transaction.SearchTransactionPort;
 import jakarta.validation.Valid;
 
@@ -22,21 +22,21 @@ import jakarta.validation.Valid;
 @RequestMapping("/v1/transactions")
 public class TransactionControllerV1 {
 
-  private final AddTransactionPort addTransactionPort;
+  private final CreateTransactionPort createTransactionPort;
   private final SearchTransactionPort searchTransactionRespositoryPort;
 
 
   public TransactionControllerV1(
-    AddTransactionPort addTransactionPort,
+    CreateTransactionPort createTransactionPort,
     SearchTransactionPort searchTransactionRespositoryPort
   ) {
-    this.addTransactionPort = addTransactionPort;
+    this.createTransactionPort = createTransactionPort;
     this.searchTransactionRespositoryPort = searchTransactionRespositoryPort;
   }
 
   @PostMapping("/add")
   public ResponseEntity<ResponseV0<String>> add(@RequestBody AddTransaction body) {
-    this.addTransactionPort.add(body.toDomain());
+    this.createTransactionPort.execute(body.toDomain(), body.userId());
     ResponseV0<String> addMovementResponse = ResponseV0.ok("Transação salva com sucesso");
     return ResponseEntity.ok(addMovementResponse);
   }
