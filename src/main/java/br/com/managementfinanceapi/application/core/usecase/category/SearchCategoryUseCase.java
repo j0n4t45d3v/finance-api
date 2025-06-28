@@ -36,7 +36,7 @@ public class SearchCategoryUseCase implements SearchCategoryPort {
 
   @Override
   public CategoryDomain byId(Long userId, Long id) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'byId'");
+    return this.searchCategoryRepositoryPort.byUserIdAndId(userId, id)
+        .orElseThrow(CategoryDoesNotExistsException::new);
   }
 }

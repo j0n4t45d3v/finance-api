@@ -42,6 +42,12 @@ public class SearchCategoryRepositoryImpl implements SearchCategoryRepositoryPor
   }
 
   @Override
+  public Optional<CategoryDomain> byUserIdAndId(Long userId, Long id) {
+    return this.repository.findByUserIdAndId(userId, id)
+        .map(this.mapper::toDomain);
+  }
+
+  @Override
   public List<CategoryTransactionSummary> getSummaryIncomeAndExpencesTotals(
     @Nonnull Long userId, 
     @Nonnull LocalDateTime startDate,

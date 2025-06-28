@@ -11,6 +11,7 @@ public interface SearchCategoryRepositoryPort {
 
   List<CategoryDomain> all();
   Optional<CategoryDomain> byUserIdAndName(Long userId, String name);
+  Optional<CategoryDomain> byUserIdAndId(Long userId, Long id);
   List<CategoryTransactionSummary> getSummaryIncomeAndExpencesTotals(Long userId, LocalDateTime startDate, LocalDateTime endDate);
   
 }

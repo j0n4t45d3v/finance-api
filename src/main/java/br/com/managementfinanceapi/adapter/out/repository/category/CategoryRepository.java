@@ -19,6 +19,7 @@ import br.com.managementfinanceapi.application.core.domain.category.dvo.Category
 @Repository
 public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> {
   Optional<CategoryEntity> findByUserIdAndName(Long id, String name);
+  Optional<CategoryEntity> findByUserIdAndId(Long userId,Long id);
   boolean existsByName(String name);
 
   @Query(name="CategoryEntity.findTotalByCategory")
