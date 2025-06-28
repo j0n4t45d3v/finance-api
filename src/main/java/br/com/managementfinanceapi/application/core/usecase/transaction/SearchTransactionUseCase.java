@@ -17,8 +17,6 @@ import br.com.managementfinanceapi.application.port.out.transaction.SearchTransa
 
 public class SearchTransactionUseCase implements SearchTransactionPort {
 
-  private static final Logger log = LoggerFactory.getLogger(SearchTransactionUseCase.class);
-
   private final SearchTransactionRespositoryPort searchRepositoryPort;
 
   public SearchTransactionUseCase(SearchTransactionRespositoryPort searchRepositoryPort) {
@@ -27,7 +25,6 @@ public class SearchTransactionUseCase implements SearchTransactionPort {
 
   @Override
   public Page<TransactionDomain> all(SearchAllFilters filters) {
-    log.info("periodo de data = {}", filters.dateRange());
     filters.validate();
     return this.searchRepositoryPort.all(filters);
   }
