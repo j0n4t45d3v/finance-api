@@ -95,4 +95,30 @@ class SearchCategoryUseCaseTest {
         any(LocalDateTime.class)
       );
   }
+
+  @Test
+  @DisplayName("should return user category when id user category exists")
+  void shouldReturnUserCategoryWhenIdUserCategoryExists() {
+    when(this.searchCategoryRepositoryPort.byUserIdAndId(anyLong(), anyLong()))
+        .thenReturn(Optional.of(new CategoryDomain(1L)));
+    CategoryDomain result = this.searchCategoryUseCase.byId(1L, 1L);
+    assertEquals(1L, result.getId());
+    verify(this.searchCategoryRepositoryPort, times(1))
+        .byUserIdAndId(anyLong(), anyLong());
+  }
+
+
+  @Test
+  @DisplayName("should throw category does not exists when category id does not exists for user")
+  void shouldThrowCategoryDoesNotExistsWhenCategoryIdDoesNotExistsForUser() {
+    when(this.searchCategoryRepositoryPort.byUserIdAndId(anyLong(), anyLong()))
+        .thenReturn(Optional.empty());
+
+    CategoryDoesNotExistsException thrown = assertThrows(CategoryDoesNotExistsException.class, () ->this.searchCategoryUseCase.byId(1L, 1L) );
+    assertEquals(404, thrown.getCode());
+    assertEquals("Categoria não existe!", thrown.getMessage());
+    verify(this.searchCategoryRepositoryPort, times(1))
+        .byUserIdAndId(anyLong(), anyLong());
+  }
+
 }
