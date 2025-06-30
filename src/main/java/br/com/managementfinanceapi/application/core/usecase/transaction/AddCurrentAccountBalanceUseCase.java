@@ -32,12 +32,12 @@ public class AddCurrentAccountBalanceUseCase implements AddCurrentAccountBalance
   public void execute(Long userId, BalanceDomain balance) {
     List<BalanceDomain> balances = this.searchBalanceRepository.allByUser(userId);
     if (!balances.isEmpty()) {
-      throw new BadRequestException("Usuario já possui saldo registrado");
+      throw new BadRequestException("Usuário já possui saldo cadastrado");
     }
 
     Page<TransactionDomain> transaction = this.searchTransactionPort.allByUser(userId);
     if (transaction.isEmptyContent()) {
-      throw new BadRequestException("Antes de registrar o seu saldo atual, resgistre primeiro as transações até o momento do saldo");
+      throw new BadRequestException("Antes de registrar o seu saldo atual, primeiro cadastre as transações até o momento do saldo");
     }
     balance.signUser(new UserDomain(userId));
     this.saveBalanceRepository.one(balance);
