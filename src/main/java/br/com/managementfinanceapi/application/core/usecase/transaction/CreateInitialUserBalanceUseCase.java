@@ -7,18 +7,18 @@ import br.com.managementfinanceapi.application.core.domain.common.exception.BadR
 import br.com.managementfinanceapi.application.core.domain.transaction.BalanceDomain;
 import br.com.managementfinanceapi.application.core.domain.transaction.TransactionDomain;
 import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
-import br.com.managementfinanceapi.application.port.in.transaction.AddCurrentAccountBalancePort;
+import br.com.managementfinanceapi.application.port.in.transaction.CreateInitialUserBalancePort;
 import br.com.managementfinanceapi.application.port.out.transaction.SaveBalanceRepositoryPort;
 import br.com.managementfinanceapi.application.port.out.transaction.SearchBalanceRepositoryPort;
 import br.com.managementfinanceapi.application.port.out.transaction.SearchTransactionRespositoryPort;
 
-public class AddCurrentAccountBalanceUseCase implements AddCurrentAccountBalancePort {
+public class CreateInitialUserBalanceUseCase implements CreateInitialUserBalancePort {
 
   private final SearchBalanceRepositoryPort searchBalanceRepository;
   private final SaveBalanceRepositoryPort saveBalanceRepository;
   private final SearchTransactionRespositoryPort searchTransactionPort;
 
-  public AddCurrentAccountBalanceUseCase(
+  public CreateInitialUserBalanceUseCase(
       SearchBalanceRepositoryPort searchBalanceRepository,
       SaveBalanceRepositoryPort saveBalanceRepository,
       SearchTransactionRespositoryPort searchTransactionPort
