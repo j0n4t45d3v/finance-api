@@ -32,7 +32,7 @@ public class CreateInitialUserBalanceUseCase implements CreateInitialUserBalance
   public void execute(Long userId, BalanceDomain balance) {
     List<BalanceDomain> balances = this.searchBalanceRepository.allByUser(userId);
     if (!balances.isEmpty()) {
-      throw new BadRequestException("Usuário já possui saldo cadastrado");
+      throw new BadRequestException("Usuário já possui um saldo inicial cadastrado");
     }
 
     Page<TransactionDomain> transaction = this.searchTransactionPort.allByUser(userId);
