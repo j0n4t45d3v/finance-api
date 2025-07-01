@@ -59,8 +59,4 @@ public class PageResumeByCategory implements CreateReportPagePort<List<CategoryT
         }).toList();
   }
 
-//   private Cell<Object> getExpenceCell(BigDecimal value, Function<BigDecimal, Cell<Object>> typeCell) {
-// resume.overflowCategoryCreditLimite() ? Cell.ofMoney(resume.expence()) : Cell.ofMoneyWarn(resume.expence())
-//   }
-
 }
