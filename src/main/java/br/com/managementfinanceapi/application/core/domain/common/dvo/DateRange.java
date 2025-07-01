@@ -26,7 +26,7 @@ public record DateRange(
   }
 
   public LocalDateTime endWithTime() {
-    return this.end().atTime(LocalTime.of(23, 59));
+    return this.end().atTime(LocalTime.of(23, 59, 59));
   }
 
 }
