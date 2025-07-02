@@ -5,7 +5,7 @@ import br.com.managementfinanceapi.application.port.out.security.HashPasswordPor
 
 public class Password {
 
-  private String value;
+  private final String value;
 
   private Password(String value) {
     this.value = value;
