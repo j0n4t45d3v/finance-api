@@ -23,15 +23,15 @@ import jakarta.validation.Valid;
 public class TransactionControllerV1 {
 
   private final CreateTransactionPort createTransactionPort;
-  private final SearchTransactionPort searchTransactionRespositoryPort;
+  private final SearchTransactionPort searchTransactionRepositoryPort;
 
 
   public TransactionControllerV1(
     CreateTransactionPort createTransactionPort,
-    SearchTransactionPort searchTransactionRespositoryPort
+    SearchTransactionPort searchTransactionRepositoryPort
   ) {
     this.createTransactionPort = createTransactionPort;
-    this.searchTransactionRespositoryPort = searchTransactionRespositoryPort;
+    this.searchTransactionRepositoryPort = searchTransactionRepositoryPort;
   }
 
   @PostMapping("/add")
@@ -46,7 +46,7 @@ public class TransactionControllerV1 {
     @Valid @ModelAttribute SearchAllFilters filters,
     Pageable page
   ) {
-    var result = this.searchTransactionRespositoryPort.all(filters);
+    var result = this.searchTransactionRepositoryPort.all(filters);
     var addMovementResponse = ResponseV0.ok(result);
     return ResponseEntity.ok(addMovementResponse);
   }
