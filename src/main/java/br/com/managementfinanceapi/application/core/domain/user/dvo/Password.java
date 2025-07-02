@@ -15,7 +15,7 @@ public class Password {
     if(Password.isEmptyPassword(password)) {
       throw new InvalidPassword("Nenhuma senha informada");
     } else if(password.length() < 8 || password.length() > 20) {
-      throw new InvalidPassword();
+      throw new InvalidPassword("A senha deve ter pelo menos de 8 á 20 caracteres!");
     }
     return new Password(password);
   }
