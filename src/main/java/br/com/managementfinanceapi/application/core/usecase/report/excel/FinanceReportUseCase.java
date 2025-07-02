@@ -49,7 +49,7 @@ public class FinanceReportUseCase implements FinanceReportPort {
 
   private ReportTable createPageCategorySummaryTotals(Long userId, DateRange dateRange) {
     List<CategoryTransactionSummary> categoryTransactionSummaries = 
-    this.searchCategoryPort.getSummaryIncomeAndExpencesTotals(userId, dateRange);
+      this.searchCategoryPort.getSummaryIncomeAndExpencesTotals(userId, dateRange);
     return this.pageResumeByCategory.generate(categoryTransactionSummaries);
   }
 }
