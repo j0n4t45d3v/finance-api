@@ -17,34 +17,34 @@ public class FinanceReportUseCase implements FinanceReportPort {
   private final ReportGeneratorPort reportGeneratorPort;
   private final SearchTransactionPort searchTransactionPort;
   private final SearchCategoryPort searchCategoryPort;
-  private final CreateReportPagePort<List<TransactionDomain>> pageTrasactions;
+  private final CreateReportPagePort<List<TransactionDomain>> pageTransactions;
   private final CreateReportPagePort<List<CategoryTransactionSummary>> pageResumeByCategory;
 
   public FinanceReportUseCase(
     ReportGeneratorPort reportGeneratorPort,
     SearchTransactionPort searchTransactionPort,
     SearchCategoryPort searchCategoryPort,
-    CreateReportPagePort<List<TransactionDomain>> pageTrasactions,
+    CreateReportPagePort<List<TransactionDomain>> pageTransactions,
     CreateReportPagePort<List<CategoryTransactionSummary>> pageResumeByCategory
   ) {
     this.reportGeneratorPort = reportGeneratorPort;
     this.searchTransactionPort = searchTransactionPort;
     this.searchCategoryPort = searchCategoryPort;
-    this.pageTrasactions = pageTrasactions;
+    this.pageTransactions = pageTransactions;
     this.pageResumeByCategory = pageResumeByCategory;
   }
 
   @Override
   public byte[] generate(Long userId, DateRange dateRange) {
     return this.reportGeneratorPort
-        .addPage(this.createPageTrasactions(userId, dateRange))
+        .addPage(this.createPageTransactions(userId, dateRange))
         .addPage(this.createPageCategorySummaryTotals(userId, dateRange))
         .generate();
   }
 
-  private ReportTable createPageTrasactions(Long userId, DateRange dateRange) {
+  private ReportTable createPageTransactions(Long userId, DateRange dateRange) {
     List<TransactionDomain> transactions = this.searchTransactionPort.allByUser(userId, dateRange);
-    return this.pageTrasactions.generate(transactions);
+    return this.pageTransactions.generate(transactions);
   }
 
   private ReportTable createPageCategorySummaryTotals(Long userId, DateRange dateRange) {
