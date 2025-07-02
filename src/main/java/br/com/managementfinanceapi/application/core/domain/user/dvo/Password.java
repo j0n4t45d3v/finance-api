@@ -12,12 +12,16 @@ public class Password {
   }
 
   public static Password fromRaw(String password) {
-    if(password == null) {
+    if(Password.isEmptyPassword(password)) {
       throw new InvalidPassword("Nenhuma senha informada");
     } else if(password.length() < 8 || password.length() > 20) {
       throw new InvalidPassword();
     }
     return new Password(password);
+  }
+
+  private static boolean isEmptyPassword(String password) {
+    return password == null || password.isEmpty();
   }
 
   public static Password fromEncoded(String password) {
