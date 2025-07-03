@@ -7,3 +7,4 @@ HELP.md
 management-finance-api.iml
 mvnw.cmd
 target/
+docker/
