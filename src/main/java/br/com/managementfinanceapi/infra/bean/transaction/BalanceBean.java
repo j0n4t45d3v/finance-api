@@ -3,9 +3,9 @@ package br.com.managementfinanceapi.infra.bean.transaction;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import br.com.managementfinanceapi.application.core.usecase.transaction.AddCurrentAccountBalanceUseCase;
+import br.com.managementfinanceapi.application.core.usecase.transaction.CreateInitialUserBalanceUseCase;
 import br.com.managementfinanceapi.application.core.usecase.transaction.UpdateBalanceOfMonthUseCase;
-import br.com.managementfinanceapi.application.port.in.transaction.AddCurrentAccountBalancePort;
+import br.com.managementfinanceapi.application.port.in.transaction.CreateInitialUserBalancePort;
 import br.com.managementfinanceapi.application.port.in.transaction.UpdateBalanceOfMonthPort;
 import br.com.managementfinanceapi.application.port.out.transaction.SaveBalanceRepositoryPort;
 import br.com.managementfinanceapi.application.port.out.transaction.SearchBalanceRepositoryPort;
@@ -15,12 +15,12 @@ import br.com.managementfinanceapi.application.port.out.transaction.SearchTransa
 public class BalanceBean {
 
   @Bean
-  public AddCurrentAccountBalancePort addCurrentAccountBalance(
+  public CreateInitialUserBalancePort createInitialUserBalance(
       SearchBalanceRepositoryPort searchBalanceRepository,
       SaveBalanceRepositoryPort saveBalanceRepository,
       SearchTransactionRespositoryPort searchTransactionPort
   ) {
-    return new AddCurrentAccountBalanceUseCase(searchBalanceRepository, saveBalanceRepository, searchTransactionPort);
+    return new CreateInitialUserBalanceUseCase(searchBalanceRepository, saveBalanceRepository, searchTransactionPort);
   }
 
   @Bean

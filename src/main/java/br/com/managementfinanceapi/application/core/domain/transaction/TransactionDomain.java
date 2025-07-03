@@ -50,6 +50,10 @@ public class TransactionDomain {
     return type;
   }
 
+  public String getTypeTransactionDescription() {
+    return this.type.getDescription();
+  }
+
   public String getDescription() {
     return description;
   }
@@ -66,8 +70,21 @@ public class TransactionDomain {
     return category;
   }
 
+  public Long getCategoryId() {
+    return this.category.getId();
+  }
+
   public boolean isExpence() {
     return this.type.equals(TransactionType.EXPENSE);
+  }
+
+  public void signUser(UserDomain user) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'signUser'");
+  }
+  public void signCategory(CategoryDomain category) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'signUser'");
   }
 
 }

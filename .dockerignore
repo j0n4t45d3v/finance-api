@@ -1,0 +1,10 @@
+.editorconfig
+.gitattributes
+.gitignore
+.idea/
+HELP.md
+.sdkmanrc
+management-finance-api.iml
+mvnw.cmd
+target/
+docker/

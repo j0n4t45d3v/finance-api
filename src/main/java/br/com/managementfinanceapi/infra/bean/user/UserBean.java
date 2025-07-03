@@ -42,8 +42,9 @@ public class UserBean {
   @Bean
   public ChangePasswordPort changePassword(
       SearchUserPort searchUserPort,
+      HashPasswordPort hashPasswordPort,
       SaveUserPort saveUserPort) {
-    return new ChangePasswordUseCase(searchUserPort, saveUserPort);
+    return new ChangePasswordUseCase(searchUserPort, hashPasswordPort, saveUserPort);
   }
 
   @Bean

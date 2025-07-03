@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import br.com.managementfinanceapi.application.core.domain.category.CategoryDomain;
 import br.com.managementfinanceapi.application.core.domain.transaction.TransactionDomain;
 import br.com.managementfinanceapi.application.core.domain.transaction.enums.TransactionType;
-import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 
 public record AddTransaction(
     BigDecimal amount,
@@ -14,9 +13,10 @@ public record AddTransaction(
     LocalDateTime date,
     TransactionType type,
     Long userId,
-    Long categoryId) {
-  public TransactionDomain toDomain() {
+    Long categoryId
+) {
 
+  public TransactionDomain toDomain() {
     CategoryDomain category = new CategoryDomain(this.categoryId);
     return new TransactionDomain(
         null,
@@ -24,7 +24,7 @@ public record AddTransaction(
         this.type,
         this.description,
         this.date,
-        new UserDomain(this.userId),
+        null,
         category
     );
   }

@@ -7,18 +7,18 @@ import br.com.managementfinanceapi.application.core.domain.common.exception.BadR
 import br.com.managementfinanceapi.application.core.domain.transaction.BalanceDomain;
 import br.com.managementfinanceapi.application.core.domain.transaction.TransactionDomain;
 import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
-import br.com.managementfinanceapi.application.port.in.transaction.AddCurrentAccountBalancePort;
+import br.com.managementfinanceapi.application.port.in.transaction.CreateInitialUserBalancePort;
 import br.com.managementfinanceapi.application.port.out.transaction.SaveBalanceRepositoryPort;
 import br.com.managementfinanceapi.application.port.out.transaction.SearchBalanceRepositoryPort;
 import br.com.managementfinanceapi.application.port.out.transaction.SearchTransactionRespositoryPort;
 
-public class AddCurrentAccountBalanceUseCase implements AddCurrentAccountBalancePort {
+public class CreateInitialUserBalanceUseCase implements CreateInitialUserBalancePort {
 
   private final SearchBalanceRepositoryPort searchBalanceRepository;
   private final SaveBalanceRepositoryPort saveBalanceRepository;
   private final SearchTransactionRespositoryPort searchTransactionPort;
 
-  public AddCurrentAccountBalanceUseCase(
+  public CreateInitialUserBalanceUseCase(
       SearchBalanceRepositoryPort searchBalanceRepository,
       SaveBalanceRepositoryPort saveBalanceRepository,
       SearchTransactionRespositoryPort searchTransactionPort
@@ -32,12 +32,12 @@ public class AddCurrentAccountBalanceUseCase implements AddCurrentAccountBalance
   public void execute(Long userId, BalanceDomain balance) {
     List<BalanceDomain> balances = this.searchBalanceRepository.allByUser(userId);
     if (!balances.isEmpty()) {
-      throw new BadRequestException("Usuario já possui saldo registrado");
+      throw new BadRequestException("Usuário já possui um saldo inicial cadastrado");
     }
 
     Page<TransactionDomain> transaction = this.searchTransactionPort.allByUser(userId);
     if (transaction.isEmptyContent()) {
-      throw new BadRequestException("Antes de registrar o seu saldo atual, resgistre primeiro as transações até o momento do saldo");
+      throw new BadRequestException("Antes de registrar o seu saldo atual, primeiro cadastre as transações até o momento do saldo");
     }
     balance.signUser(new UserDomain(userId));
     this.saveBalanceRepository.one(balance);

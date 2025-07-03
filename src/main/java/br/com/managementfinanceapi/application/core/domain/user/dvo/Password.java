@@ -5,19 +5,23 @@ import br.com.managementfinanceapi.application.port.out.security.HashPasswordPor
 
 public class Password {
 
-  private String value;
+  private final String value;
 
   private Password(String value) {
     this.value = value;
   }
 
   public static Password fromRaw(String password) {
-    if(password == null) {
+    if(Password.isEmptyPassword(password)) {
       throw new InvalidPassword("Nenhuma senha informada");
     } else if(password.length() < 8 || password.length() > 20) {
-      throw new InvalidPassword();
+      throw new InvalidPassword("A senha deve ter pelo menos de 8 á 20 caracteres!");
     }
     return new Password(password);
+  }
+
+  private static boolean isEmptyPassword(String password) {
+    return password == null || password.isEmpty();
   }
 
   public static Password fromEncoded(String password) {

@@ -14,29 +14,29 @@ import br.com.managementfinanceapi.adapter.in.dto.transaction.AddTransaction;
 import br.com.managementfinanceapi.application.core.domain.common.dvo.Page;
 import br.com.managementfinanceapi.application.core.domain.transaction.TransactionDomain;
 import br.com.managementfinanceapi.application.core.domain.transaction.dvo.SearchAllFilters;
-import br.com.managementfinanceapi.application.port.in.transaction.AddTransactionPort;
-import br.com.managementfinanceapi.application.port.out.transaction.SearchTransactionRespositoryPort;
+import br.com.managementfinanceapi.application.port.in.transaction.CreateTransactionPort;
+import br.com.managementfinanceapi.application.port.in.transaction.SearchTransactionPort;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/v1/transactions")
 public class TransactionControllerV1 {
 
-  private final AddTransactionPort addTransactionPort;
-  private final SearchTransactionRespositoryPort searchTransactionRespositoryPort;
+  private final CreateTransactionPort createTransactionPort;
+  private final SearchTransactionPort searchTransactionRepositoryPort;
 
 
   public TransactionControllerV1(
-    AddTransactionPort addTransactionPort,
-    SearchTransactionRespositoryPort searchTransactionRespositoryPort
+    CreateTransactionPort createTransactionPort,
+    SearchTransactionPort searchTransactionRepositoryPort
   ) {
-    this.addTransactionPort = addTransactionPort;
-    this.searchTransactionRespositoryPort = searchTransactionRespositoryPort;
+    this.createTransactionPort = createTransactionPort;
+    this.searchTransactionRepositoryPort = searchTransactionRepositoryPort;
   }
 
   @PostMapping("/add")
   public ResponseEntity<ResponseV0<String>> add(@RequestBody AddTransaction body) {
-    this.addTransactionPort.add(body.toDomain());
+    this.createTransactionPort.execute(body.toDomain(), body.userId());
     ResponseV0<String> addMovementResponse = ResponseV0.ok("Transação salva com sucesso");
     return ResponseEntity.ok(addMovementResponse);
   }
@@ -46,7 +46,7 @@ public class TransactionControllerV1 {
     @Valid @ModelAttribute SearchAllFilters filters,
     Pageable page
   ) {
-    var result = this.searchTransactionRespositoryPort.all(filters);
+    var result = this.searchTransactionRepositoryPort.all(filters);
     var addMovementResponse = ResponseV0.ok(result);
     return ResponseEntity.ok(addMovementResponse);
   }
