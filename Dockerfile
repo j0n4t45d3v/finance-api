@@ -1,17 +1,17 @@
 FROM eclipse-temurin:17-alpine AS build
 
-WORKDIR /app
+WORKDIR /build
 
-COPY . /app
+COPY .. /build
 
-CMD ["./gradlew", "clean", "bootJar"]
+CMD ["./mvnw", "clean", "package"]
 
 FROM eclipse-temurin:17-jre-alpine
 
-WORKDIR /app
+WORKDIR /api
 
-COPY --from=build /bin/build/libs/*.jar /app/finance-api.jar
+COPY --from=build /build/target/*.jar /api/easy-finance-api.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "/app/finance-api.jar"]
+ENTRYPOINT ["java", "-jar", "/api/easy-finance-api.jar"]
