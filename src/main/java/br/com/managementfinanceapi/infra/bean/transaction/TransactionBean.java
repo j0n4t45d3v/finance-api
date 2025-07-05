@@ -20,7 +20,7 @@ import br.com.managementfinanceapi.application.port.out.transaction.SearchTransa
 public class TransactionBean {
 
   @Bean
-  public CreateTransactionPort addTransaction(
+  public CreateTransactionPort createTransaction(
       SaveTransactionRepositoryPort saveTransactionRepositoryPort,
       SearchUserPort searchUserPort, 
       SearchCategoryPort searchCategoryPort
