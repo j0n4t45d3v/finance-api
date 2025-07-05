@@ -1,5 +1,9 @@
 package br.com.managementfinanceapi.infra.bean.transaction;
 
+import br.com.managementfinanceapi.application.core.usecase.transaction.AddUserTransactionUseCase;
+import br.com.managementfinanceapi.application.core.usecase.transaction.UpdateBalanceForSubsequenceMonthsUseCase;
+import br.com.managementfinanceapi.application.port.in.transaction.AddUserTransactionPort;
+import br.com.managementfinanceapi.application.port.in.transaction.UpdateBalanceOfMonthPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +20,7 @@ import br.com.managementfinanceapi.application.port.out.transaction.SearchTransa
 public class TransactionBean {
 
   @Bean
-  public CreateTransactionPort addTransaction(
+  public CreateTransactionPort createTransaction(
       SaveTransactionRepositoryPort saveTransactionRepositoryPort,
       SearchUserPort searchUserPort, 
       SearchCategoryPort searchCategoryPort
@@ -29,6 +33,19 @@ public class TransactionBean {
     SearchTransactionRespositoryPort searchTransactionRespositoryPort 
   ) {
     return new SearchTransactionUseCase(searchTransactionRespositoryPort);
+  }
+
+  @Bean
+  public AddUserTransactionPort addUserTransaction(
+      CreateTransactionPort createTransactionPort,
+      UpdateBalanceOfMonthPort updateBalanceOfMonthPort,
+      UpdateBalanceForSubsequenceMonthsUseCase updateBalanceForSubsequenceMonthsUseCase
+  ){
+    return new AddUserTransactionUseCase(
+        createTransactionPort,
+        updateBalanceOfMonthPort,
+        updateBalanceForSubsequenceMonthsUseCase
+    );
   }
 
 }

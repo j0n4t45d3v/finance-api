@@ -2,9 +2,9 @@ FROM eclipse-temurin:17-alpine AS build
 
 WORKDIR /build
 
-COPY .. /build
+COPY . /build
 
-CMD ["./mvnw", "clean", "package"]
+RUN ./mvnw clean package -DskipTests=true
 
 FROM eclipse-temurin:17-jre-alpine
 
