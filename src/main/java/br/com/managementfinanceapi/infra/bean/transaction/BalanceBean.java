@@ -1,5 +1,7 @@
 package br.com.managementfinanceapi.infra.bean.transaction;
 
+import br.com.managementfinanceapi.application.core.usecase.transaction.UpdateBalanceForSubsequenceMonthsUseCase;
+import br.com.managementfinanceapi.application.port.in.transaction.UpdateBalanceForSubsequenceMonthsPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +31,15 @@ public class BalanceBean {
     SaveBalanceRepositoryPort saveBalanceRepositoryPort
   ){
     return new UpdateBalanceOfMonthUseCase(searchBalanceRepositoryPort, saveBalanceRepositoryPort);
+  }
+
+
+  @Bean
+  public UpdateBalanceForSubsequenceMonthsPort updateBalanceForSubsequenceMonths(
+      SaveBalanceRepositoryPort saveBalanceRepositoryPort,
+      SearchBalanceRepositoryPort searchBalanceRepositoryPort
+  ){
+    return new UpdateBalanceForSubsequenceMonthsUseCase(saveBalanceRepositoryPort, searchBalanceRepositoryPort);
   }
 
 }
