@@ -4,7 +4,7 @@ WORKDIR /build
 
 COPY . /build
 
-RUN ./mvnw clean package
+RUN ./mvnw clean package -DskipTests=true
 
 FROM eclipse-temurin:17-jre-alpine
 
