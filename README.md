@@ -112,7 +112,7 @@ cp docker/.env.example docker/.env
 cd docker/
 docker-compose --env-file=.env up -d --build
 ```
-4. **Acesse a documentação da API em:** `http://localhost/api/doc/v1`
+4. **Acesse a documentação da API em:** `http://localhost/api/`
 
 ---
 
