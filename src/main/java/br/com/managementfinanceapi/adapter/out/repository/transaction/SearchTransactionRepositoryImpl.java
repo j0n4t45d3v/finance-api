@@ -3,14 +3,17 @@ package br.com.managementfinanceapi.adapter.out.repository.transaction;
 import java.util.List;
 import java.util.Optional;
 
+import br.com.managementfinanceapi.adapter.out.repository.transaction.specifications.TransactionSpecifications;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import br.com.managementfinanceapi.adapter.out.entity.transaction.TransactionEntity;
 import br.com.managementfinanceapi.adapter.out.mapper.Mapper;
 import br.com.managementfinanceapi.application.core.domain.common.dvo.DateRange;
-import br.com.managementfinanceapi.application.core.domain.common.dvo.Page;
+import br.com.managementfinanceapi.application.core.domain.common.dvo.PageDto;
 import br.com.managementfinanceapi.application.core.domain.common.dvo.PageFilter;
 import br.com.managementfinanceapi.application.core.domain.transaction.TransactionDomain;
 import br.com.managementfinanceapi.application.core.domain.transaction.dvo.SearchAllFilters;
@@ -31,20 +34,18 @@ public class SearchTransactionRepositoryImpl implements SearchTransactionResposi
   }
 
   @Override
-  public Page<TransactionDomain> all(SearchAllFilters filters) {
-    DateRange range = filters.dateRange();
+  public PageDto<TransactionDomain> all(SearchAllFilters filters) {
     PageFilter page = filters.page();
     Pageable pageable = PageRequest.of(page.page(), page.size());
 
-    org.springframework.data.domain.Page<TransactionDomain> transactions =
-      this.repository.findAllByUserIdAndDateBetween(
-      filters.userId(),
-      range.startWithTime(),
-      range.endWithTime(),
-      pageable
-    ).map(this.mapper::toDomain);
+    Specification<TransactionEntity> specification = Specification
+        .where(TransactionSpecifications.hasUser(filters.userId()))
+        .and(TransactionSpecifications.inWithinDateRange(filters.dateRange()));
 
-    return new Page<>(
+    Page<TransactionDomain> transactions = this.repository.findAll(specification, pageable)
+            .map(this.mapper::toDomain);
+
+    return new PageDto<>(
       transactions.getContent(),
       transactions.getNumber(),
       transactions.getSize(),
@@ -53,12 +54,11 @@ public class SearchTransactionRepositoryImpl implements SearchTransactionResposi
   }
 
   @Override
-  public Page<TransactionDomain> allByUser(Long userId) {
-
+  public PageDto<TransactionDomain> allByUser(Long userId) {
     Pageable pageable = PageRequest.of(1, 20);
-    org.springframework.data.domain.Page<TransactionDomain> transactions =
-      this.repository.findAllByUserId(userId, pageable).map(this.mapper::toDomain);
-    return new Page<>(
+    Page<TransactionDomain> transactions = this.repository.findAllByUserId(userId, pageable)
+        .map(this.mapper::toDomain);
+    return new PageDto<>(
       transactions.getContent(),
       transactions.getNumber(),
       transactions.getSize(),
@@ -73,12 +73,10 @@ public class SearchTransactionRepositoryImpl implements SearchTransactionResposi
 
   @Override
   public List<TransactionDomain> allByUser(Long userId, DateRange dateRange) {
-    return this.repository
-               .findAllByUserIdAndDateBetween(
-                 userId,
-                 dateRange.startWithTime(),
-                 dateRange.endWithTime()
-               )
+    Specification<TransactionEntity> specification = Specification
+        .where(TransactionSpecifications.hasUser(userId))
+        .and(TransactionSpecifications.inWithinDateRange(dateRange));
+    return this.repository.findAll(specification)
                .stream()
                .map(this.mapper::toDomain)
                .toList();
