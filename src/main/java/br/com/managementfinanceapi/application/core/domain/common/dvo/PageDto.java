@@ -2,7 +2,7 @@ package br.com.managementfinanceapi.application.core.domain.common.dvo;
 
 import java.util.List;
 
-public record Page<T>(
+public record PageDto<T>(
     List<T> content,
     int page,
     int size,

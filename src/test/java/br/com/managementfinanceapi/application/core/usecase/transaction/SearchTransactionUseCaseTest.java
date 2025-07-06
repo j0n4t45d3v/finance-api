@@ -1,7 +1,7 @@
 package br.com.managementfinanceapi.application.core.usecase.transaction;
 
 import br.com.managementfinanceapi.application.core.domain.common.dvo.DateRange;
-import br.com.managementfinanceapi.application.core.domain.common.dvo.Page;
+import br.com.managementfinanceapi.application.core.domain.common.dvo.PageDto;
 import br.com.managementfinanceapi.application.core.domain.common.exception.InvalidDateRangeException;
 import br.com.managementfinanceapi.application.core.domain.common.exception.NotFoundException;
 import br.com.managementfinanceapi.application.core.domain.transaction.TransactionDomain;
@@ -42,9 +42,9 @@ class SearchTransactionUseCaseTest {
     List<TransactionDomain> contentPageMock = List.of(mock(TransactionDomain.class));
 
     Mockito.when(this.searchRepositoryPort.all(any(SearchAllFilters.class)))
-        .thenReturn(new Page<>(contentPageMock, 0, 5, 1));
+        .thenReturn(new PageDto<>(contentPageMock, 0, 5, 1));
 
-    Page<TransactionDomain> transactionDomainPage = this.searchTransactionUseCase.all(filters);
+    PageDto<TransactionDomain> transactionDomainPage = this.searchTransactionUseCase.all(filters);
 
     assertEquals(0, transactionDomainPage.page());
     assertEquals(5, transactionDomainPage.size());

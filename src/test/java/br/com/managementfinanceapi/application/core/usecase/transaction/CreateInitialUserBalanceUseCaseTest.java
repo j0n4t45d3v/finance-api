@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
-import br.com.managementfinanceapi.application.core.domain.common.dvo.Page;
+import br.com.managementfinanceapi.application.core.domain.common.dvo.PageDto;
 import br.com.managementfinanceapi.application.core.domain.common.exception.BadRequestException;
 import br.com.managementfinanceapi.application.core.domain.transaction.BalanceDomain;
 import br.com.managementfinanceapi.application.core.domain.transaction.TransactionDomain;
@@ -42,7 +42,7 @@ class CreateInitialUserBalanceUseCaseTest {
         .thenReturn(List.of());
 
     when(this.searchTransactionPort.allByUser(anyLong()))
-        .thenReturn(new Page<>(List.of(transactionMock), 0, 5, 1));
+        .thenReturn(new PageDto<>(List.of(transactionMock), 0, 5, 1));
 
     BalanceDomain initialBalance = new BalanceDomain(
         null,
@@ -97,7 +97,7 @@ class CreateInitialUserBalanceUseCaseTest {
         .thenReturn(List.of());
 
     when(this.searchTransactionPort.allByUser(anyLong()))
-        .thenReturn(new Page<>(List.of(), 0, 5, 0));
+        .thenReturn(new PageDto<>(List.of(), 0, 5, 0));
 
     BalanceDomain initialBalance = new BalanceDomain(
         null,

@@ -1,7 +1,7 @@
 package br.com.managementfinanceapi.application.core.usecase.transaction;
 
 import br.com.managementfinanceapi.application.core.domain.common.dvo.DateRange;
-import br.com.managementfinanceapi.application.core.domain.common.dvo.Page;
+import br.com.managementfinanceapi.application.core.domain.common.dvo.PageDto;
 import br.com.managementfinanceapi.application.core.domain.common.exception.InvalidDateRangeException;
 import br.com.managementfinanceapi.application.core.domain.common.exception.NotFoundException;
 import br.com.managementfinanceapi.application.core.domain.transaction.TransactionDomain;
@@ -20,7 +20,7 @@ public class SearchTransactionUseCase implements SearchTransactionPort {
   }
 
   @Override
-  public Page<TransactionDomain> all(SearchAllFilters filters) {
+  public PageDto<TransactionDomain> all(SearchAllFilters filters) {
     filters.validate();
     return this.searchRepositoryPort.all(filters);
   }

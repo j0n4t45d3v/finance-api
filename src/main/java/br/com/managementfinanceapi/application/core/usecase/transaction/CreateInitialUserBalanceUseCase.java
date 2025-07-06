@@ -2,7 +2,7 @@ package br.com.managementfinanceapi.application.core.usecase.transaction;
 
 import java.util.List;
 
-import br.com.managementfinanceapi.application.core.domain.common.dvo.Page;
+import br.com.managementfinanceapi.application.core.domain.common.dvo.PageDto;
 import br.com.managementfinanceapi.application.core.domain.common.exception.BadRequestException;
 import br.com.managementfinanceapi.application.core.domain.transaction.BalanceDomain;
 import br.com.managementfinanceapi.application.core.domain.transaction.TransactionDomain;
@@ -35,7 +35,7 @@ public class CreateInitialUserBalanceUseCase implements CreateInitialUserBalance
       throw new BadRequestException("Usuário já possui um saldo inicial cadastrado");
     }
 
-    Page<TransactionDomain> transaction = this.searchTransactionPort.allByUser(userId);
+    PageDto<TransactionDomain> transaction = this.searchTransactionPort.allByUser(userId);
     if (transaction.isEmptyContent()) {
       throw new BadRequestException("Antes de registrar o seu saldo atual, primeiro cadastre as transações até o momento do saldo");
     }

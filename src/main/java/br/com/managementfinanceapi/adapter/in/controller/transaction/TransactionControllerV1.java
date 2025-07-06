@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.managementfinanceapi.adapter.in.dto.ResponseV0;
 import br.com.managementfinanceapi.adapter.in.dto.transaction.AddTransaction;
-import br.com.managementfinanceapi.application.core.domain.common.dvo.Page;
+import br.com.managementfinanceapi.application.core.domain.common.dvo.PageDto;
 import br.com.managementfinanceapi.application.core.domain.transaction.TransactionDomain;
 import br.com.managementfinanceapi.application.core.domain.transaction.dvo.SearchAllFilters;
 import br.com.managementfinanceapi.application.port.in.transaction.SearchTransactionPort;
@@ -42,7 +42,7 @@ public class TransactionControllerV1 {
   }
 
   @GetMapping
-  public ResponseEntity<ResponseV0<Page<TransactionDomain>>> getAll(
+  public ResponseEntity<ResponseV0<PageDto<TransactionDomain>>> getAll(
     @Valid @ModelAttribute SearchAllFilters filters,
     Pageable page
   ) {
