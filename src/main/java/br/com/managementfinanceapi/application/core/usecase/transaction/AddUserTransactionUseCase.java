@@ -5,6 +5,7 @@ import br.com.managementfinanceapi.application.core.domain.transaction.Transacti
 import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 import br.com.managementfinanceapi.application.port.in.transaction.AddUserTransactionPort;
 import br.com.managementfinanceapi.application.port.in.transaction.CreateTransactionPort;
+import br.com.managementfinanceapi.application.port.in.transaction.UpdateBalanceForSubsequenceMonthsPort;
 import br.com.managementfinanceapi.application.port.in.transaction.UpdateBalanceOfMonthPort;
 
 import java.time.YearMonth;
@@ -13,16 +14,16 @@ public class AddUserTransactionUseCase implements AddUserTransactionPort {
 
   private final CreateTransactionPort createTransactionPort;
   private final UpdateBalanceOfMonthPort updateBalanceOfMonthPort;
-  private final UpdateBalanceForSubsequenceMonthsUseCase updateBalanceForSubsequenceMonthsUseCase;
+  private final UpdateBalanceForSubsequenceMonthsPort updateBalanceForSubsequenceMonthsPort;
 
   public AddUserTransactionUseCase(
       CreateTransactionPort createTransactionPort,
       UpdateBalanceOfMonthPort updateBalanceOfMonthPort,
-      UpdateBalanceForSubsequenceMonthsUseCase updateBalanceForSubsequenceMonthsUseCase
+      UpdateBalanceForSubsequenceMonthsPort updateBalanceForSubsequenceMonthsPort
   ) {
     this.createTransactionPort = createTransactionPort;
     this.updateBalanceOfMonthPort = updateBalanceOfMonthPort;
-    this.updateBalanceForSubsequenceMonthsUseCase = updateBalanceForSubsequenceMonthsUseCase;
+    this.updateBalanceForSubsequenceMonthsPort = updateBalanceForSubsequenceMonthsPort;
   }
 
   @Override
@@ -35,7 +36,7 @@ public class AddUserTransactionUseCase implements AddUserTransactionPort {
     BalanceDomain balance = this.createBalance(newTransaction, userId);
     YearMonth yearMonth = YearMonth.of(balance.getYear(), balance.getMonth());
     this.updateBalanceOfMonthPort.execute(balance);
-    this.updateBalanceForSubsequenceMonthsUseCase.execute(userId, balance.getAmount(), yearMonth);
+    this.updateBalanceForSubsequenceMonthsPort.execute(userId, balance.getAmount(), yearMonth);
   }
 
   private BalanceDomain createBalance(TransactionDomain newTransaction, Long userId){
