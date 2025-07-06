@@ -1,5 +1,6 @@
-package br.com.managementfinanceapi.adapter.out.repository.transaction;
+package br.com.managementfinanceapi.adapter.out.repository.transaction.implementation;
 
+import br.com.managementfinanceapi.adapter.out.repository.transaction.TransactionRepository;
 import org.springframework.stereotype.Component;
 
 import br.com.managementfinanceapi.adapter.out.entity.transaction.TransactionEntity;

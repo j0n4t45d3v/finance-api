@@ -1,8 +1,9 @@
-package br.com.managementfinanceapi.adapter.out.repository.transaction;
+package br.com.managementfinanceapi.adapter.out.repository.transaction.implementation;
 
 import java.util.List;
 import java.util.Optional;
 
+import br.com.managementfinanceapi.adapter.out.repository.transaction.BalanceRepository;
 import org.springframework.stereotype.Component;
 
 import br.com.managementfinanceapi.adapter.out.entity.transaction.BalanceEntity;

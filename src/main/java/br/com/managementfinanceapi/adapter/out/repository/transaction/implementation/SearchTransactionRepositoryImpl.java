@@ -1,8 +1,9 @@
-package br.com.managementfinanceapi.adapter.out.repository.transaction;
+package br.com.managementfinanceapi.adapter.out.repository.transaction.implementation;
 
 import java.util.List;
 import java.util.Optional;
 
+import br.com.managementfinanceapi.adapter.out.repository.transaction.TransactionRepository;
 import br.com.managementfinanceapi.adapter.out.repository.transaction.specifications.TransactionSpecifications;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

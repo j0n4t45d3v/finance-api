@@ -1,9 +1,10 @@
-package br.com.managementfinanceapi.adapter.out.repository.category;
+package br.com.managementfinanceapi.adapter.out.repository.category.implementation;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import br.com.managementfinanceapi.adapter.out.repository.category.CategoryRepository;
 import org.springframework.stereotype.Component;
 
 import br.com.managementfinanceapi.adapter.out.entity.category.CategoryEntity;
