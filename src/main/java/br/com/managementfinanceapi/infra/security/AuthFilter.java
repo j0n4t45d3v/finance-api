@@ -1,8 +1,7 @@
 package br.com.managementfinanceapi.infra.security;
 
-import br.com.managementfinanceapi.adapter.in.dto.error.ErrorV0;
+import br.com.managementfinanceapi.adapter.in.dto.error.ResponseErrorV0;
 import br.com.managementfinanceapi.application.port.out.security.jwt.TokenReaderPort;
-import br.com.managementfinanceapi.adapter.in.dto.ResponseV0;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
@@ -10,8 +9,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,12 +22,15 @@ import java.io.IOException;
 @Component
 public class AuthFilter extends OncePerRequestFilter {
 
-  private static final Logger log = LoggerFactory.getLogger(AuthFilter.class);
   private final TokenReaderPort tokenReader;
   private final ObjectMapper mapper;
   private final UserDetailsService userDetails;
 
-  public AuthFilter(TokenReaderPort tokenReader, ObjectMapper mapper, UserDetailsService userDetails) {
+  public AuthFilter(
+      TokenReaderPort tokenReader,
+      ObjectMapper mapper,
+      UserDetailsService userDetails
+  ) {
     this.tokenReader = tokenReader;
     this.mapper = mapper;
     this.userDetails = userDetails;
@@ -46,12 +46,14 @@ public class AuthFilter extends OncePerRequestFilter {
     if (authorization != null && authorization.startsWith("Bearer ")) {
       String token = authorization.substring(7);
       if (this.tokenReader.isExpired(token)) {
-        this.errorResponseFilter(response, "Token Expirado!", 403);
+        ResponseErrorV0<String> responseError = ResponseErrorV0.forbidden("Authorization Error", "Token Expirado!");
+        this.errorResponseFilter(response, responseError);
         return;
       }
       String username = this.tokenReader.getSubject(token);
       if(username == null ||username.isEmpty()) {
-        this.errorResponseFilter(response, "Token inválido!", 403);
+        ResponseErrorV0<String> responseError = ResponseErrorV0.forbidden("Authorization Error", "Token inválido!");
+        this.errorResponseFilter(response, responseError);
         return;
       }
       try {
@@ -67,8 +69,8 @@ public class AuthFilter extends OncePerRequestFilter {
           SecurityContextHolder.getContext().setAuthentication(userAuthenticate);
         }
       } catch (UsernameNotFoundException error) {
-        log.info("Falha na autenticação: {}", error.getMessage());
-        this.errorResponseFilter(response, error.getMessage(), 404);
+        ResponseErrorV0<String> responseError = ResponseErrorV0.unauthorized("Authorization Error", error.getMessage());
+        this.errorResponseFilter(response, responseError);
       }
     }
 
@@ -77,15 +79,12 @@ public class AuthFilter extends OncePerRequestFilter {
 
   private void errorResponseFilter(
       HttpServletResponse response,
-      String message,
-      int status
+      ResponseErrorV0<?> responseErrorV0
   ) throws IOException{
     ServletOutputStream out = response.getOutputStream();
-    ErrorV0<?> error = ErrorV0.of(message);
-    ResponseV0<ErrorV0<?>> errorResponse = ResponseV0.error(status, error);
-    byte[] errorParseToJson = this.mapper.writeValueAsBytes(errorResponse);
+    byte[] errorParseToJson = this.mapper.writeValueAsBytes(responseErrorV0);
     out.write(errorParseToJson);
-    response.setStatus(status);
+    response.setStatus(responseErrorV0.status());
     response.setHeader("Content-Type", "application/json");
   }
 }
