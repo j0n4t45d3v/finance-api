@@ -12,7 +12,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: openapi, swagger-ui
+        include: openapi, swagger-ui, health
 springdoc:
   swagger-ui:
     path: /
