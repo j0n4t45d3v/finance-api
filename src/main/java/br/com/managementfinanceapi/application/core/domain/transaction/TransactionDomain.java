@@ -74,6 +74,10 @@ public class TransactionDomain {
     return this.category.getId();
   }
 
+  public String getCategoryName() {
+    return this.category.getName();
+  }
+
   public boolean isExpence() {
     return this.type.equals(TransactionType.EXPENSE);
   }
