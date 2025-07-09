@@ -1,0 +1,17 @@
+spring:
+
+  datasource:
+    username: test
+    password: test123
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://localhost:5432/easy-finance-test
+    user: test
+    password: test123
