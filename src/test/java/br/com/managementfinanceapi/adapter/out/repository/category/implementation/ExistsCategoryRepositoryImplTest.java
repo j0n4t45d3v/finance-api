@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("test")
@@ -32,6 +33,7 @@ class ExistsCategoryRepositoryImplTest extends PostgreSQLTestContainer {
     this.entityManager.persist(this.category);
     this.entityManager.flush();
   }
+
   @Test
   @DisplayName("should return true when exists user category with the id")
   void shouldReturnTrueWhenExistsUserCategoryWithTheId() {
@@ -40,9 +42,23 @@ class ExistsCategoryRepositoryImplTest extends PostgreSQLTestContainer {
   }
 
   @Test
+  @DisplayName("should return false when not exists user category with the id")
+  void shouldReturnFalseWhenNotExistsUserCategoryWithTheId() {
+    boolean exists = this.existsCategoryRepository.byId(-1L);
+    assertFalse(exists);
+  }
+
+  @Test
   @DisplayName("should return true when exists user category with the name")
   void shouldReturnTrueWhenExistsUserCategoryWithTheName() {
     boolean exists = this.existsCategoryRepository.byName(this.category.getName());
     assertTrue(exists);
+  }
+
+  @Test
+  @DisplayName("should return false when not exists user category with the name")
+  void shouldReturnFalseWhenNotExistsUserCategoryWithTheName() {
+    boolean exists = this.existsCategoryRepository.byName("Category Empty");
+    assertFalse(exists);
   }
 }
