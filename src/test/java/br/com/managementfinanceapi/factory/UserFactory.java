@@ -11,6 +11,15 @@ public class UserFactory {
   }
 
   public static UserEntity create(String email, String password){
+    System.out.println();
+    System.out.println("======================================== ");
+    System.out.println();
+    System.out.println("Create User: ");
+    System.out.printf("  Email: %s%n", email);
+    System.out.printf("  Password: %s%n", password);
+    System.out.println();
+    System.out.println("======================================== ");
+    System.out.println();
     return new UserEntity(email, password);
   }
 
