@@ -4,6 +4,7 @@ import br.com.managementfinanceapi.adapter.out.entity.user.UserEntity;
 import br.com.managementfinanceapi.adapter.out.mapper.user.UserMapper;
 import br.com.managementfinanceapi.application.core.domain.user.UserDomain;
 import br.com.managementfinanceapi.config.PostgreSQLTestContainer;
+import br.com.managementfinanceapi.factory.UserFactory;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +33,7 @@ class FindUserPortImplTest extends PostgreSQLTestContainer {
 
   @BeforeEach
   void setUp() {
-    this.userPersistence = new UserEntity("john@doe.test", "secretpassword");
+    this.userPersistence = UserFactory.createFakeData();
     this.entityManager.persist(this.userPersistence);
     this.entityManager.flush();
   }
