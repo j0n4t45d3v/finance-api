@@ -4,7 +4,7 @@ public enum TransactionType {
   INCOME('I'),
   EXPENSE('E');
 
-  private Character value;
+  private final Character value;
 
   TransactionType(Character value) {
     this.value = value;
