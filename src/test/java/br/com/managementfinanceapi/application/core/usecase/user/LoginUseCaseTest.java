@@ -50,7 +50,7 @@ class LoginUseCaseTest {
     Mockito.when(this.searchUserPort.byEmail(anyString())).thenThrow(new UserNotFound());
 
     InvalidCredentials thrown = assertThrows(InvalidCredentials.class, () -> this.loginUseCase.execute(credentials));
-    assertEquals(400, thrown.getCode());
+    assertEquals(401, thrown.getCode());
     assertEquals("Usuário ou senha inválida", thrown.getMessage());
   }
 
@@ -66,7 +66,7 @@ class LoginUseCaseTest {
         .thenReturn(false);
 
     InvalidCredentials thrown = assertThrows(InvalidCredentials.class, () -> this.loginUseCase.execute(credentials));
-    assertEquals(400, thrown.getCode());
+    assertEquals(401, thrown.getCode());
     assertEquals("Usuário ou senha inválida", thrown.getMessage());
   }
 }
