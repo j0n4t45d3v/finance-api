@@ -2,13 +2,14 @@ package br.com.managementfinanceapi.adapter.out.repository.category.implementati
 
 import br.com.managementfinanceapi.adapter.out.entity.category.CategoryEntity;
 import br.com.managementfinanceapi.adapter.out.entity.transaction.TransactionEntity;
-import br.com.managementfinanceapi.adapter.out.entity.user.UserEntity;
 import br.com.managementfinanceapi.adapter.out.mapper.category.CategoryMapper;
 import br.com.managementfinanceapi.adapter.out.mapper.user.UserMapper;
 import br.com.managementfinanceapi.application.core.domain.category.CategoryDomain;
 import br.com.managementfinanceapi.application.core.domain.category.dvo.CategoryTransactionSummary;
 import br.com.managementfinanceapi.application.core.domain.transaction.enums.TransactionType;
 import br.com.managementfinanceapi.config.PostgreSQLTestContainer;
+import br.com.managementfinanceapi.factory.CategoryFactory;
+import br.com.managementfinanceapi.factory.TransactionFactory;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +26,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -44,27 +46,24 @@ class SearchCategoryRepositoryImplTest extends PostgreSQLTestContainer {
 
   @BeforeEach
   void setUp() {
-    UserEntity user = new UserEntity("john@doe.test", "secretpassword");
-    this.category = new CategoryEntity(null, "Test category", BigDecimal.TEN, user);
-    TransactionEntity incomeTransaction = new TransactionEntity(
-        null,
+    this.category = CategoryFactory.createFakeData();
+    TransactionEntity incomeTransaction = TransactionFactory.create(
+        "Test transaction",
         BigDecimal.TEN,
         TransactionType.INCOME,
-        "Test transaction",
         LocalDateTime.now(),
-        user,
+        this.category.getUser(),
         this.category
     );
-    TransactionEntity expenseTransaction = new TransactionEntity(
-        null,
+    TransactionEntity expenseTransaction = TransactionFactory.create(
+        "Test transaction",
         BigDecimal.TEN,
         TransactionType.EXPENSE,
-        "Test transaction",
         LocalDateTime.now(),
-        user,
+        this.category.getUser(),
         this.category
     );
-    this.entityManager.persist(user);
+    this.entityManager.persist(this.category.getUser());
     this.entityManager.persist(this.category);
     this.entityManager.persist(incomeTransaction);
     this.entityManager.persist(expenseTransaction);
