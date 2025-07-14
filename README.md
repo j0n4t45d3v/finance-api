@@ -123,6 +123,7 @@ docker-compose --env-file=.env up -d --build
 - [x] Recalculo de saldos futuros quando transações retroativas são adicionadas
 - [x] Geração de relatórios financeiros (.xlsx)
 - [x] Swagger UI para explorar as rotas da API
+- [ ] Rotas para dashboard
 
 ---
 
