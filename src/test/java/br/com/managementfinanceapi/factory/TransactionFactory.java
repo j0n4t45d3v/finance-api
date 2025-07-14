@@ -43,7 +43,8 @@ public class TransactionFactory {
   }
 
   public static TransactionEntity createFakeData(){
-    return TransactionFactory.createFakeData(UserFactory.createFakeData(), CategoryFactory.createFakeData());
+    UserEntity userFakeData = UserFactory.createFakeData();
+    return TransactionFactory.createFakeData(userFakeData, CategoryFactory.createFakeData(userFakeData));
   }
   
   public static TransactionEntity createFakeData(UserEntity user, CategoryEntity category){
