@@ -31,6 +31,7 @@ public class BalanceMapper implements Mapper<BalanceEntity, BalanceDomain> {
   @Override
   public BalanceDomain toDomain(BalanceEntity entity) {
     return new BalanceDomain(
+      entity.getId(),
       entity.getAmount(),
       this.userMapper.toDomain(entity.getUser()),
       entity.getMonth(),
@@ -38,5 +39,5 @@ public class BalanceMapper implements Mapper<BalanceEntity, BalanceDomain> {
     );
   }
 
-  
+
 }
