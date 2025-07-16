@@ -7,7 +7,7 @@
   <package>br.com.managementfinanceapi</package>
 
   <named-query name="BalanceEntity.findAllBalancesAfterMonthYear">
-    <query>select b from BalanceEntity b where b.month > :month and b.year > :year and b.user.id = :userId</query>
+    <query>select b from BalanceEntity b where b.month > :month and b.year >= :year and b.user.id = :userId</query>
   </named-query>
 
 </entity-mappings>
