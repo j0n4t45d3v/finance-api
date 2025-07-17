@@ -16,14 +16,26 @@ import br.com.managementfinanceapi.application.port.out.security.jwt.GenerateTok
 @Component
 public class TokenGenerate implements GenerateTokenPort {
 
-  @Value("${security.jwt.issuer}")
-  private String issuer;
-  @Value("${security.jwt.secret}")
-  private String secret;
-  @Value("${security.jwt.expire-time}")
-  private long expireTime;
-  @Value("${security.jwt-refresh.expire-time}")
-  private long expireTimeRefreshToken;
+  private final String issuer;
+  private final String secret;
+  private final long expireTime;
+  private final long expireTimeRefreshToken;
+
+  public TokenGenerate(
+      @Value("${security.jwt.issuer}")
+      String issuer,
+      @Value("${security.jwt.secret}")
+      String secret,
+      @Value("${security.jwt.expire-time}")
+      long expireTime,
+      @Value("${security.jwt-refresh.expire-time}")
+      long expireTimeRefreshToken
+  ) {
+    this.issuer = issuer;
+    this.secret = secret;
+    this.expireTime = expireTime;
+    this.expireTimeRefreshToken = expireTimeRefreshToken;
+  }
 
   @Override
   public String access(String subject) {
