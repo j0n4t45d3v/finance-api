@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: finance
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/finance
+    username: root
+    password: secret@pass
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    validate-on-migrate: true
+    url: jdbc:postgresql://localhost:5432/finance
+    user: root
+    password: secret@pass
+    locations: classpath:db/migration
+    default-schema: public
+
+
+springdoc:
+  swagger-ui:
+    path: /doc
