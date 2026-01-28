@@ -1,5 +1,7 @@
 package com.jonatas.finance.infra.dto;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -17,11 +19,21 @@ public record Response<TData>(
     }
 
     public enum Status{
-        NOT_FOUND,
-        UNPROCESSABLE_ENTITY,
-        BAD_REQUEST,
-        OK,
-        CREATED
+        NOT_FOUND(404),
+        UNPROCESSABLE_ENTITY(422),
+        BAD_REQUEST(400),
+        OK(200),
+        CREATED(201);
+
+        private final int status;
+        Status(int status) {
+            this.status = status;
+        }
+
+        @JsonValue
+        public int getStatus() {
+            return status;
+        }
     }
 
 
