@@ -1,0 +1,36 @@
+services:
+  finance-api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+    volumes:
+      - ../src:/app/src
+    environment:
+      DB_URL: jdbc:postgresql://database:5432/finance
+    ports:
+      - "8080:8080"
+    networks:
+      - local-dev
+    depends_on:
+      - database
+
+
+  database:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_PASSWORD: secret@pass
+      POSTGRES_USER: root
+      POSTGRES_DB: finance
+    ports:
+      - "5432:5432"
+    volumes:
+      - data-dev:/var/lib/postgresql/data
+    networks:
+      - local-dev
+
+networks:
+  local-dev:
+    driver: bridge
+
+volumes:
+  data-dev:
