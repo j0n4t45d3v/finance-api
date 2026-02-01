@@ -4,9 +4,17 @@ WORKDIR /app
 
 RUN apk add --no-cache entr
 
-COPY . .
+COPY pom.xml .
+
+COPY mvnw .
+
+COPY .mvn .mvn
+
+RUN chmod +x mvnw
 
 RUN ./mvnw -DskipTests dependency:go-offline
+
+COPY . .
 
 EXPOSE 8080
 
