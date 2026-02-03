@@ -3,6 +3,8 @@ package com.jonatas.finance.domain;
 import com.jonatas.finance.domain.dvo.user.Email;
 import com.jonatas.finance.domain.dvo.user.Password;
 import com.jonatas.finance.domain.exception.FieldRequiredException;
+
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 
 
@@ -25,6 +27,10 @@ public class User {
     protected User() {
     }
 
+    private User(Long id) {
+      this.id = id;
+    }
+
     public User(Email email, Password password) {
         if (password == null) {
             throw new FieldRequiredException("password");
@@ -35,6 +41,10 @@ public class User {
         }
         this.email = email;
         this.password = password;
+    }
+
+    public static User reference(@Nonnull Long userId) {
+      return new User(userId);
     }
 
     public Long getId() {
