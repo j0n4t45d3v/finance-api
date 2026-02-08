@@ -34,3 +34,15 @@ spring:
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%-20thread] [traceId=%-21X{traceId}] %highlight(%-5level) %-40logger{36} - %msg%n"
+
+security:
+  jwt:
+    issuer: finance@fake.dev
+    access:
+      secret: jZP2591J7dTUa01xm8L209dTUa01xm8L2BjZP2591J7B09dTUa01xm8L209dTUa01xm8L2
+      exp: 120000 # 60 seconds
+    refresh:
+      secret: jZP2591J7dTUa01xm8L209dTUa01xm8L2BjZP2591J7B09dTUa01xm8L209dTUa01xm8L2
+      exp: 604800000 # 7 days
+
+
