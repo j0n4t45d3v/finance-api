@@ -22,7 +22,7 @@ import java.util.Objects;
 
 @UserTag
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/v1/users")
 public class UserController {
 
     private final CreateUserService createUserService;

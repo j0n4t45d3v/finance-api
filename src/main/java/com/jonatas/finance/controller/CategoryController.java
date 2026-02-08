@@ -24,7 +24,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("/v1/categories")
 public class CategoryController {
 
   private final CreateService<Category> createService;
