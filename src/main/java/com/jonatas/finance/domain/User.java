@@ -1,16 +1,31 @@
 package com.jonatas.finance.domain;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.jonatas.finance.domain.dvo.user.Email;
 import com.jonatas.finance.domain.dvo.user.Password;
 import com.jonatas.finance.domain.exception.FieldRequiredException;
 
 import jakarta.annotation.Nonnull;
-import jakarta.persistence.*;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 
 @Entity
 @Table(name= "tb_users")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,11 +70,30 @@ public class User {
         return this.password.value();
     }
 
+    public void setPassword(String password) {
+        this.password = new Password(password);
+    }
+
     public Email getEmail() {
         return email;
     }
 
     public String getEmailValue() {
         return this.email.value();
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+      return Collections.emptyList();
+    }
+
+    @Override
+    public @Nullable String getPassword() {
+      return this.getPasswordValue();
+    }
+
+    @Override
+    public String getUsername() {
+      return this.getEmailValue();
     }
 }

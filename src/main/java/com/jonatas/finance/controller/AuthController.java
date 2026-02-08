@@ -1,0 +1,49 @@
+package com.jonatas.finance.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.jonatas.finance.domain.dvo.user.Email;
+import com.jonatas.finance.domain.result.auth.LoginResult;
+import com.jonatas.finance.infra.dto.Response;
+import com.jonatas.finance.infra.dto.Token;
+import com.jonatas.finance.infra.error.Error;
+import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
+import com.jonatas.finance.service.AuthService;
+
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
+@RestController
+@RequestMapping("/v1/auth")
+public class AuthController {
+
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
+    public record LoginRequest(String email, String password) {
+    }
+
+    public record LoginResponse(Token access, Token refresh) {
+    }
+
+    @PostMapping("/login")
+    @DefaultErrorResponses
+    @ApiResponse(responseCode = "200", description = "Ok")
+    public ResponseEntity<Response<?>> login(@RequestBody LoginRequest loginRequest) {
+        var loginResult = this.authService.login(new Email(loginRequest.email()), loginRequest.password());
+        if (loginResult instanceof LoginResult.InvalidCredentials) {
+            var errorCredentials = new Error<>("fail_authentication", "e-mail or password invalid");
+            return ResponseEntity.badRequest().body(Response.of(errorCredentials));
+        }
+        LoginResult.Success successResult = (LoginResult.Success) loginResult;
+        LoginResponse loginResponse = new LoginResponse(successResult.access(), successResult.refresh());
+        return ResponseEntity.ok(Response.of(loginResponse));
+    }
+
+}
