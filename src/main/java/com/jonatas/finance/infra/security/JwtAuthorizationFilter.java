@@ -15,6 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jonatas.finance.infra.dto.Response;
+import com.jonatas.finance.infra.dto.Response.Status;
 import com.jonatas.finance.infra.error.Error;
 
 import jakarta.annotation.Nonnull;
@@ -99,7 +100,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             Error<TError> error,
             int status) throws IOException {
         OutputStream out = response.getOutputStream();
-        Response<Error<TError>> data = Response.of(error);
+        Response<Void, Error<TError>> data = Response.ofError(error, Status.BAD_REQUEST);
         response.setStatus(status);
         response.setHeader("Content-Type", "application/json");
         out.write(this.objectMapper.writeValueAsBytes(data));

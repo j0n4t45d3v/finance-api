@@ -22,14 +22,14 @@ public class ErrorHandling {
     private static final Logger log = LoggerFactory.getLogger(ErrorHandling.class);
 
     @ExceptionHandler(DomainException.class)
-    public ResponseEntity<Response<Error<String>>> domainError(DomainException error) {
+    public ResponseEntity<Response<Void, Error<String>>> domainError(DomainException error) {
         Error<String> domainViolation = new Error<>("domain_violation", error.getMessage());
         return ResponseEntity.unprocessableContent()
-                .body(Response.of(domainViolation, Response.Status.UNPROCESSABLE_ENTITY));
+                .body(Response.ofError(domainViolation, Response.Status.UNPROCESSABLE_ENTITY));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Response<Error<Map<String,String>>>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Response<Void,Error<Map<String,String>>>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
@@ -38,7 +38,7 @@ public class ErrorHandling {
         });
         Error<Map<String,String>> contractViolation = new Error<>("contract_violation", errors);
         return ResponseEntity.badRequest()
-            .body(Response.of(contractViolation, Response.Status.BAD_REQUEST));
+            .body(Response.ofError(contractViolation, Response.Status.BAD_REQUEST));
     }
 
     @ExceptionHandler(NoResourceFoundException.class)

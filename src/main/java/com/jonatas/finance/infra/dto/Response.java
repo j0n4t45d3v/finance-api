@@ -1,14 +1,20 @@
 package com.jonatas.finance.infra.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-public record Response<TData>(
+public record Response<TData, TError>(
         LocalDateTime timestamp,
         Status status,
-        TData data
+
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        TData data,
+
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        TError error
 
 ) {
 
@@ -36,12 +42,15 @@ public record Response<TData>(
         }
     }
 
+    public static <TError> Response<Void, TError> ofError(TError error, Status status) {
+        return new Response(null, status, null, error);
+    }
 
-    public static <TData> Response<TData> of(TData data) {
+    public static <TData> Response<TData, Void> of(TData data) {
         return Response.of(data, Status.OK);
     }
 
-    public static <TData> Response<TData> of(TData data, Status status) {
-        return new Response<>(null, status, data);
+    public static <TData> Response<TData, Void> of(TData data, Status status) {
+        return new Response<>(null, status, data, null);
     }
 }
