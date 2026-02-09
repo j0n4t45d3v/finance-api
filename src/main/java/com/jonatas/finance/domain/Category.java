@@ -81,4 +81,8 @@ public class Category {
     return this.user;
   }
 
+  public String getNameValue() {
+        return this.name.value();
+  }
+
 }

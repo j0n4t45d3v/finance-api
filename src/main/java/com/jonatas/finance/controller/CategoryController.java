@@ -1,9 +1,11 @@
 package com.jonatas.finance.controller;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +16,9 @@ import com.jonatas.finance.domain.Category;
 import com.jonatas.finance.domain.Category.Name;
 import com.jonatas.finance.domain.Category.Type;
 import com.jonatas.finance.domain.User;
+import com.jonatas.finance.infra.dto.Response;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
+import com.jonatas.finance.service.CategoryService;
 import com.jonatas.finance.service.CreateService;
 
 import io.swagger.v3.oas.annotations.headers.Header;
@@ -29,9 +33,14 @@ import jakarta.validation.constraints.Size;
 public class CategoryController {
 
     private final CreateService<Category> createService;
+    private final CategoryService categoryService;
 
-    public CategoryController(CreateService<Category> createService) {
+    public CategoryController(
+        CreateService<Category> createService,
+        CategoryService categoryService
+    ) {
         this.createService = createService;
+        this.categoryService = categoryService;
     }
 
     public record CreateCategoryRequest(
@@ -61,6 +70,18 @@ public class CategoryController {
                 .buildAndExpand(categoryCreated.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    public record CategoryResponse(Long id, String name, String type) {
+    }
+    @GetMapping
+    public ResponseEntity<Response<List<CategoryResponse>, Void>> all(@AuthenticationPrincipal User userAuthenticated) {
+        List<CategoryResponse> categories = this.categoryService
+            .findAllByUser(userAuthenticated)
+            .stream()
+            .map(c -> new CategoryResponse(c.getId(), c.getNameValue(), c.getType().name()))
+            .toList();
+        return ResponseEntity.ok(Response.of(categories));
     }
 
 }
