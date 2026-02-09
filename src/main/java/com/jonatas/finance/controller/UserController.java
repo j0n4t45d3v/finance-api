@@ -1,27 +1,42 @@
 package com.jonatas.finance.controller;
 
-import com.jonatas.finance.domain.User;
-import com.jonatas.finance.domain.dvo.user.Email;
-import com.jonatas.finance.domain.dvo.user.Password;
-import com.jonatas.finance.domain.exception.DomainException;
-import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
-import com.jonatas.finance.infra.swagger.annotation.UserTag;
-import com.jonatas.finance.service.CreateUserService;
-import io.swagger.v3.oas.annotations.headers.Header;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
-import java.util.Objects;
+import com.jonatas.finance.domain.User;
+import com.jonatas.finance.infra.dto.Response;
+import com.jonatas.finance.infra.swagger.annotation.UserTag;
 
 
 @UserTag
 @RestController
 @RequestMapping("/v1/users")
 public class UserController {
+
+
+    public record UserDetailsResponse(
+        String email,
+        List<? extends GrantedAuthority> authorities
+    ) {
+    }
+
+    @GetMapping("/details")
+    public ResponseEntity<Response<UserDetailsResponse, Void>> userDetails(
+        @AuthenticationPrincipal User userAuthenticated
+    ) {
+        UserDetailsResponse userDetailsResponse = new UserDetailsResponse(
+            userAuthenticated.getEmailValue(),
+            userAuthenticated.getAuthorities().stream().toList()
+        );
+        return ResponseEntity.ok(Response.of(userDetailsResponse));
+    }
+
 }
