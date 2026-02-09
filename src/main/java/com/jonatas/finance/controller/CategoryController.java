@@ -28,38 +28,39 @@ import jakarta.validation.constraints.Size;
 @RequestMapping("/v1/categories")
 public class CategoryController {
 
-  private final CreateService<Category> createService;
+    private final CreateService<Category> createService;
 
-  public CategoryController(CreateService<Category> createService) {
-    this.createService = createService;
-  }
-
-  public record CreateCategoryRequest(
-      @NotBlank(message = "name is required")
-      @Size(min = 5, max = 50, message = "name must be between 5 and 50 characters") 
-      String name,
-
-      @NotNull(message = "type is required") 
-      Type type
-  ) {
-    private Category toEntity(User user) {
-      return new Category(new Name(this.name), this.type, user);
+    public CategoryController(CreateService<Category> createService) {
+        this.createService = createService;
     }
-  }
 
-  @PostMapping
-  @DefaultErrorResponses
-  @ApiResponse(responseCode = "201", description = "Created", headers = { @Header(name = "Location") })
-  public ResponseEntity<Void> create(
-        @RequestBody @Valid CreateCategoryRequest request,
-        @AuthenticationPrincipal User user
+    public record CreateCategoryRequest(
+
+        @NotBlank(message = "name is required") 
+        @Size(min = 5, max = 50, message = "name must be between 5 and 50 characters") 
+        String name,
+
+        @NotNull(message = "type is required") 
+        Type type
+
     ) {
-    Category categoryCreated = this.createService.execute(request.toEntity(user));
-    URI location = UriComponentsBuilder
-        .fromPath("/categories/{id}")
-        .buildAndExpand(categoryCreated.getId())
-        .toUri();
-    return ResponseEntity.created(location).build();
-  }
+        private Category toEntity(User user) {
+            return new Category(new Name(this.name), this.type, user);
+        }
+    }
+
+    @PostMapping
+    @DefaultErrorResponses
+    @ApiResponse(responseCode = "201", description = "Created", headers = { @Header(name = "Location") })
+    public ResponseEntity<Void> create(
+            @RequestBody @Valid CreateCategoryRequest request,
+            @AuthenticationPrincipal User user) {
+        Category categoryCreated = this.createService.execute(request.toEntity(user));
+        URI location = UriComponentsBuilder
+                .fromPath("/categories/{id}")
+                .buildAndExpand(categoryCreated.getId())
+                .toUri();
+        return ResponseEntity.created(location).build();
+    }
 
 }
