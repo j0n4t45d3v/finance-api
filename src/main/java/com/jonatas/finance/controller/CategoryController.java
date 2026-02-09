@@ -3,6 +3,7 @@ package com.jonatas.finance.controller;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,21 +40,21 @@ public class CategoryController {
       String name,
 
       @NotNull(message = "type is required") 
-      Type type,
-
-      @NotNull(message = "userId is required") 
-      Long userId
+      Type type
   ) {
-    private Category toEntity() {
-      return new Category(new Name(this.name), this.type, User.reference(userId));
+    private Category toEntity(User user) {
+      return new Category(new Name(this.name), this.type, user);
     }
   }
 
   @PostMapping
   @DefaultErrorResponses
   @ApiResponse(responseCode = "201", description = "Created", headers = { @Header(name = "Location") })
-  public ResponseEntity<Void> create(@RequestBody @Valid CreateCategoryRequest request) {
-    Category categoryCreated = this.createService.execute(request.toEntity());
+  public ResponseEntity<Void> create(
+        @RequestBody @Valid CreateCategoryRequest request,
+        @AuthenticationPrincipal User user
+    ) {
+    Category categoryCreated = this.createService.execute(request.toEntity(user));
     URI location = UriComponentsBuilder
         .fromPath("/categories/{id}")
         .buildAndExpand(categoryCreated.getId())
