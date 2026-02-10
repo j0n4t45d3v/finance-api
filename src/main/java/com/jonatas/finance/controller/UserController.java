@@ -1,8 +1,6 @@
 package com.jonatas.finance.controller;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;

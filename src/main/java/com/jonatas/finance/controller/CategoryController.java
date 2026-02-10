@@ -17,6 +17,7 @@ import com.jonatas.finance.domain.Category.Name;
 import com.jonatas.finance.domain.Category.Type;
 import com.jonatas.finance.domain.User;
 import com.jonatas.finance.infra.dto.Response;
+import com.jonatas.finance.infra.swagger.annotation.CategoryTag;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
 import com.jonatas.finance.service.CategoryService;
 import com.jonatas.finance.service.CreateService;
@@ -28,6 +29,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+@CategoryTag
 @RestController
 @RequestMapping("/v1/categories")
 public class CategoryController {

@@ -1,7 +1,6 @@
 package com.jonatas.finance.controller;
 
 import java.net.URI;
-import java.util.Objects;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,21 +9,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.jonatas.finance.domain.User;
 import com.jonatas.finance.domain.dvo.user.Email;
-import com.jonatas.finance.domain.dvo.user.Password;
-import com.jonatas.finance.domain.exception.DomainException;
 import com.jonatas.finance.domain.result.auth.LoginResult;
 import com.jonatas.finance.domain.result.auth.RegisterResult;
 import com.jonatas.finance.infra.dto.Response;
 import com.jonatas.finance.infra.dto.Token;
 import com.jonatas.finance.infra.error.Error;
+import com.jonatas.finance.infra.swagger.annotation.AuthTag;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
 import com.jonatas.finance.service.AuthService;
 
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
+@AuthTag
 @RestController
 @RequestMapping("/v1/auth")
 public class AuthController {
