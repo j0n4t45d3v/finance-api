@@ -11,9 +11,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import org.springframework.util.AntPathMatcher;
 
 @Configuration
 public class AppConfig {
+
+    @Bean
+    public AntPathMatcher antPathMatcher() {
+        return new AntPathMatcher();
+    }
 
     @Bean
     public ObjectMapper objectMapper() {
