@@ -2,7 +2,7 @@ package com.jonatas.finance.controller;
 
 import com.jonatas.finance.domain.User;
 import com.jonatas.finance.domain.result.account.CreateAccountResult;
-import com.jonatas.finance.infra.dto.Response;
+import com.jonatas.finance.dto.Response;
 import com.jonatas.finance.infra.error.Error;
 import com.jonatas.finance.infra.swagger.annotation.AccountTag;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;

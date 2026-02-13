@@ -1,4 +1,4 @@
-package com.jonatas.finance.infra.dto;
+package com.jonatas.finance.dto;
 
 import java.time.LocalDateTime;
 

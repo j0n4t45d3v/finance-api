@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jonatas.finance.domain.User;
-import com.jonatas.finance.infra.dto.Response;
+import com.jonatas.finance.dto.Response;
 import com.jonatas.finance.infra.swagger.annotation.UserTag;
 
 

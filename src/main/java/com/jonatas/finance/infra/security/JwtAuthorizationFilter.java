@@ -1,8 +1,8 @@
 package com.jonatas.finance.infra.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jonatas.finance.infra.dto.Response;
-import com.jonatas.finance.infra.dto.Response.Status;
+import com.jonatas.finance.dto.Response;
+import com.jonatas.finance.dto.Response.Status;
 import com.jonatas.finance.infra.error.Error;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;

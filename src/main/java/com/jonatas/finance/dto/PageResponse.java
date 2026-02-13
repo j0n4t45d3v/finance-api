@@ -1,7 +1,6 @@
-package com.jonatas.finance.infra.dto;
+package com.jonatas.finance.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
