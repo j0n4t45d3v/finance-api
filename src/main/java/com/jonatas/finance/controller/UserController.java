@@ -26,7 +26,7 @@ public class UserController {
     ) {
     }
 
-    @GetMapping("/details")
+    @GetMapping("/me")
     public ResponseEntity<Response<UserDetailsResponse, Void>> userDetails(
         @AuthenticationPrincipal User userAuthenticated
     ) {
