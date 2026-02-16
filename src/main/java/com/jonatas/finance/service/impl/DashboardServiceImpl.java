@@ -25,7 +25,7 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public SummaryIncomeVsExpense getSummaryIncomeVsExpense(DashboardFiltersRequest filters, User user) {
         return this.dashboardRepository
-            .findSummaryIncomesVsExpenses(user, filters.getStartTimestamp(), filters.getEndTimestamp());
+            .findSummaryIncomesVsExpenses(user, filters.getStartTimestamp(), filters.getEndTimestamp(), filters.accountId());
     }
 
     @Override
@@ -36,6 +36,7 @@ public class DashboardServiceImpl implements DashboardService {
             request.getStartTimestamp(),
             request.getEndTimestamp(),
             type,
+            request.accountId(),
             limit
         );
     }
@@ -47,6 +48,7 @@ public class DashboardServiceImpl implements DashboardService {
             user,
             request.getStartTimestamp(),
             request.getEndTimestamp(),
+            request.accountId(),
             limit
         );
     }
@@ -54,9 +56,25 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public List<TransactionGroupByResponse> transactions(DashboardController.DashboardTransactionGroupBy dashboardTransactionGroupBy, DashboardFiltersRequest request, User user) {
         return switch (dashboardTransactionGroupBy) {
-            case DAY -> this.dashboardRepository.findTransactionGroupByDay(user, request.getStartTimestamp(), request.getEndTimestamp());
-            case MONTH -> this.dashboardRepository.findTransactionGroupByMonth(user, request.getStartTimestamp(), request.getEndTimestamp());
-            default -> this.dashboardRepository.findTransactionGroupByCategory(user, request.getStartTimestamp(), request.getEndTimestamp());
+            case DAY -> this.dashboardRepository.findTransactionGroupByDay(
+                user,
+                request.getStartTimestamp(),
+                request.getEndTimestamp(),
+                request.accountId()
+            );
+
+            case MONTH -> this.dashboardRepository.findTransactionGroupByMonth(
+                user,
+                    request.getStartTimestamp(),
+                    request.getEndTimestamp(),
+                    request.accountId()
+            );
+            default -> this.dashboardRepository.findTransactionGroupByCategory(
+                user,
+                request.getStartTimestamp(),
+                request.getEndTimestamp(),
+                request.accountId()
+            );
         };
     }
 
@@ -67,6 +85,7 @@ public class DashboardServiceImpl implements DashboardService {
             user,
             request.getStartTimestamp(),
             request.getEndTimestamp(),
+            request.accountId(),
             limit
         );
     }
