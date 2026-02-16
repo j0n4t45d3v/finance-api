@@ -8,4 +8,15 @@ public record SummaryIncomeVsExpense(
     BigDecimal balance
 ) {
 
+    public SummaryIncomeVsExpense {
+        if (totalIncome == null) {
+            totalIncome = BigDecimal.ZERO;
+        }
+        if (totalExpense == null) {
+            totalExpense = BigDecimal.ZERO;
+        }
+        if (balance == null) {
+            balance = BigDecimal.ZERO;
+        }
+    }
 }
