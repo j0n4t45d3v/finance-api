@@ -30,7 +30,7 @@ public class AccountServiceImpl implements AccountService {
             return new CreateAccountResult.AlreadyExistsAccountWithThisName();
         }
 
-        if (request.mainAccount() && this.alreadyExistsUserMainAccount(user)) {
+        if (request.mainAccount() && this.alreadyExistsMainAccountForThisUser(user)) {
             return new CreateAccountResult.AlreadyExistsMainAccountForUser();
         }
 
@@ -42,7 +42,7 @@ public class AccountServiceImpl implements AccountService {
         return this.accountRepository.existsByDescriptionAndUser(accountName, user);
     }
 
-    private boolean alreadyExistsUserMainAccount(User user) {
+    private boolean alreadyExistsMainAccountForThisUser(User user) {
         return this.accountRepository.existsMainAccountForUser(user);
     }
 
