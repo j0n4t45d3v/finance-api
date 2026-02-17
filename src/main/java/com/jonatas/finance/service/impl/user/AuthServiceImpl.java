@@ -2,6 +2,8 @@ package com.jonatas.finance.service.impl.user;
 
 import java.util.Optional;
 
+import com.jonatas.finance.controller.AuthController.RefreshTokenRequest;
+import com.jonatas.finance.domain.result.auth.RefreshTokenResult;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +50,41 @@ public class AuthServiceImpl implements AuthService {
         Token accessToken = this.jwtService.generateToken(user);
         Token refreshToken = this.jwtService.generateRefreshToken(user);
         return new LoginResult.Success(accessToken, refreshToken);
+    }
+
+    @Override
+    public RefreshTokenResult refresh(RefreshTokenRequest request) {
+        Optional<JwtService.TokenParsed> tokenParsed = this.tryParseValidRefreshToken(request.refreshToken());
+        if (tokenParsed.isEmpty()) {
+            return new RefreshTokenResult.InvalidRefreshToken();
+        }
+
+        Optional<User> subjectFound = this.findSubject(tokenParsed.get());
+        if (subjectFound.isEmpty()) {
+            return new RefreshTokenResult.InvalidSubject();
+        }
+
+        User subject = subjectFound.get();
+        Token newAccessToken = this.jwtService.generateToken(subject);
+        Token newRefreshToken = this.jwtService.generateRefreshToken(subject);
+        return new RefreshTokenResult.Success(newAccessToken, newRefreshToken);
+    }
+
+    private Optional<JwtService.TokenParsed> tryParseValidRefreshToken(String refreshToken) {
+        Optional<JwtService.TokenParsed> refreshTokenParsed = this.jwtService.tryParseRefreshToken(refreshToken);
+        if (refreshTokenParsed.isEmpty()) {
+            return Optional.empty();
+        }
+
+        JwtService.TokenParsed tokenParsed = refreshTokenParsed.get();
+        if (!tokenParsed.isValid()) {
+            return Optional.empty();
+        }
+        return Optional.of(tokenParsed);
+    }
+
+    private Optional<User> findSubject(JwtService.TokenParsed tokenParsed) {
+        return this.userRepository.findByEmail(tokenParsed.getSubject());
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.jonatas.finance.controller;
 
 import java.net.URI;
 
+import com.jonatas.finance.domain.result.auth.RefreshTokenResult;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,6 +54,29 @@ public class AuthController {
         return ResponseEntity.ok(Response.of(loginResponse));
     }
 
+    public record RefreshTokenRequest(String refreshToken) {}
+
+    @PostMapping("/refresh")
+    @DefaultErrorResponses
+    @ApiResponse(responseCode = "200", description = "Ok")
+    public ResponseEntity<Response<?, ?>> refreshToken(@RequestBody RefreshTokenRequest request) {
+        var result = this.authService.refresh(request);
+        if (result instanceof RefreshTokenResult.InvalidRefreshToken) {
+            var invalidToken = new Error<>("invalid_token", "invalid refresh token");
+            return ResponseEntity
+                .badRequest()
+                .body(Response.of(invalidToken, Response.Status.BAD_REQUEST));
+        }
+        if (result instanceof RefreshTokenResult.InvalidSubject) {
+            var invalidSubject = new Error<>("invalid_subject_token", "invalid subject in refresh token");
+            return ResponseEntity
+                .badRequest()
+                .body(Response.of(invalidSubject, Response.Status.BAD_REQUEST));
+        }
+        RefreshTokenResult.Success successResult = (RefreshTokenResult.Success) result;
+        LoginResponse loginResponse = new LoginResponse(successResult.access(), successResult.refresh());
+        return ResponseEntity.ok(Response.of(loginResponse));
+    }
 
     public record RegisterUserRequest(
         String email,
