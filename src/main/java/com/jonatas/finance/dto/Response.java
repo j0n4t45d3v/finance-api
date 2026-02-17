@@ -29,7 +29,8 @@ public record Response<TData, TError>(
         NOT_FOUND(404),
         UNPROCESSABLE_ENTITY(422),
         BAD_REQUEST(400),
-        CREATED(201);
+        CREATED(201),
+        CONFLICT(409);
 
         private final int status;
         Status(int status) {

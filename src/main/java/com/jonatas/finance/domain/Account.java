@@ -46,4 +46,12 @@ public class Account {
     public User getUser() {
         return this.user;
     }
+
+    public void setMain(boolean main) {
+        this.main = main;
+    }
+
+    public void setDescription(Description description) {
+        this.description = description;
+    }
 }

@@ -2,6 +2,7 @@ package com.jonatas.finance.controller;
 
 import com.jonatas.finance.domain.User;
 import com.jonatas.finance.domain.result.account.CreateAccountResult;
+import com.jonatas.finance.domain.result.account.EditAccountResult;
 import com.jonatas.finance.dto.Response;
 import com.jonatas.finance.infra.error.Error;
 import com.jonatas.finance.infra.swagger.annotation.AccountTag;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -70,6 +72,48 @@ public class AccountController {
             .buildAndExpand(value.account().getId())
             .toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    public record EditAccountRequest(
+        @NotNull String name,
+        Boolean mainAccount) {
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> edit(
+        @PathVariable("id") Long id,
+        @RequestBody EditAccountRequest request,
+        @AuthenticationPrincipal User user
+    ) {
+        var result = this.accountService.update(id, request, user);
+
+        if (result instanceof EditAccountResult.AccountNotFound) {
+            Error<String> error = new Error<>("account_not_found", "Account not found");
+            return ResponseEntity
+                .status(404)
+                .body(Response.ofError(error, Response.Status.NOT_FOUND));
+        }
+
+        if (result instanceof EditAccountResult.AlreadyExistsAccountWithThisName) {
+            Error<String> error = new Error<>(
+                "account_already_exists",
+                "Already exists an account register with same name"
+            );
+            return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Response.ofError(error, Response.Status.CONFLICT));
+        }
+        if (result instanceof EditAccountResult.AlreadyExistsMainAccountForUser) {
+            Error<String> error = new Error<>(
+                "main_account_already_exists",
+                "Already exists an main account register for this user"
+            );
+            return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Response.ofError(error, Response.Status.CONFLICT));
+        }
+
+        return ResponseEntity.noContent().build();
     }
 
     public record AccountResponse(
