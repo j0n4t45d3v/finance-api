@@ -32,8 +32,6 @@ public record JwtService(
         @Value("${security.jwt.refresh.exp}") Long refreshExpiration
 ) {
 
-    private static final Logger log = LoggerFactory.getLogger(JwtService.class);
-
     public record TokenParsed(Claims claims, String type) {
 
         public boolean isValid() {
@@ -121,7 +119,6 @@ public record JwtService(
             boolean checkType = this.getType(token, secret).equals(type);
             return !expired && checkType;
         } catch (Exception error) {
-            log.error("Fail validate token {}", error);
             return false;
         }
     }
