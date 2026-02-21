@@ -32,19 +32,19 @@ public record Response<TData, TError>(
         CREATED(201),
         CONFLICT(409);
 
-        private final int status;
-        Status(int status) {
-            this.status = status;
+        private final int value;
+        Status(int value) {
+            this.value = value;
         }
 
         @JsonValue
-        public int getStatus() {
-            return status;
+        public int getValue() {
+            return value;
         }
     }
 
     public static <TError> Response<Void, TError> ofError(TError error, Status status) {
-        return new Response(null, status, null, error);
+        return new Response<>(null, status, null, error);
     }
 
     public static <TData> Response<TData, Void> of(TData data) {
