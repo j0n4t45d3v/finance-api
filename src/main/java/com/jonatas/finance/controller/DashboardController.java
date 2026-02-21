@@ -53,17 +53,17 @@ public class DashboardController {
         return ResponseEntity.ok(Response.of(response));
     }
 
-    public enum DashboardTransactionGroupBy{
+    public enum RankCategoryGroupBy {
         CATEGORY, MONTH, DAY;
     }
 
     @GetMapping("/transactions")
     public ResponseEntity<Response<List<TransactionGroupByResponse>, Void>> transactions(
-        @RequestParam(defaultValue = "CATEGORY") DashboardTransactionGroupBy dashboardTransactionGroupBy,
+        @RequestParam(defaultValue = "CATEGORY") RankCategoryGroupBy rankCategoryGroupBy,
         @ModelAttribute DashboardFiltersRequest request,
         @AuthenticationPrincipal User user
     ) {
-        var response = this.dashboardService.transactions(dashboardTransactionGroupBy, request, user);
+        var response = this.dashboardService.transactions(rankCategoryGroupBy, request, user);
         return ResponseEntity.ok(Response.of(response));
     }
 

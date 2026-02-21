@@ -54,8 +54,8 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public List<TransactionGroupByResponse> transactions(DashboardController.DashboardTransactionGroupBy dashboardTransactionGroupBy, DashboardFiltersRequest request, User user) {
-        return switch (dashboardTransactionGroupBy) {
+    public List<TransactionGroupByResponse> transactions(DashboardController.RankCategoryGroupBy rankCategoryGroupBy, DashboardFiltersRequest request, User user) {
+        return switch (rankCategoryGroupBy) {
             case DAY -> this.dashboardRepository.findTransactionGroupByDay(
                 user,
                 request.getStartTimestamp(),

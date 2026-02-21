@@ -21,7 +21,7 @@ public interface DashboardService {
 
 
     List<TransactionGroupByResponse> transactions(
-        DashboardController.DashboardTransactionGroupBy dashboardTransactionGroupBy,
+        DashboardController.RankCategoryGroupBy rankCategoryGroupBy,
         DashboardFiltersRequest request,
         User user
     );
