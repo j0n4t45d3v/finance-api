@@ -68,18 +68,19 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return;
         }
 
-        boolean isValidToken = this.jwtService.isValidAccessToken(token);
-        if (!isValidToken) {
-            Error<String> error = new Error<String>("INVALID_TOKEN", "invalid token");
-            this.writeErrorMessage(response, error, 401);
+        var tokenParsedOpt = this.jwtService.tryParseAccessToken(token);
+        if (tokenParsedOpt.isEmpty() || !tokenParsedOpt.get().isValid()) {
+            Error<String> error = new Error<>("INVALID_TOKEN", "invalid token");
+            this.writeErrorMessage(response, error);
             return;
         }
 
-        String subject = this.jwtService.getSubjectAccessToken(token);
+        var tokenParsed = tokenParsedOpt.get();
+        String subject = tokenParsed.getSubject().value();
         Optional<UserDetails> userDetailsOptional = this.tryLoadUser(subject);
         if (userDetailsOptional.isEmpty()) {
-            Error<String> error = new Error<String>("INVALID_TOKEN", "subject not found");
-            this.writeErrorMessage(response, error, 401);
+            Error<String> error = new Error<>("INVALID_TOKEN", "subject not found");
+            this.writeErrorMessage(response, error);
             return;
         }
 
@@ -102,13 +103,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
     }
 
-    private <TError> void writeErrorMessage(
-            HttpServletResponse response,
-            Error<TError> error,
-            int status) throws IOException {
+    private <TError> void writeErrorMessage(HttpServletResponse response, Error<TError> error) throws IOException {
         OutputStream out = response.getOutputStream();
         Response<Void, Error<TError>> data = Response.ofError(error, Status.BAD_REQUEST);
-        response.setStatus(status);
+        response.setStatus(401);
         response.setHeader("Content-Type", "application/json");
         out.write(this.objectMapper.writeValueAsBytes(data));
         out.flush();

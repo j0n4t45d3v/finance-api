@@ -38,7 +38,7 @@ public record JwtService(
             try {
                 boolean expired = this.isExpired();
                 boolean checkType = this.getType().equals(this.type);
-                return !expired && checkType;
+                return !expired && checkType && this.claims.getSubject() != null;
             } catch (Exception error) {
                 return false;
             }
@@ -103,46 +103,6 @@ public record JwtService(
         }catch (Exception e) {
             return Optional.empty();
         }
-    }
-
-    public boolean isValidAccessToken(String token) {
-        return this.isValidToken(token, this.accessSecret, "access");
-    }
-
-    public boolean isValidRefreshToken(String token) {
-        return this.isValidToken(token, this.refreshSecret, "refresh");
-    }
-
-    private boolean isValidToken(String token, String secret, String type) {
-        try {
-            boolean expired = this.isExpired(token, secret);
-            boolean checkType = this.getType(token, secret).equals(type);
-            return !expired && checkType;
-        } catch (Exception error) {
-            return false;
-        }
-    }
-
-    public boolean isExpired(String token, String secret) {
-        Instant expiration = this.getExpiration(token, secret).toInstant();
-        Instant now = new Date(System.currentTimeMillis()).toInstant();
-        return expiration.isBefore(now);
-    }
-
-    public String getSubjectAccessToken(String token) {
-        return this.getClaims(token, this.accessSecret())
-                .getSubject();
-    }
-
-    public Date getExpiration(String token, String secret) {
-        return this.getClaims(token, secret)
-                .getExpiration();
-    }
-
-    public String getType(String token, String secret) {
-        return this
-                .getClaims(token, secret)
-                .get("type", String.class);
     }
 
     public Claims getClaims(String token, String secret) {
