@@ -14,6 +14,9 @@ public final class Base62 {
     private static final BigInteger BASE_VALUE = BigInteger.valueOf(62);
     private static final double LOG2_62 = 5.9541; // log2(62) ≃ 5.9541, used in encode result for estimate Base62 string min-length
 
+    private Base62() {
+    }
+
     public static String encode(byte[] input) {
         if (input.length == 0) {
             return "";
