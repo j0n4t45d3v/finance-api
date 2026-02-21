@@ -36,12 +36,13 @@ public class TransactionController {
     }
 
     public record AddTransactionRequest(
+            String description,
+
             @NotNull
             @DecimalMin("0.1")
             BigDecimal amount,
 
             @NotNull
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
             LocalDateTime datetime,
 
             @NotNull

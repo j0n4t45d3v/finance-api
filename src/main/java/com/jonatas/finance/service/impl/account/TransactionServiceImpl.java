@@ -2,6 +2,7 @@ package com.jonatas.finance.service.impl.account;
 
 import com.jonatas.finance.domain.Account;
 import com.jonatas.finance.domain.Category;
+import com.jonatas.finance.domain.Transaction.Description;
 import com.jonatas.finance.domain.result.account.CreateTransactionResult;
 import com.jonatas.finance.repository.AccountRepository;
 import jakarta.transaction.Transactional;
@@ -51,6 +52,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         Transaction transaction = new Transaction(
+            new Description(request.description()),
             new Amount(request.amount()),
             new Timestamp(request.datetime()),
             account.get(),

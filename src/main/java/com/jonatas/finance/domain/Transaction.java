@@ -15,6 +15,13 @@ import jakarta.persistence.*;
 @Table(name = "tb_transactions")
 public class Transaction {
 
+    public record Description(String value) {
+        public Description {
+            if (value == null || value.isBlank()) {
+                value = "<without description>";
+            }
+        }
+    }
 
     public record Amount(@Nonnull BigDecimal value) {
         public Amount {
@@ -33,6 +40,10 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "description"))
+    private Description description;
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "amount"))
@@ -57,12 +68,14 @@ public class Transaction {
     protected Transaction() {}
 
     public Transaction(
+        Description description,
         @Nonnull Amount amount,
         @Nonnull Timestamp transactionAt,
         @Nonnull Account account,
         @Nonnull User user,
         @Nonnull Category category
     ) {
+        this.description = description;
         this.amount = amount;
         this.user = user;
         this.transactionAt = transactionAt;
