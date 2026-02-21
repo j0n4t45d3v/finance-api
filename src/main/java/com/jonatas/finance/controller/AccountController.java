@@ -128,7 +128,7 @@ public class AccountController {
         var accounts = this.accountService
             .findAll(user)
             .stream()
-            .map(a-> new AccountResponse(
+            .map(a -> new AccountResponse(
                 a.getDescriptionValue(),
                 a.isMain()
             ))

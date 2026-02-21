@@ -1,9 +1,5 @@
 package com.jonatas.finance.controller;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jonatas.finance.domain.User;
@@ -13,16 +9,18 @@ import com.jonatas.finance.dto.Response;
 import com.jonatas.finance.infra.error.Error;
 import com.jonatas.finance.infra.swagger.annotation.TransactionTag;
 import com.jonatas.finance.service.TransactionService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
 
 @TransactionTag
 @RestController
@@ -36,20 +34,20 @@ public class TransactionController {
     }
 
     public record AddTransactionRequest(
-            String description,
+        String description,
 
-            @NotNull
-            @DecimalMin("0.1")
-            BigDecimal amount,
+        @NotNull
+        @DecimalMin("0.1")
+        BigDecimal amount,
 
-            @NotNull
-            LocalDateTime datetime,
+        @NotNull
+        LocalDateTime datetime,
 
-            @NotNull
-            Long categoryId,
+        @NotNull
+        Long categoryId,
 
-            @NotNull
-            Long accountId
+        @NotNull
+        Long accountId
     ) {
     }
 
@@ -95,17 +93,17 @@ public class TransactionController {
         }
     }
 
-   @GetMapping
+    @GetMapping
     public ResponseEntity<PageResponse<TransactionResponse>> getPage(Pageable pageable, @AuthenticationPrincipal User user) {
-       var page = this.transactionService.getPage(user, pageable)
-           .map(t -> new TransactionResponse(
-               t.getId(),
-               t.getAmountValue(),
-               t.getTransactionAtValue(),
-               t.getType().name(),
-               t.getAccountId()
-           ));
-       return ResponseEntity.ok(PageResponse.from(page));
+        var page = this.transactionService.getPage(user, pageable)
+            .map(t -> new TransactionResponse(
+                t.getId(),
+                t.getAmountValue(),
+                t.getTransactionAtValue(),
+                t.getType().name(),
+                t.getAccountId()
+            ));
+        return ResponseEntity.ok(PageResponse.from(page));
     }
 
 }

@@ -34,8 +34,8 @@ public class DashboardController {
 
     @GetMapping("/ranks/categories")
     public ResponseEntity<Response<List<RankCategoryResponse>, Void>> rankCategories(
-        @RequestParam(name= "type", required = false) Category.Type type,
-        @RequestParam(name= "top", defaultValue = "10") Integer top,
+        @RequestParam(name = "type", required = false) Category.Type type,
+        @RequestParam(name = "top", defaultValue = "10") Integer top,
         @ModelAttribute DashboardFiltersRequest request,
         @AuthenticationPrincipal User user
     ) {
@@ -45,7 +45,7 @@ public class DashboardController {
 
     @GetMapping("/ranks/transactions")
     public ResponseEntity<Response<List<RankTransactionResponse>, Void>> rankTransactions(
-        @RequestParam(name= "top", defaultValue = "10") Integer topTransactions,
+        @RequestParam(name = "top", defaultValue = "10") Integer topTransactions,
         @ModelAttribute DashboardFiltersRequest request,
         @AuthenticationPrincipal User user
     ) {
@@ -54,7 +54,7 @@ public class DashboardController {
     }
 
     public enum RankCategoryGroupBy {
-        CATEGORY, MONTH, DAY;
+        CATEGORY, MONTH, DAY
     }
 
     @GetMapping("/transactions")
@@ -69,7 +69,7 @@ public class DashboardController {
 
     @GetMapping("/transactions/lastest")
     public ResponseEntity<Response<List<RankTransactionResponse>, Void>> lastTransactions(
-        @RequestParam(name= "top", defaultValue = "10") Integer topTransactions,
+        @RequestParam(name = "top", defaultValue = "10") Integer topTransactions,
         @ModelAttribute DashboardFiltersRequest request,
         @AuthenticationPrincipal User user
     ) {

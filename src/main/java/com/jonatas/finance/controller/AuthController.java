@@ -1,17 +1,8 @@
 package com.jonatas.finance.controller;
 
-import java.net.URI;
-
-import com.jonatas.finance.domain.result.auth.RefreshTokenResult;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import com.jonatas.finance.domain.dvo.user.Email;
 import com.jonatas.finance.domain.result.auth.LoginResult;
+import com.jonatas.finance.domain.result.auth.RefreshTokenResult;
 import com.jonatas.finance.domain.result.auth.RegisterResult;
 import com.jonatas.finance.dto.Response;
 import com.jonatas.finance.dto.Token;
@@ -19,9 +10,16 @@ import com.jonatas.finance.infra.error.Error;
 import com.jonatas.finance.infra.swagger.annotation.AuthTag;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
 import com.jonatas.finance.service.AuthService;
-
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 @AuthTag
 @RestController
@@ -54,7 +52,8 @@ public class AuthController {
         return ResponseEntity.ok(Response.of(loginResponse));
     }
 
-    public record RefreshTokenRequest(String refreshToken) {}
+    public record RefreshTokenRequest(String refreshToken) {
+    }
 
     @PostMapping("/refresh")
     @DefaultErrorResponses
@@ -82,13 +81,14 @@ public class AuthController {
         String email,
         String password,
         String confirmPassword
-    ) {}
+    ) {
+    }
 
     @PostMapping("/register")
     @DefaultErrorResponses
     @ApiResponse(
         responseCode = "201",
-        description = "Created", 
+        description = "Created",
         headers = {@Header(name = "Location")}
     )
     public ResponseEntity<?> register(@RequestBody RegisterUserRequest request) {
@@ -105,9 +105,9 @@ public class AuthController {
         }
 
         URI location = UriComponentsBuilder
-                .fromPath("/users/details")
-                .buildAndExpand()
-                .toUri();
+            .fromPath("/users/details")
+            .buildAndExpand()
+            .toUri();
         return ResponseEntity.created(location).build();
     }
 
