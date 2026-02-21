@@ -13,3 +13,5 @@ server:
 springdoc:
   swagger-ui:
     path: /doc
+    filter: true
+    operationsSorter: true
