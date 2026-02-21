@@ -1,26 +1,16 @@
 package com.jonatas.finance.domain;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
+import com.jonatas.finance.domain.dvo.user.Email;
+import com.jonatas.finance.domain.dvo.user.Password;
+import com.jonatas.finance.domain.exception.FieldRequiredException;
+import jakarta.annotation.Nonnull;
+import jakarta.persistence.*;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.jonatas.finance.domain.dvo.user.Email;
-import com.jonatas.finance.domain.dvo.user.Password;
-import com.jonatas.finance.domain.exception.FieldRequiredException;
-
-import jakarta.annotation.Nonnull;
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import java.util.Collection;
+import java.util.Collections;
 
 
 @Entity

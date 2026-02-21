@@ -1,15 +1,12 @@
 package com.jonatas.finance.domain;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-
-
 import com.jonatas.finance.domain.exception.DomainException;
-
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Entity
 @Table(name = "tb_transactions")

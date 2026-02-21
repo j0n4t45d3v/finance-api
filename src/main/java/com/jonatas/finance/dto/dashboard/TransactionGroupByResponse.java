@@ -2,7 +2,6 @@ package com.jonatas.finance.dto.dashboard;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
 
 public record TransactionGroupByResponse(
     String label,

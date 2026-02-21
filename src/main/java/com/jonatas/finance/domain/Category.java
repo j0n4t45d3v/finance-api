@@ -1,7 +1,5 @@
 package com.jonatas.finance.domain;
 
-import java.util.Objects;
-
 import com.jonatas.finance.domain.exception.DomainException;
 
 import jakarta.annotation.Nonnull;
