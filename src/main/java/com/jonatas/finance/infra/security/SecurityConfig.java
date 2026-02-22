@@ -12,6 +12,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -40,10 +41,11 @@ public class SecurityConfig implements AccessDeniedHandler, AuthenticationEntryP
     public SecurityFilterChain configure(
             HttpSecurity http,
             AuthenticationProvider authProvider,
-            AuthenticationManager authManager) throws Exception {
+            AuthenticationManager authManager
+    ) {
         return http
-                .cors(cors -> cors.disable())
-                .csrf(csrf -> csrf.disable())
+                .cors(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
                 .securityMatcher("/v1/**")
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/v1/auth/**").permitAll()
