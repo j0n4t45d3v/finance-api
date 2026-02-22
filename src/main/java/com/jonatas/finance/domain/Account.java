@@ -1,13 +1,21 @@
 package com.jonatas.finance.domain;
 
-import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
+
+import java.util.Objects;
 
 @Entity
 @Table(name = "tb_user_accounts")
 public class Account {
 
-    public record Description(@Nonnull String value) {}
+    public record Description(String value) {
+        public Description {
+            Objects.requireNonNull(value);
+            if (value.isBlank()) {
+                throw new IllegalArgumentException("description cannot be blank");
+            }
+        }
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,10 +33,10 @@ public class Account {
 
     protected Account() {}
 
-    public Account(@Nonnull Description description, @Nonnull User user, boolean main) {
-        this.description = description;
+    public Account(Description description, User user, boolean main) {
+        this.description = Objects.requireNonNull(description);
         this.main = main;
-        this.user = user;
+        this.user = Objects.requireNonNull(user);
     }
 
     public Long getId() {
