@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Objects;
 
 @Entity
 @Table(name = "tb_transactions")
@@ -17,6 +18,10 @@ public class Transaction {
             if (value == null || value.isBlank()) {
                 value = "<without description>";
             }
+        }
+
+        public static Description empty() {
+            return new Description(null);
         }
     }
 
@@ -66,22 +71,26 @@ public class Transaction {
 
     public Transaction(
         Description description,
-        @Nonnull Amount amount,
-        @Nonnull Timestamp transactionAt,
-        @Nonnull Account account,
-        @Nonnull User user,
-        @Nonnull Category category
+        Amount amount,
+        Timestamp transactionAt,
+        Account account,
+        User user,
+        Category category
     ) {
-        this.description = description;
-        this.amount = amount;
-        this.user = user;
-        this.transactionAt = transactionAt;
-        this.account = account;
-        this.category = category;
+        this.description = Objects.requireNonNullElse(description, Description.empty());
+        this.amount = Objects.requireNonNull(amount, "amount is required");
+        this.user = Objects.requireNonNull(user, "user is required");
+        this.transactionAt = Objects.requireNonNull(transactionAt, "transactionAt is required");
+        this.account = Objects.requireNonNull(account, "account is required");
+        this.category = Objects.requireNonNull(category, "category is required");
     }
 
     public Long getId() {
         return id;
+    }
+
+    public String getDescriptionValue() {
+        return description.value();
     }
 
     public Amount getAmount() {
