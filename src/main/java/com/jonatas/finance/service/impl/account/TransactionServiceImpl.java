@@ -41,12 +41,12 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public CreateTransactionResult create(CreateTransactionRequest request, User user) {
-        Optional<Category> category = this.categoryRepository.findById(request.categoryId());
+        Optional<Category> category = this.categoryRepository.findByIdAndUser(request.categoryId(), user);
         if (category.isEmpty()) {
             return new CreateTransactionResult.CategoryNotFound();
         }
 
-        Optional<Account> account = this.accountRepository.findById(request.accountId());
+        Optional<Account> account = this.accountRepository.findByIdAndUser(request.accountId(), user);
         if (account.isEmpty()) {
             return new CreateTransactionResult.AccountNotFound();
         }
