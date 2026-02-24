@@ -11,6 +11,8 @@ import com.jonatas.finance.domain.User;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
+  Optional<Category> findByIdAndUser(Long id, User user);
+
   Optional<Category> findByNameAndUser(Name name, User user);
 
   List<Category> findAllByUser(User user);
