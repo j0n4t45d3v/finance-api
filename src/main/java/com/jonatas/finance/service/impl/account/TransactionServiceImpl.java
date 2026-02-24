@@ -5,6 +5,7 @@ import com.jonatas.finance.domain.Category;
 import com.jonatas.finance.domain.Transaction.Description;
 import com.jonatas.finance.domain.result.account.CreateTransactionResult;
 import com.jonatas.finance.dto.account.CreateTransactionRequest;
+import com.jonatas.finance.infra.provider.ClockProvider;
 import com.jonatas.finance.repository.AccountRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -27,15 +28,18 @@ public class TransactionServiceImpl implements TransactionService {
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
     private final CategoryRepository categoryRepository;
+    private final ClockProvider clockProvider;
 
     public TransactionServiceImpl(
         AccountRepository accountRepository,
         TransactionRepository transactionRepository,
-        CategoryRepository categoryRepository
+        CategoryRepository categoryRepository,
+        ClockProvider clockProvider
     ) {
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
         this.categoryRepository = categoryRepository;
+        this.clockProvider = clockProvider;
     }
 
     @Override
@@ -49,6 +53,10 @@ public class TransactionServiceImpl implements TransactionService {
         Optional<Account> account = this.accountRepository.findByIdAndUser(request.accountId(), user);
         if (account.isEmpty()) {
             return new CreateTransactionResult.AccountNotFound();
+        }
+
+        if (request.datetime().isAfter(this.clockProvider.now())) {
+            return new CreateTransactionResult.TransactionCannotBeIsInTheFuture();
         }
 
         Transaction transaction = new Transaction(
