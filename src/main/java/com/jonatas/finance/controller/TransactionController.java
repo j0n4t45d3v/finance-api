@@ -6,12 +6,11 @@ import com.jonatas.finance.domain.User;
 import com.jonatas.finance.domain.result.account.CreateTransactionResult;
 import com.jonatas.finance.dto.PageResponse;
 import com.jonatas.finance.dto.Response;
+import com.jonatas.finance.dto.account.CreateTransactionRequest;
 import com.jonatas.finance.infra.error.Error;
 import com.jonatas.finance.infra.swagger.annotation.TransactionTag;
 import com.jonatas.finance.service.TransactionService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,27 +32,9 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    public record AddTransactionRequest(
-        String description,
-
-        @NotNull
-        @DecimalMin("0.1")
-        BigDecimal amount,
-
-        @NotNull
-        LocalDateTime datetime,
-
-        @NotNull
-        Long categoryId,
-
-        @NotNull
-        Long accountId
-    ) {
-    }
-
     @PostMapping
     public ResponseEntity<?> add(
-        @RequestBody @Valid AddTransactionRequest request,
+        @RequestBody @Valid CreateTransactionRequest request,
         @AuthenticationPrincipal User user
     ) {
         var result = this.transactionService.create(request, user);

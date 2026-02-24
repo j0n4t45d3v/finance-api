@@ -4,13 +4,13 @@ import com.jonatas.finance.domain.Account;
 import com.jonatas.finance.domain.Category;
 import com.jonatas.finance.domain.Transaction.Description;
 import com.jonatas.finance.domain.result.account.CreateTransactionResult;
+import com.jonatas.finance.dto.account.CreateTransactionRequest;
 import com.jonatas.finance.repository.AccountRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.jonatas.finance.controller.TransactionController.AddTransactionRequest;
 import com.jonatas.finance.domain.Transaction;
 import com.jonatas.finance.domain.User;
 import com.jonatas.finance.domain.Transaction.Amount;
@@ -40,7 +40,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public CreateTransactionResult create(AddTransactionRequest request, User user) {
+    public CreateTransactionResult create(CreateTransactionRequest request, User user) {
         Optional<Category> category = this.categoryRepository.findById(request.categoryId());
         if (category.isEmpty()) {
             return new CreateTransactionResult.CategoryNotFound();
