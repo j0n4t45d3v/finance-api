@@ -9,13 +9,11 @@ import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
-import com.jonatas.finance.domain.dvo.user.Email;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.jonatas.finance.domain.dvo.user.Email;
 import com.jonatas.finance.dto.Token;
 
 import io.jsonwebtoken.Claims;
