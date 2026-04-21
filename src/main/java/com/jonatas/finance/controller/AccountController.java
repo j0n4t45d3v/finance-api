@@ -117,6 +117,7 @@ public class AccountController {
     }
 
     public record AccountResponse(
+        Long id,
         String name,
         boolean mainAccount
     ) {
@@ -129,6 +130,7 @@ public class AccountController {
             .findAll(user)
             .stream()
             .map(a -> new AccountResponse(
+                a.getId(),
                 a.getDescriptionValue(),
                 a.isMain()
             ))
