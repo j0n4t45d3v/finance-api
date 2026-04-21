@@ -10,6 +10,8 @@ import com.jonatas.finance.infra.error.Error;
 import com.jonatas.finance.infra.swagger.annotation.AuthTag;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
 import com.jonatas.finance.service.AuthService;
+
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +40,10 @@ public class AuthController {
     public record LoginResponse(Token access, Token refresh) {
     }
 
+    @Operation(
+        summary = "Login do usuario",
+        description = "Retorna o token de acesso e refresh token quando logado com sucesso"
+    )
     @PostMapping("/login")
     @DefaultErrorResponses
     @ApiResponse(responseCode = "200", description = "Ok")
@@ -55,6 +61,10 @@ public class AuthController {
     public record RefreshTokenRequest(String refreshToken) {
     }
 
+    @Operation(
+        summary = "Atualiza Token",
+        description = "Realiza a atualização do token de acesso expirado para um novo válido retornando o novo token de acesso e novo refresh token"
+    )
     @PostMapping("/refresh")
     @DefaultErrorResponses
     @ApiResponse(responseCode = "200", description = "Ok")
@@ -84,6 +94,10 @@ public class AuthController {
     ) {
     }
 
+    @Operation(
+        summary = "Cadastra novo usuário",
+        description = "Realiza o cadastro o usuario na base dados"
+    )
     @PostMapping("/register")
     @DefaultErrorResponses
     @ApiResponse(
