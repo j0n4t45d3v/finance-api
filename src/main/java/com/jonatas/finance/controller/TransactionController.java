@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -57,7 +58,13 @@ public class TransactionController {
                 .status(HttpStatus.UNPROCESSABLE_CONTENT)
                 .body(Response.ofError(error, Response.Status.UNPROCESSABLE_ENTITY));
         }
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+
+        var transaction = ((CreateTransactionResult.Success) result).transaction();
+        var location = UriComponentsBuilder
+            .fromPath("/{id}")
+            .buildAndExpand(transaction.getId())
+            .toUri();
+        return ResponseEntity.created(location).build();
     }
 
 

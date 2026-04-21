@@ -68,8 +68,8 @@ public class TransactionServiceImpl implements TransactionService {
             category.get()
         );
 
-        this.transactionRepository.save(transaction);
-        return new CreateTransactionResult.Success();
+        Transaction created = this.transactionRepository.save(transaction);
+        return new CreateTransactionResult.Success(created);
     }
 
     @Override
