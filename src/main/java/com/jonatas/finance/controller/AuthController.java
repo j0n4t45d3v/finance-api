@@ -105,7 +105,7 @@ public class AuthController {
         }
 
         URI location = UriComponentsBuilder
-            .fromPath("/users/details")
+            .fromPath("/v1/users/me")
             .buildAndExpand()
             .toUri();
         return ResponseEntity.created(location).build();
