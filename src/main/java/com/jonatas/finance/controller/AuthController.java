@@ -45,7 +45,7 @@ public class AuthController {
         var loginResult = this.authService.login(new Email(loginRequest.email()), loginRequest.password());
         if (loginResult instanceof LoginResult.InvalidCredentials) {
             var errorCredentials = new Error<>("fail_authentication", "e-mail or password invalid");
-            return ResponseEntity.badRequest().body(Response.of(errorCredentials, Response.Status.BAD_REQUEST));
+            return ResponseEntity.badRequest().body(Response.ofError(errorCredentials, Response.Status.BAD_REQUEST));
         }
         LoginResult.Success successResult = (LoginResult.Success) loginResult;
         LoginResponse loginResponse = new LoginResponse(successResult.access(), successResult.refresh());
@@ -64,13 +64,13 @@ public class AuthController {
             var invalidToken = new Error<>("invalid_token", "invalid refresh token");
             return ResponseEntity
                 .badRequest()
-                .body(Response.of(invalidToken, Response.Status.BAD_REQUEST));
+                .body(Response.ofError(invalidToken, Response.Status.BAD_REQUEST));
         }
         if (result instanceof RefreshTokenResult.InvalidSubject) {
             var invalidSubject = new Error<>("invalid_subject_token", "invalid subject in refresh token");
             return ResponseEntity
                 .badRequest()
-                .body(Response.of(invalidSubject, Response.Status.BAD_REQUEST));
+                .body(Response.ofError(invalidSubject, Response.Status.BAD_REQUEST));
         }
         RefreshTokenResult.Success successResult = (RefreshTokenResult.Success) result;
         LoginResponse loginResponse = new LoginResponse(successResult.access(), successResult.refresh());
