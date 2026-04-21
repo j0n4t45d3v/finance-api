@@ -2,6 +2,6 @@
 set -e
 
 find src/main/java src/main/resources -type f | \
-entr -nr ./mvnw clean compile &
+entr -nr ./mvnw clean compile -DskipTests &
 
 ./mvnw spring-boot:run
