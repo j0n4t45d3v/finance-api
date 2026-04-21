@@ -9,6 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Tag(name="Authentication")
+@Tag(name="Autorização e Autenticação")
 public @interface AuthTag {
 }

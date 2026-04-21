@@ -9,6 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Tag(name="User")
+@Tag(name="Usuário")
 public @interface UserTag {
 }

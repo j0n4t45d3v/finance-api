@@ -1,14 +1,42 @@
 package com.jonatas.finance.infra.swagger;
 
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
+@OpenAPIDefinition(
+    tags = {
+        @Tag(
+            name="Autorização e Autenticação",
+            description = "rotas de login, cadastro e renovação de token"
+        ),
+        @Tag(name="Usuário", description = "Dados do usuario"),
+        @Tag(
+            name="Conta do Banco",
+            description = "cadastro das contas de banco onde as transações foram feitas"
+        ),
+        @Tag(
+            name="Categoria", 
+            description="Categoria das transações financeiras"
+        ),
+        @Tag(name="Transações", description = "Transações financeiras"),
+        @Tag(
+            name="Dashboard",
+            description = """
+                rotas para alimentar dashboard, com visão das ultimas transações feitas,
+                rank de categorias, rank de transações, resumo do período com total de entrada
+                e saida mais saldo calculado
+                """)
+            }
+)
 @Configuration
 public class OpenApiConfig {
 
@@ -24,8 +52,16 @@ public class OpenApiConfig {
 
     private Info info() {
         return new Info()
-                .title("Finance Api")
-                .description("Pessoal manager finance api")
+                .title("Api de Finanças Pessoais")
+                .description("""
+                    Api para gestão de finanças pessoais
+
+                    Fluxo para usabilidade:
+                    1. Criar conta de usuario
+                    2. Fazer login
+                    3. usar o token de acesso gerado pela rota de login para acessar as rotas privadas
+                    4. Caso o token de acesso fique expirado fazer a renovação na rota de refresh token
+                """)
                 .version("v1");
     }
 

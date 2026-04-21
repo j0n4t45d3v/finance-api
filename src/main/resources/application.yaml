@@ -14,4 +14,5 @@ springdoc:
   swagger-ui:
     path: /doc
     filter: true
-    operationsSorter: true
+    operationsSorter: method
+    tags-sorter: none
