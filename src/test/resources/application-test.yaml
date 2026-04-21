@@ -1,0 +1,26 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+  flyway:
+    enabled: true 
+
+  devtools:
+    livereload:
+      enabled: false
+    remote:
+      restart:
+        enabled: false
+    restart:
+      enabled: false
+
+security:
+  jwt:
+    issuer: finance@fake.dev
+    access:
+      secret: jZP2591J7dTUa01xm8L209dTUa01xm8L2BjZP2591J7B09dTUa01xm8L209dTUa01xm8L2
+      exp: 2400000 # 20 minutes
+    refresh:
+      secret: jZP2591J7dTUa01xm8L209dTUa01xm8L2BjZP2591J7B09dTUa01xm8L209dTUa01xm8L2
+      exp: 604800000 # 7 days
