@@ -46,10 +46,16 @@ public class TransactionController {
         }
 
         if (result instanceof CreateTransactionResult.AccountNotFound) {
-            Error<String> error = new Error<>("account_not_foun", "Account not found");
+            Error<String> error = new Error<>("account_not_found", "Account not found");
             return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(Response.ofError(error, Response.Status.NOT_FOUND));
+        }
+        if (result instanceof CreateTransactionResult.TransactionCannotBeIsInTheFuture) {
+            Error<String> error = new Error<>("cannot_be_in_future", "Transaction cannot be in the future");
+            return ResponseEntity
+                .status(HttpStatus.UNPROCESSABLE_CONTENT)
+                .body(Response.ofError(error, Response.Status.UNPROCESSABLE_ENTITY));
         }
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
