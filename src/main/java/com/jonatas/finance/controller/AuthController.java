@@ -1,5 +1,13 @@
 package com.jonatas.finance.controller;
 
+import java.net.URI;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 import com.jonatas.finance.domain.dvo.user.Email;
 import com.jonatas.finance.domain.result.auth.LoginResult;
 import com.jonatas.finance.domain.result.auth.RefreshTokenResult;
@@ -9,19 +17,13 @@ import com.jonatas.finance.dto.Token;
 import com.jonatas.finance.infra.error.Error;
 import com.jonatas.finance.infra.swagger.annotation.AuthTag;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
+import com.jonatas.finance.infra.swagger.schemas.SuccessLoginResponse;
 import com.jonatas.finance.service.AuthService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URI;
 
 @AuthTag
 @RestController
@@ -34,7 +36,13 @@ public class AuthController {
         this.authService = authService;
     }
 
-    public record LoginRequest(String email, String password) {
+    @Schema(description = "Request de login")
+    public record LoginRequest(
+        @Schema(example = "john@doe.example")
+        String email, 
+        @Schema(example = "1234")
+        String password
+    ) {
     }
 
     public record LoginResponse(Token access, Token refresh) {
@@ -46,7 +54,14 @@ public class AuthController {
     )
     @PostMapping("/login")
     @DefaultErrorResponses
-    @ApiResponse(responseCode = "200", description = "Ok")
+    @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(
+            schema = @Schema(implementation = SuccessLoginResponse.class) ,
+            mediaType = MediaType.APPLICATION_JSON_VALUE
+        )
+    )
     public ResponseEntity<Response<?, ?>> login(@RequestBody LoginRequest loginRequest) {
         var loginResult = this.authService.login(new Email(loginRequest.email()), loginRequest.password());
         if (loginResult instanceof LoginResult.InvalidCredentials) {
@@ -57,8 +72,11 @@ public class AuthController {
         LoginResponse loginResponse = new LoginResponse(successResult.access(), successResult.refresh());
         return ResponseEntity.ok(Response.of(loginResponse));
     }
-
-    public record RefreshTokenRequest(String refreshToken) {
+    @Schema(description = "Refresh token")
+    public record RefreshTokenRequest(
+        @Schema(example = "eyJhbGciOiJIUzM4NCJ9.eyJqdGkiOiJiYzYzMWUwZi1lMGQwL...")
+        String refreshToken
+    ) {
     }
 
     @Operation(
@@ -67,7 +85,14 @@ public class AuthController {
     )
     @PostMapping("/refresh")
     @DefaultErrorResponses
-    @ApiResponse(responseCode = "200", description = "Ok")
+    @ApiResponse(
+        responseCode = "200", 
+        description = "OK",
+        content = @Content(
+            schema = @Schema(implementation = SuccessLoginResponse.class) ,
+            mediaType = MediaType.APPLICATION_JSON_VALUE
+        )
+    )
     public ResponseEntity<Response<?, ?>> refreshToken(@RequestBody RefreshTokenRequest request) {
         var result = this.authService.refresh(request);
         if (result instanceof RefreshTokenResult.InvalidRefreshToken) {
@@ -87,9 +112,13 @@ public class AuthController {
         return ResponseEntity.ok(Response.of(loginResponse));
     }
 
+    @Schema(description = "Request do cadastro de usuário")
     public record RegisterUserRequest(
+        @Schema(example = "john@doe.example")
         String email,
+        @Schema(example = "1234")
         String password,
+        @Schema(example = "1234")
         String confirmPassword
     ) {
     }
@@ -103,7 +132,8 @@ public class AuthController {
     @ApiResponse(
         responseCode = "201",
         description = "Created",
-        headers = {@Header(name = "Location")}
+        headers = {@Header(name = "Location")},
+        content = {}
     )
     public ResponseEntity<?> register(@RequestBody RegisterUserRequest request) {
         var registerResult = this.authService.register(request);
