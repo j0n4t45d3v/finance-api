@@ -48,10 +48,7 @@ public class AuthController {
     public record LoginResponse(Token access, Token refresh) {
     }
 
-    @Operation(
-        summary = "Login do usuario",
-        description = "Retorna o token de acesso e refresh token quando logado com sucesso"
-    )
+    @Operation(summary = "Login do usuario")
     @PostMapping("/login")
     @DefaultErrorResponses
     @ApiResponse(
@@ -79,10 +76,7 @@ public class AuthController {
     ) {
     }
 
-    @Operation(
-        summary = "Atualiza Token",
-        description = "Realiza a atualização do token de acesso expirado para um novo válido retornando o novo token de acesso e novo refresh token"
-    )
+    @Operation(summary = "Atualiza Token")
     @PostMapping("/refresh")
     @DefaultErrorResponses
     @ApiResponse(
@@ -123,10 +117,7 @@ public class AuthController {
     ) {
     }
 
-    @Operation(
-        summary = "Cadastra novo usuário",
-        description = "Realiza o cadastro o usuario na base dados"
-    )
+    @Operation(summary = "Cadastra novo usuário")
     @PostMapping("/register")
     @DefaultErrorResponses
     @ApiResponse(
