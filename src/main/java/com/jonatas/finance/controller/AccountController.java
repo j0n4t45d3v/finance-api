@@ -9,6 +9,7 @@ import com.jonatas.finance.infra.swagger.annotation.AccountTag;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
 import com.jonatas.finance.service.AccountService;
 import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -31,7 +32,12 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    public record CreateAccountRequest(@NotNull String name, Boolean mainAccount) {
+    @Schema(description = "Request pra cadastrar uma nova conta bancária")
+    public record CreateAccountRequest(
+        @Schema(example = "Banco do Brasil (Agência:xxxxx-xx)")
+        @NotNull String name, 
+        Boolean mainAccount
+    ) {
     }
 
     @PostMapping
@@ -75,11 +81,20 @@ public class AccountController {
     }
 
     public record EditAccountRequest(
+        @Schema(example = "Banco do Brasil (Agência:xxxxx-xx)")
         @NotNull String name,
-        Boolean mainAccount) {
+        Boolean mainAccount
+    ) {
     }
 
     @PutMapping("/{id}")
+    @DefaultErrorResponses
+    @ApiResponse(
+        responseCode = "204",
+        description = "No Content",
+        headers = {@Header(name = "Location")},
+        content = {}
+    )
     public ResponseEntity<?> edit(
         @PathVariable("id") Long id,
         @RequestBody EditAccountRequest request,
@@ -116,8 +131,11 @@ public class AccountController {
         return ResponseEntity.noContent().build();
     }
 
+    @Schema(description = "Conta do banco resposta")
     public record AccountResponse(
+        @Schema(example = "1")
         Long id,
+        @Schema(example = "Banco do Brasil (Agência:xxxxx-xx)")
         String name,
         boolean mainAccount
     ) {
