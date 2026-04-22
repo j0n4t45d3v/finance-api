@@ -6,6 +6,8 @@ import com.jonatas.finance.dto.Response;
 import com.jonatas.finance.dto.dashboard.*;
 import com.jonatas.finance.infra.swagger.annotation.DashboardTag;
 import com.jonatas.finance.service.DashboardService;
+import io.swagger.v3.oas.annotations.Operation;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +26,9 @@ public class DashboardController {
     }
 
     @GetMapping("/summary")
+    @Operation(summary = "Resumo de receita vs despesas")
     public ResponseEntity<Response<SummaryIncomeVsExpense, Void>> summary(
-        @ModelAttribute DashboardFiltersRequest request,
+        @ParameterObject @ModelAttribute DashboardFiltersRequest request,
         @AuthenticationPrincipal User user
     ) {
         var response = this.dashboardService.getSummaryIncomeVsExpense(request, user);
@@ -33,10 +36,11 @@ public class DashboardController {
     }
 
     @GetMapping("/ranks/categories")
+    @Operation(summary = "Rank das categorias com maiores movimentações")
     public ResponseEntity<Response<List<RankCategoryResponse>, Void>> rankCategories(
         @RequestParam(name = "type", required = false) Category.Type type,
         @RequestParam(name = "top", defaultValue = "10") Integer top,
-        @ModelAttribute DashboardFiltersRequest request,
+        @ParameterObject @ModelAttribute DashboardFiltersRequest request,
         @AuthenticationPrincipal User user
     ) {
         var response = this.dashboardService.rankCategory(type, top, request, user);
@@ -44,9 +48,10 @@ public class DashboardController {
     }
 
     @GetMapping("/ranks/transactions")
+    @Operation(summary = "Rank das transações financeiras com maiores valores movimentados")
     public ResponseEntity<Response<List<RankTransactionResponse>, Void>> rankTransactions(
         @RequestParam(name = "top", defaultValue = "10") Integer topTransactions,
-        @ModelAttribute DashboardFiltersRequest request,
+        @ParameterObject @ModelAttribute DashboardFiltersRequest request,
         @AuthenticationPrincipal User user
     ) {
         var response = this.dashboardService.rankTransactions(topTransactions, request, user);
@@ -58,9 +63,10 @@ public class DashboardController {
     }
 
     @GetMapping("/transactions")
+    @Operation(summary = "Trás as transações agrupadas por Categoria, mês ou dia")
     public ResponseEntity<Response<List<TransactionGroupByResponse>, Void>> transactions(
         @RequestParam(defaultValue = "CATEGORY") RankCategoryGroupBy rankCategoryGroupBy,
-        @ModelAttribute DashboardFiltersRequest request,
+        @ParameterObject @ModelAttribute DashboardFiltersRequest request,
         @AuthenticationPrincipal User user
     ) {
         var response = this.dashboardService.transactions(rankCategoryGroupBy, request, user);
@@ -68,9 +74,10 @@ public class DashboardController {
     }
 
     @GetMapping("/transactions/lastest")
+    @Operation(summary = "Últimas transações feitas")
     public ResponseEntity<Response<List<RankTransactionResponse>, Void>> lastTransactions(
         @RequestParam(name = "top", defaultValue = "10") Integer topTransactions,
-        @ModelAttribute DashboardFiltersRequest request,
+        @ParameterObject @ModelAttribute DashboardFiltersRequest request,
         @AuthenticationPrincipal User user
     ) {
         var response = this.dashboardService.lastTransactions(topTransactions, request, user);
