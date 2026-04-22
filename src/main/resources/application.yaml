@@ -16,6 +16,8 @@ springdoc:
     filter: true
     operationsSorter: method
     tags-sorter: none
+    defaultModelsExpandDepth: 0
+    defaultModelExpandDepth: 1
 
 security:
   cors:
