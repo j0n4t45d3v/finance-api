@@ -16,3 +16,11 @@ springdoc:
     filter: true
     operationsSorter: method
     tags-sorter: none
+
+security:
+  cors:
+    mapping: "/**"
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:*}
+    allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
+    allowed-headers: ${CORS_ALLOWED_HEADERS:*}
+    allow-credentials: ${CORS_CREDENTIALS:false}
