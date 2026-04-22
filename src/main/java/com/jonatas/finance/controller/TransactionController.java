@@ -8,11 +8,18 @@ import com.jonatas.finance.dto.PageResponse;
 import com.jonatas.finance.dto.Response;
 import com.jonatas.finance.dto.account.CreateTransactionRequest;
 import com.jonatas.finance.infra.error.Error;
+import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
 import com.jonatas.finance.infra.swagger.annotation.TransactionTag;
 import com.jonatas.finance.service.TransactionService;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +31,7 @@ import java.time.LocalDateTime;
 
 @TransactionTag
 @RestController
-@RequestMapping("/v1/transactions")
+@RequestMapping(value="/v1/transactions", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class TransactionController {
 
     private final TransactionService transactionService;
@@ -34,6 +41,9 @@ public class TransactionController {
     }
 
     @PostMapping
+    @DefaultErrorResponses
+    @Operation(summary = "Adiciona uma transação financeira")
+    @ApiResponse(responseCode = "201", description = "Created", headers = {@Header(name = "Location")})
     public ResponseEntity<?> add(
         @RequestBody @Valid CreateTransactionRequest request,
         @AuthenticationPrincipal User user
@@ -67,9 +77,12 @@ public class TransactionController {
         return ResponseEntity.created(location).build();
     }
 
-
+    @Schema(description = "Transação financeira")
     public record TransactionResponse(
+        @Schema(example = "1")
         Long id,
+
+        @Schema(example = "10.00")
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         BigDecimal amount,
 
@@ -77,8 +90,10 @@ public class TransactionController {
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime transactionAt,
 
+        @Schema(example = "EXPENSE")
         String type,
 
+        @Schema(example = "1")
         Long accountId
 
     ) {
@@ -88,7 +103,11 @@ public class TransactionController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<TransactionResponse>> getPage(Pageable pageable, @AuthenticationPrincipal User user) {
+    @Operation(summary = "Lista transações financeiras paginado")
+    public ResponseEntity<PageResponse<TransactionResponse>> getPage(
+        @ParameterObject Pageable pageable, 
+        @AuthenticationPrincipal User user
+    ) {
         var page = this.transactionService.getPage(user, pageable)
             .map(t -> new TransactionResponse(
                 t.getId(),
