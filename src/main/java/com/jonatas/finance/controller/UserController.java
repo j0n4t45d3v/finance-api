@@ -31,7 +31,7 @@ public class UserController {
 
     @Operation(
         operationId = "me",
-        description = "Dados do usuário logado do token"
+        summary = "Dados do usuário logado do token"
     )
     @GetMapping(value = "/me", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Response<UserDetailsResponse, Void>> userDetails(
