@@ -1,6 +1,6 @@
 package com.jonatas.finance.infra.swagger;
 
-
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -43,14 +43,14 @@ public class OpenApiConfig {
     private static final String SECURITY_SCHEME_NAME = "bearerAuth";
 
     @Bean
-    public OpenAPI openApi() {
+    public OpenAPI openApi(BuildProperties properties) {
         return new OpenAPI()
-                .info(this.info())
+                .info(this.info(properties))
                 .addSecurityItem(this.securityRequirement())
                 .components(this.components());
     }
 
-    private Info info() {
+    private Info info(BuildProperties properties) {
         return new Info()
                 .title("Api de Finanças Pessoais")
                 .description("""
@@ -62,7 +62,7 @@ public class OpenApiConfig {
                     3. usar o token de acesso gerado pela rota de login para acessar as rotas privadas
                     4. Caso o token de acesso fique expirado fazer a renovação na rota de refresh token
                 """)
-                .version("v1");
+                .version(properties.getVersion());
     }
 
     private SecurityRequirement securityRequirement() {
