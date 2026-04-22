@@ -3,6 +3,9 @@ package com.jonatas.finance.controller;
 import com.jonatas.finance.domain.User;
 import com.jonatas.finance.dto.Response;
 import com.jonatas.finance.infra.swagger.annotation.UserTag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,14 +21,19 @@ import java.util.List;
 @RequestMapping("/v1/users")
 public class UserController {
 
-
+    @Schema(description = "Subject do token response")
     public record UserDetailsResponse(
+        @Schema(example = "john@doe.example")
         String email,
         List<? extends GrantedAuthority> authorities
     ) {
     }
 
-    @GetMapping("/me")
+    @Operation(
+        operationId = "me",
+        description = "Dados do usuário logado do token"
+    )
+    @GetMapping(value = "/me", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Response<UserDetailsResponse, Void>> userDetails(
         @AuthenticationPrincipal User userAuthenticated
     ) {
