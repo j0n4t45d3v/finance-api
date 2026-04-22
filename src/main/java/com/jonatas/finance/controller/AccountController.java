@@ -8,6 +8,7 @@ import com.jonatas.finance.infra.error.Error;
 import com.jonatas.finance.infra.swagger.annotation.AccountTag;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
 import com.jonatas.finance.service.AccountService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -41,6 +42,7 @@ public class AccountController {
     }
 
     @PostMapping
+    @Operation(summary = "Cadastrar conta bancária")
     @DefaultErrorResponses
     @ApiResponse(
         responseCode = "201",
@@ -88,6 +90,7 @@ public class AccountController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Editar conta bancária")
     @DefaultErrorResponses
     @ApiResponse(
         responseCode = "204",
@@ -143,6 +146,7 @@ public class AccountController {
     }
 
     @GetMapping
+    @Operation(summary = "Listar contas bancárias")
     public ResponseEntity<Response<List<AccountResponse>, Void>> all(@AuthenticationPrincipal User user) {
         var accounts = this.accountService
             .findAll(user)
