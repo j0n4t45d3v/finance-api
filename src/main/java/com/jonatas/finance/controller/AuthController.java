@@ -19,6 +19,8 @@ import com.jonatas.finance.infra.swagger.annotation.AuthTag;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
 import com.jonatas.finance.infra.swagger.schemas.SuccessLoginResponse;
 import com.jonatas.finance.service.AuthService;
+
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -117,6 +119,7 @@ public class AuthController {
     ) {
     }
 
+    @Hidden
     @Operation(summary = "Cadastra novo usuário")
     @PostMapping("/register")
     @DefaultErrorResponses
