@@ -1,0 +1,50 @@
+spring:
+  datasource:
+    url: ${SPRING_DATABASE_URL}
+    username: ${SPRING_DATABASE_USERNAME}
+    password: ${SPRING_DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 30000
+      connection-timeout: 20000
+      max-lifetime: 1800000
+      leak-detection-threshold: 20000
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    validate-on-migrate: true
+    url: ${SPRING_DATABASE_URL}
+    user: ${SPRING_DATABASE_USERNAME}
+    password: ${SPRING_DATABASE_PASSWORD}
+    locations: classpath:db/migration
+    default-schema: public
+
+  devtools:
+    restart:
+      enabled: false
+
+logging:
+  structured:
+    format:
+      console: logstash
+
+security:
+  jwt:
+    issuer: ${SECURITY_JWT_ISSUE}
+    access:
+      secret: ${SECURITY_ACCESS_TOKEN_SECRET}
+      exp: ${SECURITY_ACCESS_TOKEN_EXPIRE_TIME} # 60 seconds
+    refresh:
+      secret: ${SECURITY_REFRESH_TOKEN_SECRET}
+      exp: ${SECURITY_ACCESS_REFRESH_EXPIRE_TIME} # 7 days
+
+

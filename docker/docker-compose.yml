@@ -1,0 +1,38 @@
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    restart: unless-stopped
+    depends_on:
+      - api
+    networks:
+      - appnet
+
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    environment:
+      PROFILE: ${PROFILE}
+      SPRING_DATABASE_URL: ${SPRING_DATABASE_URL}
+      SPRING_DATABASE_USERNAME: ${SPRING_DATABASE_USERNAME}
+      SPRING_DATABASE_PASSWORD: ${SPRING_DATABASE_PASSWORD}
+      SECURITY_JWT_ISSUE: ${SECURITY_JWT_ISSUE}
+      SECURITY_ACCESS_TOKEN_SECRET: ${SECURITY_ACCESS_TOKEN_SECRET}
+      SECURITY_ACCESS_TOKEN_EXPIRE_TIME: ${SECURITY_ACCESS_TOKEN_EXPIRE_TIME}
+      SECURITY_REFRESH_TOKEN_SECRET: ${SECURITY_REFRESH_TOKEN_SECRET}
+      SECURITY_ACCESS_REFRESH_EXPIRE_TIME: ${SECURITY_ACCESS_REFRESH_EXPIRE_TIME}
+    restart: on-failure:5
+    ports:
+      - "8080:8080"
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    driver: bridge
+
