@@ -1,8 +1,6 @@
 package com.jonatas.finance.infra.security;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
@@ -74,17 +72,17 @@ public record JwtService(
             String type,
             Long expiration,
             String secret) {
-        Date exp = new Date(System.currentTimeMillis() + expiration);
+        Instant exp = Instant.now().plusSeconds(expiration);
         String token = Jwts.builder()
                 .id(UUID.randomUUID().toString())
                 .issuer(this.issuer)
                 .issuedAt(new Date())
                 .subject(subject.getUsername())
                 .claim("type", type)
-                .expiration(exp)
+                .expiration(new Date(Instant.now().plusSeconds(expiration).toEpochMilli()))
                 .signWith(this.getSecretKey(secret))
                 .compact();
-        return new Token(token, LocalDateTime.ofInstant(exp.toInstant(), ZoneId.of("UTC")));
+        return new Token(token, exp.getEpochSecond());
     }
 
     public Optional<TokenParsed> tryParseAccessToken(String token){

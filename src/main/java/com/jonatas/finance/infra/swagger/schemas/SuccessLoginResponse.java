@@ -20,7 +20,7 @@ public class SuccessLoginResponse {
   public static class TokenResponse {
     @Schema(example = "eyJhbGciOiJIUzM4NCJ9.eyJqdGkiOiJiYzYzMWUwZi1lMGQwL...")
     public String token;
-    @Schema(example = "2026-04-22T13:00:45.301")
-    public LocalDateTime expiredAt;
+    @Schema(example = "1777250748")
+    public Long expiredAt;
   }
 }
