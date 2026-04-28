@@ -47,4 +47,5 @@ security:
       secret: ${SECURITY_REFRESH_TOKEN_SECRET}
       exp: ${SECURITY_ACCESS_REFRESH_EXPIRE_TIME} # 7 days
 
-
+server:
+  forward-headers-strategy: framework
