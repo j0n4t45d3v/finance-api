@@ -32,6 +32,16 @@ spring:
     restart:
       enabled: false
 
+springdoc:
+  api-docs:
+    enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+
 logging:
   structured:
     format:
