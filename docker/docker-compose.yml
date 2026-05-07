@@ -8,15 +8,11 @@ services:
       - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - /etc/letsencrypt/:/etc/letsencrypt/:ro
     restart: unless-stopped
-    depends_on:
-      - api
     networks:
       - appnet
 
   api:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile
+    image: jonat4s/finance-api:9372d32
     environment:
       PROFILE: ${PROFILE}
       SPRING_DATABASE_URL: ${SPRING_DATABASE_URL}
@@ -27,9 +23,31 @@ services:
       SECURITY_ACCESS_TOKEN_EXPIRE_TIME: ${SECURITY_ACCESS_TOKEN_EXPIRE_TIME}
       SECURITY_REFRESH_TOKEN_SECRET: ${SECURITY_REFRESH_TOKEN_SECRET}
       SECURITY_ACCESS_REFRESH_EXPIRE_TIME: ${SECURITY_ACCESS_REFRESH_EXPIRE_TIME}
-    restart: on-failure:5
-    ports:
-      - "8080:8080"
+      JAVA_TOOLS_OPTIONS: >
+        -XX:InitialRAMPercentage=25
+        -XX:MaxRAMPercentage=65 
+    restart: unless-stopped
+    expose:
+      - 8080
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "curl", "-f" , "http://localhost:8080/actuator/health"]
+      start_period: 40s
+      interval: 30s
+      timeout: 10s
+      retries: 3
     networks:
       - appnet
 
