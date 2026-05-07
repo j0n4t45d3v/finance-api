@@ -5,11 +5,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import java.util.Base64;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +31,11 @@ class AuthControllerIT extends BaseIntegratioTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Value("${security.jwt.access.exp}")
+    private Long jwtAccessExpirationTime;
+    @Value("${security.jwt.refresh.exp}")
+    private Long jwtRefreshExpirationTime;
 
     private static final String LOGIN_ENDPOINT = "/v1/auth/login";
     private static final String DEFAULT_PASSWORD = "secret";
@@ -125,13 +132,18 @@ class AuthControllerIT extends BaseIntegratioTest {
         @Test
         void shouldReturnOKWhenBodyCredentialsIsValid() throws Exception{
             var user = createUser("john@doe.test");
-            mockMvc.perform(makeLoginRequest(
+            var response = mockMvc.perform(makeLoginRequest(
                 user.getEmailValue(),
                 DEFAULT_PASSWORD
             ))
             .andExpect(status().isOk())
             .andExpect(jsonPath(JSON_PATH_ACCESS_TOKEN).isNotEmpty())
-            .andExpect(jsonPath(JSON_PATH_REFRESH_TOKEN).isNotEmpty());
+            .andExpect(jsonPath(JSON_PATH_REFRESH_TOKEN).isNotEmpty())
+            .andReturn();
+
+            var content = response.getResponse().getContentAsString();
+            assertAccessToken(content, user);
+            assertRefreshToken(content, user);
         }
 
         @Test
@@ -178,10 +190,15 @@ class AuthControllerIT extends BaseIntegratioTest {
             var json = loginResponse.getResponse().getContentAsString();
             var refreshToken = (String) JsonPath.read(json, JSON_PATH_REFRESH_TOKEN);
 
-            mockMvc.perform(makeRefreshRequest(refreshToken))
+            var response = mockMvc.perform(makeRefreshRequest(refreshToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath(JSON_PATH_ACCESS_TOKEN).isNotEmpty())
-                .andExpect(jsonPath(JSON_PATH_REFRESH_TOKEN).isNotEmpty());
+                .andExpect(jsonPath(JSON_PATH_REFRESH_TOKEN).isNotEmpty())
+                .andReturn();
+
+            var content = response.getResponse().getContentAsString();
+            assertAccessToken(content, user);
+            assertRefreshToken(content, user);
         }
 
         @Test
@@ -236,5 +253,48 @@ class AuthControllerIT extends BaseIntegratioTest {
         return post(LOGIN_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payload);
+    }
+
+    private String extractTokenFromResponse(String json, String jsonPath) {
+        return (String) JsonPath.read(json, jsonPath);
+    }
+
+    private void assertAccessToken(String content, UserDetails userExpected) {
+        var accessToken = extractTokenFromResponse(content, JSON_PATH_ACCESS_TOKEN);
+        assertToken(accessToken, userExpected, jwtAccessExpirationTime, content, "access");
+    }
+
+    private void assertRefreshToken(String content, UserDetails userExpected) {
+        var refreshToken = extractTokenFromResponse(content, JSON_PATH_REFRESH_TOKEN);
+        assertToken(refreshToken, userExpected, jwtRefreshExpirationTime, content, "refresh");
+    }
+
+    private void assertToken(
+        String token,
+        UserDetails userExpected,
+        Long jwtExpirationTimeExpected,
+        String json,
+        String type
+    ) {
+        var decodedToken = decodeTokenJWT(token);
+
+        var subject = JsonPath.<String>read(decodedToken, "$.sub");
+        assertEquals(userExpected.getUsername(), subject);
+
+        var issueAt = JsonPath.<Number>read(decodedToken, "$.iat").longValue();
+        var expiredAt = JsonPath.<Number>read(decodedToken, "$.exp").longValue();
+        var expirationTime = expiredAt - issueAt;
+        assertEquals(jwtExpirationTimeExpected, expirationTime);
+
+        var expiredAtBody = JsonPath.<Number>read(json, "$.data."+type+".expiredAt").longValue();
+        assertEquals(expiredAtBody, expiredAt);
+        assertEquals(type, JsonPath.<String>read(decodedToken, "$.type"));
+    }
+
+    private String decodeTokenJWT(String token) {
+        var parts = token.split("\\.");
+        var payload = parts[1];
+        var payloadBytes = Base64.getUrlDecoder().decode(payload);
+        return new String(payloadBytes);
     }
 }
