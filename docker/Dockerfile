@@ -12,6 +12,10 @@ RUN mvn -B -q package -DskipTests
 
 FROM eclipse-temurin:21-jre-alpine-3.23
 
+LABEL org.opencontainers.image.authors="Jonatas Rocha"
+LABEL org.opencontainers.image.revision=$COMMIT
+LABEL org.opencontainers.image.source="https://github.com/j0n4t45d3v/finance-api"
+
 WORKDIR /app
 
 COPY --from=builder /jar/target/*.jar ./finance-api.jar
