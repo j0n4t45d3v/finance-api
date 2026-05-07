@@ -32,10 +32,6 @@ spring:
     restart:
       enabled: false
 
-springdoc:
-  api-docs:
-    enabled: false
-
 management:
   endpoints:
     web:
