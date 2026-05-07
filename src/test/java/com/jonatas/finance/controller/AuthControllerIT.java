@@ -33,6 +33,10 @@ class AuthControllerIT extends BaseIntegratioTest {
     private static final String LOGIN_ENDPOINT = "/v1/auth/login";
     private static final String DEFAULT_PASSWORD = "secret";
 
+    private static final String JSON_PATH_ACCESS_TOKEN = "$.data.access.token";
+    private static final String JSON_PATH_REFRESH_TOKEN = "$.data.refresh.token";
+    private static final String JSON_PATH_ERROR_TYPE = "$.error.type";
+
     private User createUser(String email) {
         var validUser = new User(
             new Email(email),
@@ -45,7 +49,6 @@ class AuthControllerIT extends BaseIntegratioTest {
     class ApiV1Register {
 
         private static final String REGISTER_ENDPOINT = "/v1/auth/register";
-        private static final String JSON_PATH_ERROR_TYPE = "$.error.type";
 
         private static final String ERROR_NOT_MATCH_PASSWORD  = "not_match_passwords";
         private static final String ERROR_FAIL_REGISTER  = "fail_register_user";
@@ -117,10 +120,6 @@ class AuthControllerIT extends BaseIntegratioTest {
     @Nested
     class ApiV1Login {
 
-        private static final String JSON_PATH_ACCESS_TOKEN = "$.data.access.token";
-        private static final String JSON_PATH_REFRESH_TOKEN = "$.data.refresh.token";
-
-        private static final String JSON_PATH_ERROR_TYPE = "$.error.type";
         private static final String ERROR_INVALID_CREDENTIALS = "fail_authentication";
 
         @Test
@@ -161,11 +160,6 @@ class AuthControllerIT extends BaseIntegratioTest {
     @Nested
     class ApiV1RefreshToken {
         private static final String REFRESH_ENDPOINT = "/v1/auth/refresh";
-
-        private static final String JSON_PATH_ACCESS_TOKEN = "$.data.access.token";
-        private static final String JSON_PATH_REFRESH_TOKEN = "$.data.refresh.token";
-
-        private static final String JSON_PATH_ERROR_TYPE = "$.error.type";
 
         private static final String ERROR_INVALID_TOKEN = "invalid_token";
         private static final String ERROR_INVALID_SUBJECT = "invalid_subject_token";
