@@ -34,7 +34,7 @@ public record JwtService(
             try {
                 boolean expired = this.isExpired();
                 boolean checkType = this.getType().equals(this.type);
-                return !expired && checkType && this.claims.getSubject() != null;
+                return !expired && checkType && this.getSubject() != null;
             } catch (Exception error) {
                 return false;
             }
