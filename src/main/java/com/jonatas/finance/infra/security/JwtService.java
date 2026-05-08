@@ -79,7 +79,7 @@ public record JwtService(
                 .issuedAt(new Date())
                 .subject(subject.getUsername())
                 .claim("type", type)
-                .expiration(new Date(Instant.now().plusSeconds(expiration).toEpochMilli()))
+                .expiration(new Date(exp.toEpochMilli()))
                 .signWith(this.getSecretKey(secret))
                 .compact();
         return new Token(token, exp.getEpochSecond());
