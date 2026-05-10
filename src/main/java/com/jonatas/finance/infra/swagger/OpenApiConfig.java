@@ -52,9 +52,14 @@ public class OpenApiConfig {
 
     private Info info(BuildProperties properties) {
         return new Info()
-                .title("Api de Finanças Pessoais")
-                .description("""
-                    Api para gestão de finanças pessoais
+                .title(properties.getName())
+                .description(
+                    """
+                    REST Api para gerenciamento financeiro pessoal com autenticação JWT, cadastro e consulta de transações, categorias, contas bancárias e dashboards
+
+                    Usuário de demonstração para testes:
+                    - Email: john@doe.example
+                    - Senha: 1234
 
                     Fluxo para usabilidade:
                     1. Criar conta de usuario

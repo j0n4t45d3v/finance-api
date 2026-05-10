@@ -15,8 +15,9 @@
     <groupId>com.jonatas</groupId>
     <artifactId>finance</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>finance</name>
-    <description>finance</description>
+
+    <name>REST Api para gerenciamento financeiro pessoal</name>
+    <description>REST Api para gerenciamento financeiro pessoal</description>
 
     <properties>
         <java.version>21</java.version>
