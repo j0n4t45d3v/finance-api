@@ -12,7 +12,7 @@ services:
       - appnet
 
   api:
-    image: jonat4s/finance-api:9372d32
+    image: jonat4s/finance-api:2ef0d8f
     environment:
       PROFILE: ${PROFILE}
       SPRING_DATABASE_URL: ${SPRING_DATABASE_URL}
