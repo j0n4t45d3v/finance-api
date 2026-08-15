@@ -5,9 +5,9 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.jonatas.finance.auth.User;
 import com.jonatas.finance.domain.Category;
 import com.jonatas.finance.domain.Category.Name;
-import com.jonatas.finance.domain.User;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 

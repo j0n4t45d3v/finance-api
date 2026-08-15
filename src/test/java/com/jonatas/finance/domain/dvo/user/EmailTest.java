@@ -1,6 +1,8 @@
 package com.jonatas.finance.domain.dvo.user;
 
-import com.jonatas.finance.domain.exception.EmailInvalidException;
+import com.jonatas.finance.auth.Email;
+import com.jonatas.finance.auth.EmailInvalidException;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

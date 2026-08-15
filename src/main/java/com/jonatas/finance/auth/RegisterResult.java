@@ -1,4 +1,4 @@
-package com.jonatas.finance.domain.result.auth;
+package com.jonatas.finance.auth;
 
 public sealed interface RegisterResult 
     permits RegisterResult.Success,

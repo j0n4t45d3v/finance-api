@@ -1,6 +1,6 @@
 package com.jonatas.finance.controller;
 
-import com.jonatas.finance.domain.User;
+import com.jonatas.finance.auth.User;
 import com.jonatas.finance.domain.result.wallet.CreateWalletResult;
 import com.jonatas.finance.domain.result.wallet.EditWalletResult;
 import com.jonatas.finance.dto.Response;

@@ -1,6 +1,7 @@
 package com.jonatas.finance.service.impl.wallet;
 
 import com.jonatas.finance.domain.Wallet;
+import com.jonatas.finance.auth.User;
 import com.jonatas.finance.domain.Category;
 import com.jonatas.finance.domain.Transaction.Description;
 import com.jonatas.finance.domain.result.wallet.CreateTransactionResult;
@@ -13,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.jonatas.finance.domain.Transaction;
-import com.jonatas.finance.domain.User;
 import com.jonatas.finance.domain.Transaction.Amount;
 import com.jonatas.finance.domain.Transaction.Timestamp;
 import com.jonatas.finance.repository.CategoryRepository;

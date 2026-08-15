@@ -1,7 +1,7 @@
 package com.jonatas.finance.service;
 
+import com.jonatas.finance.auth.User;
 import com.jonatas.finance.domain.Transaction;
-import com.jonatas.finance.domain.User;
 import com.jonatas.finance.domain.result.wallet.CreateTransactionResult;
 import com.jonatas.finance.dto.wallet.CreateTransactionRequest;
 import org.springframework.data.domain.Page;

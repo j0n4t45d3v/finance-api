@@ -1,7 +1,5 @@
-package com.jonatas.finance.domain;
+package com.jonatas.finance.auth;
 
-import com.jonatas.finance.domain.dvo.user.Email;
-import com.jonatas.finance.domain.dvo.user.Password;
 import com.jonatas.finance.domain.exception.FieldRequiredException;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;

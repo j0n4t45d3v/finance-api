@@ -2,7 +2,7 @@ package com.jonatas.finance.controller;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.jonatas.finance.domain.User;
+import com.jonatas.finance.auth.User;
 import com.jonatas.finance.domain.result.wallet.CreateTransactionResult;
 import com.jonatas.finance.dto.PageResponse;
 import com.jonatas.finance.dto.Response;

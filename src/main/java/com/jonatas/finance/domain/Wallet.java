@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.util.Objects;
 
+import com.jonatas.finance.auth.User;
+
 @Entity
 @Table(name = "tb_wallets")
 public class Wallet {

@@ -9,10 +9,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.jayway.jsonpath.JsonPath;
-import com.jonatas.finance.domain.User;
-import com.jonatas.finance.domain.dvo.user.Email;
-import com.jonatas.finance.domain.dvo.user.Password;
-import com.jonatas.finance.repository.UserRepository;
+import com.jonatas.finance.auth.Email;
+import com.jonatas.finance.auth.Password;
+import com.jonatas.finance.auth.User;
+import com.jonatas.finance.auth.UserRepository;
 
 public final class TestUtils {
 

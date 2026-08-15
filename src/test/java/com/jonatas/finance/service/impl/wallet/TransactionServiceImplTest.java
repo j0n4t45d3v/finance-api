@@ -1,9 +1,9 @@
 package com.jonatas.finance.service.impl.wallet;
 
 import com.jonatas.finance.domain.Wallet;
+import com.jonatas.finance.auth.User;
 import com.jonatas.finance.domain.Category;
 import com.jonatas.finance.domain.Transaction;
-import com.jonatas.finance.domain.User;
 import com.jonatas.finance.domain.result.wallet.CreateTransactionResult;
 import com.jonatas.finance.dto.wallet.CreateTransactionRequest;
 import com.jonatas.finance.infra.provider.ClockProvider;

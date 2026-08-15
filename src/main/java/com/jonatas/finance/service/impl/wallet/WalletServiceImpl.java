@@ -1,12 +1,12 @@
 package com.jonatas.finance.service.impl.wallet;
 
+import com.jonatas.finance.auth.User;
 import com.jonatas.finance.controller.WalletController.CreateWalletRequest;
 import com.jonatas.finance.controller.WalletController.EditWalletRequest;
 import com.jonatas.finance.domain.Wallet;
 import com.jonatas.finance.domain.Wallet.Description;
 import com.jonatas.finance.domain.result.wallet.CreateWalletResult;
 import com.jonatas.finance.domain.result.wallet.EditWalletResult;
-import com.jonatas.finance.domain.User;
 import com.jonatas.finance.repository.WalletRepository;
 import com.jonatas.finance.service.WalletService;
 import org.springframework.stereotype.Service;

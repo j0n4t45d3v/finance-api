@@ -1,6 +1,4 @@
-package com.jonatas.finance.domain.dvo.user;
-
-import com.jonatas.finance.domain.exception.EmailInvalidException;
+package com.jonatas.finance.auth;
 
 import java.util.regex.Pattern;
 

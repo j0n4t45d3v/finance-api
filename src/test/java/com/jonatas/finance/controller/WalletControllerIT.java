@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jonatas.finance.BaseIntegratioTest;
-import com.jonatas.finance.repository.UserRepository;
+import com.jonatas.finance.auth.UserRepository;
 
 @Transactional
 class WalletControllerIT extends BaseIntegratioTest {

@@ -5,8 +5,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import com.jonatas.finance.domain.dvo.user.Email;
-import com.jonatas.finance.repository.UserRepository;
+import com.jonatas.finance.auth.Email;
+import com.jonatas.finance.auth.UserRepository;
 
 @Component
 public class CustomUserDetailsService implements UserDetailsService {

@@ -1,5 +1,6 @@
 package com.jonatas.finance.domain;
 
+import com.jonatas.finance.auth.User;
 import com.jonatas.finance.domain.Transaction.Amount;
 import com.jonatas.finance.domain.Transaction.Description;
 import com.jonatas.finance.domain.Transaction.Timestamp;
@@ -23,7 +24,7 @@ class TransactionTest {
             new Amount(BigDecimal.ONE),
             now,
             new Wallet(),
-            new User(),
+            User.reference(1L),
             new Category()
         );
 
@@ -44,7 +45,7 @@ class TransactionTest {
             new Amount(BigDecimal.ONE),
             now,
             new Wallet(),
-            new User(),
+            User.reference(1L),
             new Category()
         );
 
@@ -64,7 +65,7 @@ class TransactionTest {
             null,
             Timestamp.now(),
             new Wallet(),
-            new User(),
+            User.reference(1L),
             new Category()
         ));
     }
@@ -77,7 +78,7 @@ class TransactionTest {
             new Amount(BigDecimal.valueOf(-1)),
             Timestamp.now(),
             new Wallet(),
-            new User(),
+            User.reference(1L),
             new Category()
         ));
     }
@@ -90,7 +91,7 @@ class TransactionTest {
             new Amount(BigDecimal.ZERO),
             Timestamp.now(),
             new Wallet(),
-            new User(),
+            User.reference(1L),
             new Category()
         ));
     }
@@ -103,7 +104,7 @@ class TransactionTest {
             new Amount(BigDecimal.ONE),
             null,
             new Wallet(),
-            new User(),
+            User.reference(1L),
             new Category()
         ));
     }
@@ -116,7 +117,7 @@ class TransactionTest {
             new Amount(BigDecimal.ONE),
             Timestamp.now(),
             null,
-            new User(),
+            User.reference(1L),
             new Category()
         ));
     }
@@ -143,7 +144,7 @@ class TransactionTest {
             new Amount(BigDecimal.ONE),
             Timestamp.now(),
             new Wallet(),
-            new User(),
+            User.reference(1L),
             null
         ));
     }

@@ -1,8 +1,8 @@
 package com.jonatas.finance.repository;
 
+import com.jonatas.finance.auth.User;
 import com.jonatas.finance.domain.Category;
 import com.jonatas.finance.domain.Transaction;
-import com.jonatas.finance.domain.User;
 import com.jonatas.finance.dto.dashboard.RankCategoryResponse;
 import com.jonatas.finance.dto.dashboard.RankTransactionResponse;
 import com.jonatas.finance.dto.dashboard.SummaryIncomeVsExpense;

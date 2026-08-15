@@ -1,4 +1,6 @@
-package com.jonatas.finance.domain.exception;
+package com.jonatas.finance.auth;
+
+import com.jonatas.finance.domain.exception.DomainException;
 
 public class EmailInvalidException extends DomainException{
     public EmailInvalidException(String message) {

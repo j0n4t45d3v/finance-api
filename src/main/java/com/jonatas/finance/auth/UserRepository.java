@@ -1,7 +1,5 @@
-package com.jonatas.finance.repository;
+package com.jonatas.finance.auth;
 
-import com.jonatas.finance.domain.User;
-import com.jonatas.finance.domain.dvo.user.Email;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

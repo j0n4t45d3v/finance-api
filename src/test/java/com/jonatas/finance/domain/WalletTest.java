@@ -3,6 +3,8 @@ package com.jonatas.finance.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.jonatas.finance.auth.User;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class WalletTest {
@@ -12,7 +14,7 @@ class WalletTest {
     void shouldCreateValidWalletInstance() {
         Wallet wallet = new Wallet(
             new Wallet.Description("test create wallet"),
-            new User(),
+            User.reference(1L),
             true
         );
 
@@ -36,7 +38,7 @@ class WalletTest {
     void shouldNotAllowedCreateWalletWithoutDescription() {
         assertThrows(NullPointerException.class, () -> new Wallet(
             null,
-            new User(),
+            User.reference(1L),
             true
         ));
     }
@@ -47,7 +49,7 @@ class WalletTest {
     void shouldNotAllowedCreateWalletWithEmptyDescription() {
         assertThrows(IllegalArgumentException.class, () -> new Wallet(
             new Wallet.Description(""),
-            new User(),
+            User.reference(1L),
             true
         ));
     }
@@ -57,7 +59,7 @@ class WalletTest {
     void shouldNotAllowedCreateWalletWithBlankDescription() {
         assertThrows(IllegalArgumentException.class, () -> new Wallet(
             new Wallet.Description(""),
-            new User(),
+            User.reference(1L),
             true
         ));
     }

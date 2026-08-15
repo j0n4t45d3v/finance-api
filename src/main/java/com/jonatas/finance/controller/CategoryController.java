@@ -1,9 +1,9 @@
 package com.jonatas.finance.controller;
 
+import com.jonatas.finance.auth.User;
 import com.jonatas.finance.domain.Category;
 import com.jonatas.finance.domain.Category.Name;
 import com.jonatas.finance.domain.Category.Type;
-import com.jonatas.finance.domain.User;
 import com.jonatas.finance.dto.Response;
 import com.jonatas.finance.infra.swagger.annotation.CategoryTag;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;

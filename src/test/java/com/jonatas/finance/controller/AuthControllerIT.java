@@ -18,10 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jayway.jsonpath.JsonPath;
 import com.jonatas.finance.BaseIntegratioTest;
-import com.jonatas.finance.domain.User;
-import com.jonatas.finance.domain.dvo.user.Email;
-import com.jonatas.finance.domain.dvo.user.Password;
-import com.jonatas.finance.repository.UserRepository;
+import com.jonatas.finance.auth.Email;
+import com.jonatas.finance.auth.Password;
+import com.jonatas.finance.auth.User;
+import com.jonatas.finance.auth.UserRepository;
 
 @Transactional
 class AuthControllerIT extends BaseIntegratioTest {

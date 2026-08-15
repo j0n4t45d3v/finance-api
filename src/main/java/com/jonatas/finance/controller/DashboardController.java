@@ -1,7 +1,7 @@
 package com.jonatas.finance.controller;
 
+import com.jonatas.finance.auth.User;
 import com.jonatas.finance.domain.Category;
-import com.jonatas.finance.domain.User;
 import com.jonatas.finance.dto.Response;
 import com.jonatas.finance.dto.dashboard.*;
 import com.jonatas.finance.infra.swagger.annotation.DashboardTag;

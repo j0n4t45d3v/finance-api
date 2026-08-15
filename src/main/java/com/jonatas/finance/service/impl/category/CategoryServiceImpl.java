@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.jonatas.finance.auth.User;
 import com.jonatas.finance.domain.Category;
-import com.jonatas.finance.domain.User;
 import com.jonatas.finance.repository.CategoryRepository;
 import com.jonatas.finance.service.CategoryService;
 

@@ -1,7 +1,8 @@
 package com.jonatas.finance.domain;
 
-import com.jonatas.finance.domain.dvo.user.Email;
-import com.jonatas.finance.domain.dvo.user.Password;
+import com.jonatas.finance.auth.Email;
+import com.jonatas.finance.auth.Password;
+import com.jonatas.finance.auth.User;
 import com.jonatas.finance.domain.exception.FieldRequiredException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

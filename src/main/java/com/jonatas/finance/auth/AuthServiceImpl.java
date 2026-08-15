@@ -1,22 +1,14 @@
-package com.jonatas.finance.service.impl.user;
+package com.jonatas.finance.auth;
 
 import java.util.Optional;
 
-import com.jonatas.finance.controller.AuthController.RefreshTokenRequest;
-import com.jonatas.finance.domain.result.auth.RefreshTokenResult;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.jonatas.finance.controller.AuthController.RegisterUserRequest;
-import com.jonatas.finance.domain.User;
-import com.jonatas.finance.domain.dvo.user.Email;
-import com.jonatas.finance.domain.dvo.user.Password;
-import com.jonatas.finance.domain.result.auth.LoginResult;
-import com.jonatas.finance.domain.result.auth.RegisterResult;
+import com.jonatas.finance.auth.AuthController.RefreshTokenRequest;
+import com.jonatas.finance.auth.AuthController.RegisterUserRequest;
 import com.jonatas.finance.dto.Token;
 import com.jonatas.finance.infra.security.JwtService;
-import com.jonatas.finance.repository.UserRepository;
-import com.jonatas.finance.service.AuthService;
 
 @Service
 public class AuthServiceImpl implements AuthService {

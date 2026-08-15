@@ -1,4 +1,4 @@
-package com.jonatas.finance.controller;
+package com.jonatas.finance.auth;
 
 import java.net.URI;
 import org.springframework.http.MediaType;
@@ -8,17 +8,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
-import com.jonatas.finance.domain.dvo.user.Email;
-import com.jonatas.finance.domain.result.auth.LoginResult;
-import com.jonatas.finance.domain.result.auth.RefreshTokenResult;
-import com.jonatas.finance.domain.result.auth.RegisterResult;
+
 import com.jonatas.finance.dto.Response;
 import com.jonatas.finance.dto.Token;
 import com.jonatas.finance.infra.error.Error;
 import com.jonatas.finance.infra.swagger.annotation.AuthTag;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
 import com.jonatas.finance.infra.swagger.schemas.SuccessLoginResponse;
-import com.jonatas.finance.service.AuthService;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;

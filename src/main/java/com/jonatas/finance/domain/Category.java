@@ -1,5 +1,6 @@
 package com.jonatas.finance.domain;
 
+import com.jonatas.finance.auth.User;
 import com.jonatas.finance.domain.exception.DomainException;
 
 import jakarta.annotation.Nonnull;
