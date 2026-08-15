@@ -1,26 +1,18 @@
-package com.jonatas.finance.service.impl.wallet;
+package com.jonatas.finance.wallet;
 
-import com.jonatas.finance.domain.Wallet;
-import com.jonatas.finance.auth.User;
-import com.jonatas.finance.domain.Category;
-import com.jonatas.finance.domain.Transaction.Description;
-import com.jonatas.finance.domain.result.wallet.CreateTransactionResult;
-import com.jonatas.finance.dto.wallet.CreateTransactionRequest;
-import com.jonatas.finance.infra.provider.ClockProvider;
-import com.jonatas.finance.repository.WalletRepository;
-import jakarta.transaction.Transactional;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.jonatas.finance.domain.Transaction;
-import com.jonatas.finance.domain.Transaction.Amount;
-import com.jonatas.finance.domain.Transaction.Timestamp;
-import com.jonatas.finance.repository.CategoryRepository;
-import com.jonatas.finance.repository.TransactionRepository;
-import com.jonatas.finance.service.TransactionService;
+import com.jonatas.finance.auth.User;
+import com.jonatas.finance.infra.provider.ClockProvider;
+import com.jonatas.finance.wallet.Transaction.Amount;
+import com.jonatas.finance.wallet.Transaction.Description;
+import com.jonatas.finance.wallet.Transaction.Timestamp;
 
-import java.util.Optional;
+import jakarta.transaction.Transactional;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {

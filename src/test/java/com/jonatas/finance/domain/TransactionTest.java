@@ -1,16 +1,22 @@
 package com.jonatas.finance.domain;
 
-import com.jonatas.finance.auth.User;
-import com.jonatas.finance.domain.Transaction.Amount;
-import com.jonatas.finance.domain.Transaction.Description;
-import com.jonatas.finance.domain.Transaction.Timestamp;
-import com.jonatas.finance.domain.exception.DomainException;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import com.jonatas.finance.auth.User;
+import com.jonatas.finance.domain.exception.DomainException;
+import com.jonatas.finance.wallet.Category;
+import com.jonatas.finance.wallet.Transaction;
+import com.jonatas.finance.wallet.Transaction.Amount;
+import com.jonatas.finance.wallet.Transaction.Description;
+import com.jonatas.finance.wallet.Transaction.Timestamp;
+import com.jonatas.finance.wallet.Wallet;
 
 class TransactionTest {
 
@@ -23,9 +29,9 @@ class TransactionTest {
             new Description("test transaction"),
             new Amount(BigDecimal.ONE),
             now,
-            new Wallet(),
+            Wallet.reference(1L),
             User.reference(1L),
-            new Category()
+            Category.reference(1L)
         );
 
         assertEquals("test transaction", transaction.getDescriptionValue());
@@ -44,9 +50,9 @@ class TransactionTest {
             null,
             new Amount(BigDecimal.ONE),
             now,
-            new Wallet(),
+            Wallet.reference(1L),
             User.reference(1L),
-            new Category()
+            Category.reference(1L)
         );
 
         assertEquals("<without description>", transaction.getDescriptionValue());
@@ -64,9 +70,9 @@ class TransactionTest {
             new Description("test"),
             null,
             Timestamp.now(),
-            new Wallet(),
+            Wallet.reference(1L),
             User.reference(1L),
-            new Category()
+            Category.reference(1L)
         ));
     }
 
@@ -77,9 +83,9 @@ class TransactionTest {
             new Description("test"),
             new Amount(BigDecimal.valueOf(-1)),
             Timestamp.now(),
-            new Wallet(),
+            Wallet.reference(1L),
             User.reference(1L),
-            new Category()
+            Category.reference(1L)
         ));
     }
 
@@ -90,9 +96,9 @@ class TransactionTest {
             new Description("test"),
             new Amount(BigDecimal.ZERO),
             Timestamp.now(),
-            new Wallet(),
+            Wallet.reference(1L),
             User.reference(1L),
-            new Category()
+            Category.reference(1L)
         ));
     }
 
@@ -103,9 +109,9 @@ class TransactionTest {
             new Description("test"),
             new Amount(BigDecimal.ONE),
             null,
-            new Wallet(),
+            Wallet.reference(1L),
             User.reference(1L),
-            new Category()
+            Category.reference(1L)
         ));
     }
 
@@ -118,7 +124,7 @@ class TransactionTest {
             Timestamp.now(),
             null,
             User.reference(1L),
-            new Category()
+            Category.reference(1L)
         ));
     }
 
@@ -129,9 +135,9 @@ class TransactionTest {
             new Description("test transaction"),
             new Amount(BigDecimal.ONE),
             Timestamp.now(),
-            new Wallet(),
+            Wallet.reference(1L),
             null,
-            new Category()
+            Category.reference(1L)
         ));
     }
 
@@ -143,7 +149,7 @@ class TransactionTest {
             new Description("test transaction"),
             new Amount(BigDecimal.ONE),
             Timestamp.now(),
-            new Wallet(),
+            Wallet.reference(1L),
             User.reference(1L),
             null
         ));

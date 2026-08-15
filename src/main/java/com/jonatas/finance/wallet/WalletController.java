@@ -1,26 +1,31 @@
-package com.jonatas.finance.controller;
+package com.jonatas.finance.wallet;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.jonatas.finance.auth.User;
-import com.jonatas.finance.domain.result.wallet.CreateWalletResult;
-import com.jonatas.finance.domain.result.wallet.EditWalletResult;
 import com.jonatas.finance.dto.Response;
 import com.jonatas.finance.infra.error.Error;
-import com.jonatas.finance.infra.swagger.annotation.WalletTag;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
-import com.jonatas.finance.service.WalletService;
+import com.jonatas.finance.infra.swagger.annotation.WalletTag;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.List;
 
 @WalletTag
 @RestController

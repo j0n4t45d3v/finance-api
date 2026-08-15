@@ -2,8 +2,8 @@ package com.jonatas.finance.service;
 
 import com.jonatas.finance.auth.User;
 import com.jonatas.finance.controller.DashboardController;
-import com.jonatas.finance.domain.Category;
 import com.jonatas.finance.dto.dashboard.*;
+import com.jonatas.finance.wallet.Category;
 
 import java.util.List;
 

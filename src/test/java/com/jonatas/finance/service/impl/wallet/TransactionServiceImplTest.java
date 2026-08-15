@@ -1,22 +1,13 @@
 package com.jonatas.finance.service.impl.wallet;
 
-import com.jonatas.finance.domain.Wallet;
-import com.jonatas.finance.auth.User;
-import com.jonatas.finance.domain.Category;
-import com.jonatas.finance.domain.Transaction;
-import com.jonatas.finance.domain.result.wallet.CreateTransactionResult;
-import com.jonatas.finance.dto.wallet.CreateTransactionRequest;
-import com.jonatas.finance.infra.provider.ClockProvider;
-import com.jonatas.finance.repository.WalletRepository;
-import com.jonatas.finance.service.impl.wallet.TransactionServiceImpl;
-import com.jonatas.finance.repository.CategoryRepository;
-import com.jonatas.finance.repository.TransactionRepository;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -24,9 +15,24 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.jonatas.finance.auth.User;
+import com.jonatas.finance.infra.provider.ClockProvider;
+import com.jonatas.finance.wallet.Category;
+import com.jonatas.finance.wallet.CategoryRepository;
+import com.jonatas.finance.wallet.CreateTransactionRequest;
+import com.jonatas.finance.wallet.CreateTransactionResult;
+import com.jonatas.finance.wallet.Transaction;
+import com.jonatas.finance.wallet.TransactionRepository;
+import com.jonatas.finance.wallet.TransactionServiceImpl;
+import com.jonatas.finance.wallet.Wallet;
+import com.jonatas.finance.wallet.WalletRepository;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionServiceImplTest {

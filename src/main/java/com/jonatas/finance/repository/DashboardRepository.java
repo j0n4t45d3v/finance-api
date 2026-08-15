@@ -1,38 +1,38 @@
 package com.jonatas.finance.repository;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.jonatas.finance.auth.User;
-import com.jonatas.finance.domain.Category;
-import com.jonatas.finance.domain.Transaction;
 import com.jonatas.finance.dto.dashboard.RankCategoryResponse;
 import com.jonatas.finance.dto.dashboard.RankTransactionResponse;
 import com.jonatas.finance.dto.dashboard.SummaryIncomeVsExpense;
 import com.jonatas.finance.dto.dashboard.TransactionGroupByResponse;
+import com.jonatas.finance.wallet.Category;
+import com.jonatas.finance.wallet.Transaction;
+
 import jakarta.annotation.Nonnull;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-@Repository
 @Transactional(readOnly = true)
 public interface DashboardRepository extends JpaRepository<Transaction, Long> {
 
     @Query("""
         SELECT new com.jonatas.finance.dto.dashboard.SummaryIncomeVsExpense(
             SUM(CASE
-                    WHEN c.type = com.jonatas.finance.domain.Category.Type.INCOME THEN t.amount.value
+                    WHEN c.type = INCOME THEN t.amount.value
                     ELSE 0
                 END),
             SUM(CASE
-                    WHEN c.type = com.jonatas.finance.domain.Category.Type.EXPENSE THEN t.amount.value
+                    WHEN c.type = EXPENSE THEN t.amount.value
                     ELSE 0
                 END),
             SUM(t.amount.value * CASE
-                                     WHEN category.type = com.jonatas.finance.domain.Category.Type.EXPENSE THEN -1
+                                     WHEN category.type = EXPENSE THEN -1
                                      ELSE 1
                                  END )
         )
@@ -102,11 +102,11 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
         select new com.jonatas.finance.dto.dashboard.TransactionGroupByResponse(
                    c.name.value,
                    SUM(CASE
-                            WHEN c.type = com.jonatas.finance.domain.Category.Type.INCOME THEN t.amount.value
+                            WHEN c.type = INCOME THEN t.amount.value
                             ELSE 0
                        END),
                    SUM(CASE
-                            WHEN c.type = com.jonatas.finance.domain.Category.Type.EXPENSE THEN t.amount.value
+                            WHEN c.type = EXPENSE THEN t.amount.value
                             ELSE 0
                        END),
                    COUNT(*)
@@ -131,11 +131,11 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
                    YEAR(t.transactionAt.value),
                    MONTH(t.transactionAt.value),
                    SUM(CASE
-                            WHEN c.type = com.jonatas.finance.domain.Category.Type.INCOME THEN t.amount.value
+                            WHEN c.type = INCOME THEN t.amount.value
                             ELSE 0
                        END),
                    SUM(CASE
-                            WHEN c.type = com.jonatas.finance.domain.Category.Type.EXPENSE THEN t.amount.value
+                            WHEN c.type = EXPENSE THEN t.amount.value
                             ELSE 0
                        END),
                    COUNT(*)
@@ -159,11 +159,11 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
         select new com.jonatas.finance.dto.dashboard.TransactionGroupByResponse(
                    concat(cast(t.transactionAt.value as date), ''),
                    SUM(CASE
-                            WHEN c.type = com.jonatas.finance.domain.Category.Type.INCOME THEN t.amount.value
+                            WHEN c.type = INCOME THEN t.amount.value
                             ELSE 0
                        END),
                    SUM(CASE
-                            WHEN c.type = com.jonatas.finance.domain.Category.Type.EXPENSE THEN t.amount.value
+                            WHEN c.type = EXPENSE THEN t.amount.value
                             ELSE 0
                        END),
                    COUNT(*)

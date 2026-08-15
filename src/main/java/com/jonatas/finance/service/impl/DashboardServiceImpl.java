@@ -2,10 +2,11 @@ package com.jonatas.finance.service.impl;
 
 import com.jonatas.finance.auth.User;
 import com.jonatas.finance.controller.DashboardController;
-import com.jonatas.finance.domain.Category;
 import com.jonatas.finance.dto.dashboard.*;
 import com.jonatas.finance.repository.DashboardRepository;
 import com.jonatas.finance.service.DashboardService;
+import com.jonatas.finance.wallet.Category;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

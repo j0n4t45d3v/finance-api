@@ -1,11 +1,12 @@
 package com.jonatas.finance.controller;
 
 import com.jonatas.finance.auth.User;
-import com.jonatas.finance.domain.Category;
 import com.jonatas.finance.dto.Response;
 import com.jonatas.finance.dto.dashboard.*;
 import com.jonatas.finance.infra.swagger.annotation.DashboardTag;
 import com.jonatas.finance.service.DashboardService;
+import com.jonatas.finance.wallet.Category;
+
 import io.swagger.v3.oas.annotations.Operation;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;

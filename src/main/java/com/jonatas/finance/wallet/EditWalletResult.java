@@ -1,4 +1,4 @@
-package com.jonatas.finance.domain.result.wallet;
+package com.jonatas.finance.wallet;
 
 public sealed interface EditWalletResult
     permits EditWalletResult.Success,

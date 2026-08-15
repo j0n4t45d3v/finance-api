@@ -1,18 +1,14 @@
-package com.jonatas.finance.service.impl.wallet;
-
-import com.jonatas.finance.auth.User;
-import com.jonatas.finance.controller.WalletController.CreateWalletRequest;
-import com.jonatas.finance.controller.WalletController.EditWalletRequest;
-import com.jonatas.finance.domain.Wallet;
-import com.jonatas.finance.domain.Wallet.Description;
-import com.jonatas.finance.domain.result.wallet.CreateWalletResult;
-import com.jonatas.finance.domain.result.wallet.EditWalletResult;
-import com.jonatas.finance.repository.WalletRepository;
-import com.jonatas.finance.service.WalletService;
-import org.springframework.stereotype.Service;
+package com.jonatas.finance.wallet;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.jonatas.finance.auth.User;
+import com.jonatas.finance.wallet.Wallet.Description;
+import com.jonatas.finance.wallet.WalletController.CreateWalletRequest;
+import com.jonatas.finance.wallet.WalletController.EditWalletRequest;
 
 @Service
 public class WalletServiceImpl implements WalletService {

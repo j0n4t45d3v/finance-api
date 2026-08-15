@@ -1,14 +1,25 @@
-package com.jonatas.finance.controller;
+package com.jonatas.finance.wallet;
+
+import java.net.URI;
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.jonatas.finance.auth.User;
-import com.jonatas.finance.domain.Category;
-import com.jonatas.finance.domain.Category.Name;
-import com.jonatas.finance.domain.Category.Type;
 import com.jonatas.finance.dto.Response;
 import com.jonatas.finance.infra.swagger.annotation.CategoryTag;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
-import com.jonatas.finance.service.CategoryService;
 import com.jonatas.finance.service.CreateService;
+import com.jonatas.finance.wallet.Category.Name;
+import com.jonatas.finance.wallet.Category.Type;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,13 +28,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URI;
-import java.util.List;
 
 @CategoryTag
 @RestController

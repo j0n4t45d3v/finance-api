@@ -1,10 +1,8 @@
-package com.jonatas.finance.service.impl.category;
+package com.jonatas.finance.wallet;
 
 import org.springframework.stereotype.Service;
 
-import com.jonatas.finance.domain.Category;
 import com.jonatas.finance.domain.exception.DomainException;
-import com.jonatas.finance.repository.CategoryRepository;
 import com.jonatas.finance.service.CreateService;
 
 @Service

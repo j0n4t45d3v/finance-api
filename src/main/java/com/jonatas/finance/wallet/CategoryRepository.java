@@ -1,4 +1,4 @@
-package com.jonatas.finance.repository;
+package com.jonatas.finance.wallet;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,8 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.jonatas.finance.auth.User;
-import com.jonatas.finance.domain.Category;
-import com.jonatas.finance.domain.Category.Name;
+import com.jonatas.finance.wallet.Category.Name;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 

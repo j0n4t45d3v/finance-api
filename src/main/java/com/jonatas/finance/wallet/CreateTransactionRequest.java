@@ -1,4 +1,4 @@
-package com.jonatas.finance.dto.wallet;
+package com.jonatas.finance.wallet;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;

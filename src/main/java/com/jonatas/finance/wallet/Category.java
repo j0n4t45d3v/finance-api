@@ -1,4 +1,4 @@
-package com.jonatas.finance.domain;
+package com.jonatas.finance.wallet;
 
 import com.jonatas.finance.auth.User;
 import com.jonatas.finance.domain.exception.DomainException;
@@ -54,6 +54,10 @@ public class Category {
   protected Category() {
   }
 
+  private Category(Long id) {
+    this.id = id;
+  }
+
   public Category(User user) {
     this.user = user;
   }
@@ -62,6 +66,10 @@ public class Category {
     this.name = name;
     this.type = type;
     this.user = user;
+  }
+
+  public static Category reference(Long id) {
+    return new Category(id);
   }
 
   public Long getId() {

@@ -1,7 +1,6 @@
-package com.jonatas.finance.repository;
+package com.jonatas.finance.wallet;
 
 import com.jonatas.finance.auth.User;
-import com.jonatas.finance.domain.Wallet;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

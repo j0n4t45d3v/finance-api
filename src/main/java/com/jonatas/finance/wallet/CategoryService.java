@@ -1,9 +1,8 @@
-package com.jonatas.finance.service;
+package com.jonatas.finance.wallet;
 
 import java.util.List;
 
 import com.jonatas.finance.auth.User;
-import com.jonatas.finance.domain.Category;
 
 public interface CategoryService {
 

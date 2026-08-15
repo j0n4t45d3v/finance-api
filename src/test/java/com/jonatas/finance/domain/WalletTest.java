@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.jonatas.finance.auth.User;
+import com.jonatas.finance.wallet.Wallet;
 
 import static org.junit.jupiter.api.Assertions.*;
 

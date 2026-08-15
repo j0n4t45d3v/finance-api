@@ -1,4 +1,4 @@
-package com.jonatas.finance.domain;
+package com.jonatas.finance.wallet;
 
 import jakarta.persistence.*;
 
@@ -35,10 +35,18 @@ public class Wallet {
 
     protected Wallet() {}
 
+    private Wallet(Long id) {
+        this.id = id;
+    }
+
     public Wallet(Description description, User user, boolean main) {
         this.description = Objects.requireNonNull(description);
         this.main = main;
         this.user = Objects.requireNonNull(user);
+    }
+
+    public static Wallet reference(Long id) {
+        return new Wallet(id);
     }
 
     public Long getId() {

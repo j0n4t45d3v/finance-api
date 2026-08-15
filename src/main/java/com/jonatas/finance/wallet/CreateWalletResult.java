@@ -1,6 +1,4 @@
-package com.jonatas.finance.domain.result.wallet;
-
-import com.jonatas.finance.domain.Wallet;
+package com.jonatas.finance.wallet;
 
 public sealed interface CreateWalletResult
     permits CreateWalletResult.Success,

@@ -1,4 +1,4 @@
-package com.jonatas.finance.domain;
+package com.jonatas.finance.wallet;
 
 import com.jonatas.finance.auth.User;
 import com.jonatas.finance.domain.exception.DomainException;
