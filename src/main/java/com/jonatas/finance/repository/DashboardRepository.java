@@ -41,13 +41,13 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
             ON c.id = t.category.id
         WHERE t.user = :user
           AND t.transactionAt.value BETWEEN :startDate AND :endDate
-          AND (:accountId is null or t.account.id = :accountId)
+          AND (:walletId is null or t.wallet.id = :walletId)
         """)
     SummaryIncomeVsExpense findSummaryIncomesVsExpenses(
         @Nonnull User user,
         @Nonnull LocalDateTime startDate,
         @Nonnull LocalDateTime endDate,
-        Long accountId
+        Long walletId
     );
 
     @Query("""
@@ -62,7 +62,7 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
          where t.user = ?1
            and t.transactionAt.value between ?2 and ?3
            and (?4 is null or c.type = ?4)
-           and (?5 is null or t.account.id = ?5)
+           and (?5 is null or t.wallet.id = ?5)
          group by c.name, c.type
          order by sum(t.amount.value) desc
         """)
@@ -71,7 +71,7 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
         @Nonnull LocalDateTime startDate,
         @Nonnull LocalDateTime endDate,
         Category.Type type,
-        Long accountId,
+        Long walletId,
         Pageable pageable
     );
 
@@ -88,13 +88,13 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
          on t.category.id = c.id
         where t.user = ?1
           and t.transactionAt.value between ?2 and ?3
-          and (?4 is null or t.account.id = ?4)
+          and (?4 is null or t.wallet.id = ?4)
         """)
     List<RankTransactionResponse> findTopRankTransaction(
         @Nonnull User user,
         @Nonnull LocalDateTime startDate,
         @Nonnull LocalDateTime endDate,
-        Long accountId,
+        Long walletId,
         Pageable pageable
     );
 
@@ -116,14 +116,14 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
          on t.category.id = c.id
         where t.user = ?1
           and t.transactionAt.value between ?2 and ?3
-          and (?4 is null or t.account.id = ?4)
+          and (?4 is null or t.wallet.id = ?4)
         group by c.name.value
         """)
     List<TransactionGroupByResponse> findTransactionGroupByCategory(
         @Nonnull User user,
         @Nonnull LocalDateTime startDate,
         @Nonnull LocalDateTime endDate,
-        Long accountId
+        Long walletId
     );
 
     @Query("""
@@ -145,14 +145,14 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
          on t.category.id = c.id
         where t.user = ?1
           and t.transactionAt.value between ?2 and ?3
-          and (?4 is null or t.account.id = ?4)
+          and (?4 is null or t.wallet.id = ?4)
         group by YEAR(t.transactionAt.value), MONTH(t.transactionAt.value)
         """)
     List<TransactionGroupByResponse> findTransactionGroupByMonth(
         @Nonnull User user,
         @Nonnull LocalDateTime startDate,
         @Nonnull LocalDateTime endDate,
-        Long accountId
+        Long walletId
     );
 
     @Query("""
@@ -173,13 +173,13 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
          on t.category.id = c.id
         where t.user = ?1
           and t.transactionAt.value between ?2 and ?3
-          and (?4 is null or t.account.id = ?4)
+          and (?4 is null or t.wallet.id = ?4)
         group by cast(t.transactionAt.value as date)
         """)
     List<TransactionGroupByResponse> findTransactionGroupByDay(
         @Nonnull User user,
         @Nonnull LocalDateTime startDate,
         @Nonnull LocalDateTime endDate,
-        Long accountId
+        Long walletId
     );
 }

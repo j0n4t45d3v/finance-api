@@ -1,13 +1,14 @@
-package com.jonatas.finance.service.impl.account;
+package com.jonatas.finance.service.impl.wallet;
 
-import com.jonatas.finance.domain.Account;
+import com.jonatas.finance.domain.Wallet;
 import com.jonatas.finance.domain.Category;
 import com.jonatas.finance.domain.Transaction;
 import com.jonatas.finance.domain.User;
-import com.jonatas.finance.domain.result.account.CreateTransactionResult;
-import com.jonatas.finance.dto.account.CreateTransactionRequest;
+import com.jonatas.finance.domain.result.wallet.CreateTransactionResult;
+import com.jonatas.finance.dto.wallet.CreateTransactionRequest;
 import com.jonatas.finance.infra.provider.ClockProvider;
-import com.jonatas.finance.repository.AccountRepository;
+import com.jonatas.finance.repository.WalletRepository;
+import com.jonatas.finance.service.impl.wallet.TransactionServiceImpl;
 import com.jonatas.finance.repository.CategoryRepository;
 import com.jonatas.finance.repository.TransactionRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +32,7 @@ import static org.mockito.Mockito.*;
 class TransactionServiceImplTest {
 
     @Mock
-    private AccountRepository accountRepository;
+    private WalletRepository walletRepository;
 
     @Mock
     private TransactionRepository transactionRepository;
@@ -51,10 +52,10 @@ class TransactionServiceImplTest {
         CreateTransactionRequest request = this.getCreateTransactionRequest();
         User userMock = mock(User.class);
         Category categoryMock = mock(Category.class);
-        Account accountMock = mock(Account.class);
+        Wallet walletMock = mock(Wallet.class);
 
         when(this.categoryRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.of(categoryMock));
-        when(this.accountRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.of(accountMock));
+        when(this.walletRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.of(walletMock));
         when(this.clockProvider.now()).thenReturn(LocalDateTime.now());
 
         CreateTransactionResult result = this.transactionService.create(request, userMock);
@@ -62,7 +63,7 @@ class TransactionServiceImplTest {
         assertInstanceOf(CreateTransactionResult.Success.class, result);
 
         verify(this.categoryRepository, times(1)).findByIdAndUser(anyLong(), any(User.class));
-        verify(this.accountRepository, times(1)).findByIdAndUser(anyLong(), any(User.class));
+        verify(this.walletRepository, times(1)).findByIdAndUser(anyLong(), any(User.class));
         verify(this.transactionRepository, times(1)).save(any(Transaction.class));
     }
 
@@ -79,26 +80,26 @@ class TransactionServiceImplTest {
         assertInstanceOf(CreateTransactionResult.CategoryNotFound.class, result);
 
         verify(this.categoryRepository, times(1)).findByIdAndUser(anyLong(), any(User.class));
-        verify(this.accountRepository, never()).findByIdAndUser(anyLong(), any(User.class));
+        verify(this.walletRepository, never()).findByIdAndUser(anyLong(), any(User.class));
         verify(this.transactionRepository, never()).save(any(Transaction.class));
     }
 
     @Test
-    @DisplayName("should not allowed create transaction when user account not exists")
-    void shouldNotAllowedCreateTransactionWhenUserAccountNotExists() {
+    @DisplayName("should not allowed create transaction when user wallet not exists")
+    void shouldNotAllowedCreateTransactionWhenUserWalletNotExists() {
         CreateTransactionRequest request = this.getCreateTransactionRequest();
         User userMock = mock(User.class);
         Category categoryMock = mock(Category.class);
 
         when(this.categoryRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.of(categoryMock));
-        when(this.accountRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.empty());
+        when(this.walletRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.empty());
 
         CreateTransactionResult result = this.transactionService.create(request, userMock);
 
-        assertInstanceOf(CreateTransactionResult.AccountNotFound.class, result);
+        assertInstanceOf(CreateTransactionResult.WalletNotFound.class, result);
 
         verify(this.categoryRepository, times(1)).findByIdAndUser(anyLong(), any(User.class));
-        verify(this.accountRepository, times(1)).findByIdAndUser(anyLong(), any(User.class));
+        verify(this.walletRepository, times(1)).findByIdAndUser(anyLong(), any(User.class));
         verify(this.transactionRepository, never()).save(any(Transaction.class));
     }
 
@@ -108,10 +109,10 @@ class TransactionServiceImplTest {
         CreateTransactionRequest request = this.getCreateTransactionRequestInFuture();
         User userMock = mock(User.class);
         Category categoryMock = mock(Category.class);
-        Account accountMock = mock(Account.class);
+        Wallet walletMock = mock(Wallet.class);
 
         when(this.categoryRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.of(categoryMock));
-        when(this.accountRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.of(accountMock));
+        when(this.walletRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.of(walletMock));
         when(this.clockProvider.now()).thenReturn(LocalDateTime.now());
 
         CreateTransactionResult result = this.transactionService.create(request, userMock);
@@ -119,7 +120,7 @@ class TransactionServiceImplTest {
         assertInstanceOf(CreateTransactionResult.TransactionCannotBeIsInTheFuture.class, result);
 
         verify(this.categoryRepository, times(1)).findByIdAndUser(anyLong(), any(User.class));
-        verify(this.accountRepository, times(1)).findByIdAndUser(anyLong(), any(User.class));
+        verify(this.walletRepository, times(1)).findByIdAndUser(anyLong(), any(User.class));
         verify(this.transactionRepository, never()).save(any(Transaction.class));
     }
 

@@ -1,12 +1,12 @@
-package com.jonatas.finance.service.impl.account;
+package com.jonatas.finance.service.impl.wallet;
 
-import com.jonatas.finance.domain.Account;
+import com.jonatas.finance.domain.Wallet;
 import com.jonatas.finance.domain.Category;
 import com.jonatas.finance.domain.Transaction.Description;
-import com.jonatas.finance.domain.result.account.CreateTransactionResult;
-import com.jonatas.finance.dto.account.CreateTransactionRequest;
+import com.jonatas.finance.domain.result.wallet.CreateTransactionResult;
+import com.jonatas.finance.dto.wallet.CreateTransactionRequest;
 import com.jonatas.finance.infra.provider.ClockProvider;
-import com.jonatas.finance.repository.AccountRepository;
+import com.jonatas.finance.repository.WalletRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,18 +25,18 @@ import java.util.Optional;
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
-    private final AccountRepository accountRepository;
+    private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
     private final CategoryRepository categoryRepository;
     private final ClockProvider clockProvider;
 
     public TransactionServiceImpl(
-        AccountRepository accountRepository,
+        WalletRepository walletRepository,
         TransactionRepository transactionRepository,
         CategoryRepository categoryRepository,
         ClockProvider clockProvider
     ) {
-        this.accountRepository = accountRepository;
+        this.walletRepository = walletRepository;
         this.transactionRepository = transactionRepository;
         this.categoryRepository = categoryRepository;
         this.clockProvider = clockProvider;
@@ -50,9 +50,9 @@ public class TransactionServiceImpl implements TransactionService {
             return new CreateTransactionResult.CategoryNotFound();
         }
 
-        Optional<Account> account = this.accountRepository.findByIdAndUser(request.accountId(), user);
-        if (account.isEmpty()) {
-            return new CreateTransactionResult.AccountNotFound();
+        Optional<Wallet> wallet = this.walletRepository.findByIdAndUser(request.walletId(), user);
+        if (wallet.isEmpty()) {
+            return new CreateTransactionResult.WalletNotFound();
         }
 
         if (request.datetime().isAfter(this.clockProvider.now())) {
@@ -63,7 +63,7 @@ public class TransactionServiceImpl implements TransactionService {
             new Description(request.description()),
             new Amount(request.amount()),
             new Timestamp(request.datetime()),
-            account.get(),
+            wallet.get(),
             user,
             category.get()
         );

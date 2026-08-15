@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tb_user_accounts")
-public class Account {
+@Table(name = "tb_wallets")
+public class Wallet {
 
     public record Description(String value) {
         public Description {
@@ -31,9 +31,9 @@ public class Account {
     @JoinColumn(name = "user_id")
     private User user;
 
-    protected Account() {}
+    protected Wallet() {}
 
-    public Account(Description description, User user, boolean main) {
+    public Wallet(Description description, User user, boolean main) {
         this.description = Objects.requireNonNull(description);
         this.main = main;
         this.user = Objects.requireNonNull(user);

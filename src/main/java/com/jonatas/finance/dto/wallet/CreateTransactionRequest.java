@@ -1,4 +1,4 @@
-package com.jonatas.finance.dto.account;
+package com.jonatas.finance.dto.wallet;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
@@ -26,6 +26,6 @@ public record CreateTransactionRequest(
 
     @Schema(example = "1")
     @NotNull
-    Long accountId
+    Long walletId
 ) {
 }

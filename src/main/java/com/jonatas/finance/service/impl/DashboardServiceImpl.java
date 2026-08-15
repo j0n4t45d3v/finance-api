@@ -25,7 +25,7 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public SummaryIncomeVsExpense getSummaryIncomeVsExpense(DashboardFiltersRequest filters, User user) {
         return this.dashboardRepository
-            .findSummaryIncomesVsExpenses(user, filters.getStartTimestamp(), filters.getEndTimestamp(), filters.accountId());
+            .findSummaryIncomesVsExpenses(user, filters.getStartTimestamp(), filters.getEndTimestamp(), filters.walletId());
     }
 
     @Override
@@ -36,7 +36,7 @@ public class DashboardServiceImpl implements DashboardService {
             request.getStartTimestamp(),
             request.getEndTimestamp(),
             type,
-            request.accountId(),
+            request.walletId(),
             limit
         );
     }
@@ -48,7 +48,7 @@ public class DashboardServiceImpl implements DashboardService {
             user,
             request.getStartTimestamp(),
             request.getEndTimestamp(),
-            request.accountId(),
+            request.walletId(),
             limit
         );
     }
@@ -60,20 +60,20 @@ public class DashboardServiceImpl implements DashboardService {
                 user,
                 request.getStartTimestamp(),
                 request.getEndTimestamp(),
-                request.accountId()
+                request.walletId()
             );
 
             case MONTH -> this.dashboardRepository.findTransactionGroupByMonth(
                 user,
                     request.getStartTimestamp(),
                     request.getEndTimestamp(),
-                    request.accountId()
+                    request.walletId()
             );
             default -> this.dashboardRepository.findTransactionGroupByCategory(
                 user,
                 request.getStartTimestamp(),
                 request.getEndTimestamp(),
-                request.accountId()
+                request.walletId()
             );
         };
     }
@@ -85,7 +85,7 @@ public class DashboardServiceImpl implements DashboardService {
             user,
             request.getStartTimestamp(),
             request.getEndTimestamp(),
-            request.accountId(),
+            request.walletId(),
             limit
         );
     }

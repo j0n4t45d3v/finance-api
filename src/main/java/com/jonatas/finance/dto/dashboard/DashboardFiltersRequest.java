@@ -7,7 +7,7 @@ import java.util.Optional;
 public record DashboardFiltersRequest(
     LocalDate startDate,
     LocalDate endDate,
-    Long accountId
+    Long walletId
 ) {
 
     public LocalDateTime getStartTimestamp() {

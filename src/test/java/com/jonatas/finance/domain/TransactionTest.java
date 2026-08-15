@@ -22,7 +22,7 @@ class TransactionTest {
             new Description("test transaction"),
             new Amount(BigDecimal.ONE),
             now,
-            new Account(),
+            new Wallet(),
             new User(),
             new Category()
         );
@@ -30,7 +30,7 @@ class TransactionTest {
         assertEquals("test transaction", transaction.getDescriptionValue());
         assertEquals(BigDecimal.ONE, transaction.getAmountValue());
         assertEquals(now, transaction.getTransactionAt());
-        assertNotNull(transaction.getAccount());
+        assertNotNull(transaction.getWallet());
         assertNotNull(transaction.getUser());
         assertNotNull(transaction.getCategory());
     }
@@ -43,7 +43,7 @@ class TransactionTest {
             null,
             new Amount(BigDecimal.ONE),
             now,
-            new Account(),
+            new Wallet(),
             new User(),
             new Category()
         );
@@ -51,7 +51,7 @@ class TransactionTest {
         assertEquals("<without description>", transaction.getDescriptionValue());
         assertEquals(BigDecimal.ONE, transaction.getAmountValue());
         assertEquals(now, transaction.getTransactionAt());
-        assertNotNull(transaction.getAccount());
+        assertNotNull(transaction.getWallet());
         assertNotNull(transaction.getUser());
         assertNotNull(transaction.getCategory());
     }
@@ -63,7 +63,7 @@ class TransactionTest {
             new Description("test"),
             null,
             Timestamp.now(),
-            new Account(),
+            new Wallet(),
             new User(),
             new Category()
         ));
@@ -76,7 +76,7 @@ class TransactionTest {
             new Description("test"),
             new Amount(BigDecimal.valueOf(-1)),
             Timestamp.now(),
-            new Account(),
+            new Wallet(),
             new User(),
             new Category()
         ));
@@ -89,7 +89,7 @@ class TransactionTest {
             new Description("test"),
             new Amount(BigDecimal.ZERO),
             Timestamp.now(),
-            new Account(),
+            new Wallet(),
             new User(),
             new Category()
         ));
@@ -102,15 +102,15 @@ class TransactionTest {
             new Description("test"),
             new Amount(BigDecimal.ONE),
             null,
-            new Account(),
+            new Wallet(),
             new User(),
             new Category()
         ));
     }
 
     @Test
-    @DisplayName("should not allowed create transaction without user account")
-    void shouldNotAllowedCreateTransactionWithoutUserAccount() {
+    @DisplayName("should not allowed create transaction without user wallet")
+    void shouldNotAllowedCreateTransactionWithoutUserWallet() {
         assertThrows(NullPointerException.class, () -> new Transaction(
             new Description("test transaction"),
             new Amount(BigDecimal.ONE),
@@ -128,7 +128,7 @@ class TransactionTest {
             new Description("test transaction"),
             new Amount(BigDecimal.ONE),
             Timestamp.now(),
-            new Account(),
+            new Wallet(),
             null,
             new Category()
         ));
@@ -142,7 +142,7 @@ class TransactionTest {
             new Description("test transaction"),
             new Amount(BigDecimal.ONE),
             Timestamp.now(),
-            new Account(),
+            new Wallet(),
             new User(),
             null
         ));

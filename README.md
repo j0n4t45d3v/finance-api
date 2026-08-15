@@ -82,7 +82,7 @@ Content-Type: application/json
   "amount": 0.1,
   "datetime": "2026-02-21T13:13:56.418Z",
   "categoryId": 2,
-  "accountId": 1
+  "walletId": 1
 }
 ```
 

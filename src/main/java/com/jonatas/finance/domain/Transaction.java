@@ -60,8 +60,8 @@ public class Transaction {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "account_id")
-    private Account account;
+    @JoinColumn(name = "wallet_id")
+    private Wallet wallet;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -73,7 +73,7 @@ public class Transaction {
         Description description,
         Amount amount,
         Timestamp transactionAt,
-        Account account,
+        Wallet wallet,
         User user,
         Category category
     ) {
@@ -81,7 +81,7 @@ public class Transaction {
         this.amount = Objects.requireNonNull(amount, "amount is required");
         this.user = Objects.requireNonNull(user, "user is required");
         this.transactionAt = Objects.requireNonNull(transactionAt, "transactionAt is required");
-        this.account = Objects.requireNonNull(account, "account is required");
+        this.wallet = Objects.requireNonNull(wallet, "wallet is required");
         this.category = Objects.requireNonNull(category, "category is required");
     }
 
@@ -109,8 +109,8 @@ public class Transaction {
         return this.transactionAt.value();
     }
 
-    public Account getAccount() {
-        return account;
+    public Wallet getWallet() {
+        return wallet;
     }
 
     public User getUser() {
@@ -125,7 +125,7 @@ public class Transaction {
         return this.category.getType();
     }
 
-    public Long getAccountId() {
-        return this.account.getId();
+    public Long getWalletId() {
+        return this.wallet.getId();
     }
 }

@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Tag(name="Conta do Banco")
-public @interface AccountTag {
+@Tag(name="Carteira")
+public @interface WalletTag {
 }

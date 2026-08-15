@@ -3,10 +3,10 @@ package com.jonatas.finance.controller;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jonatas.finance.domain.User;
-import com.jonatas.finance.domain.result.account.CreateTransactionResult;
+import com.jonatas.finance.domain.result.wallet.CreateTransactionResult;
 import com.jonatas.finance.dto.PageResponse;
 import com.jonatas.finance.dto.Response;
-import com.jonatas.finance.dto.account.CreateTransactionRequest;
+import com.jonatas.finance.dto.wallet.CreateTransactionRequest;
 import com.jonatas.finance.infra.error.Error;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
 import com.jonatas.finance.infra.swagger.annotation.TransactionTag;
@@ -56,8 +56,8 @@ public class TransactionController {
                 .body(Response.ofError(error, Response.Status.NOT_FOUND));
         }
 
-        if (result instanceof CreateTransactionResult.AccountNotFound) {
-            Error<String> error = new Error<>("account_not_found", "Account not found");
+        if (result instanceof CreateTransactionResult.WalletNotFound) {
+            Error<String> error = new Error<>("wallet_not_found", "Wallet not found");
             return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(Response.ofError(error, Response.Status.NOT_FOUND));
@@ -94,7 +94,7 @@ public class TransactionController {
         String type,
 
         @Schema(example = "1")
-        Long accountId
+        Long walletId
 
     ) {
         public TransactionResponse {
@@ -114,7 +114,7 @@ public class TransactionController {
                 t.getAmountValue(),
                 t.getTransactionAtValue(),
                 t.getType().name(),
-                t.getAccountId()
+                t.getWalletId()
             ));
         return ResponseEntity.ok(PageResponse.from(page));
     }
