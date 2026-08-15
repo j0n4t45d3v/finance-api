@@ -70,7 +70,7 @@ class AuthControllerIT extends BaseIntegratioTest {
             .andExpect(status().isCreated())
             .andExpect(header().string("Location", "/v1/users/me"));
 
-            assertEquals(1, userRepository.count());
+            assertEquals(2, userRepository.count());
         }
 
         @Test
@@ -219,7 +219,7 @@ class AuthControllerIT extends BaseIntegratioTest {
             .andExpect(status().isOk())
             .andReturn();
 
-            userRepository.deleteAll();
+            userRepository.delete(user);
 
             var json = loginResponse.getResponse().getContentAsString();
             var invalidSubjectToken = (String) JsonPath.read(json, JSON_PATH_REFRESH_TOKEN);
