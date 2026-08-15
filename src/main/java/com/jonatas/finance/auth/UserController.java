@@ -1,6 +1,6 @@
 package com.jonatas.finance.auth;
 
-import com.jonatas.finance.dto.Response;
+import com.jonatas.finance.common.dto.Response;
 import com.jonatas.finance.infra.swagger.annotation.UserTag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;

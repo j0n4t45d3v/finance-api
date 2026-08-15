@@ -1,11 +1,12 @@
 package com.jonatas.finance.auth;
 
-import com.jonatas.finance.domain.exception.FieldRequiredException;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.jonatas.finance.common.exception.FieldRequiredException;
 
 import java.util.Collection;
 import java.util.Collections;

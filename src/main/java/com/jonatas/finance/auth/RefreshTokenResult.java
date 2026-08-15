@@ -1,6 +1,6 @@
 package com.jonatas.finance.auth;
 
-import com.jonatas.finance.dto.Token;
+import com.jonatas.finance.common.dto.Token;
 
 public sealed interface RefreshTokenResult
     permits RefreshTokenResult.Success,

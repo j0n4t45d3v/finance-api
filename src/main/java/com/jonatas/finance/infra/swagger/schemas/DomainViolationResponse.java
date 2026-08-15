@@ -1,9 +1,10 @@
 package com.jonatas.finance.infra.swagger.schemas;
 
-import com.jonatas.finance.dto.Response;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
+
+import com.jonatas.finance.common.dto.Response;
 
 @Schema(description = "Error domain violation")
 public class DomainViolationResponse {

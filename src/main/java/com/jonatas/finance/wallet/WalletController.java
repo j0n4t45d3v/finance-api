@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.jonatas.finance.auth.User;
-import com.jonatas.finance.dto.Response;
+import com.jonatas.finance.common.dto.Response;
 import com.jonatas.finance.infra.error.Error;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
 import com.jonatas.finance.infra.swagger.annotation.WalletTag;

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.jonatas.finance.auth.AuthController.RefreshTokenRequest;
 import com.jonatas.finance.auth.AuthController.RegisterUserRequest;
-import com.jonatas.finance.dto.Token;
+import com.jonatas.finance.common.dto.Token;
 import com.jonatas.finance.infra.security.JwtService;
 
 @Service

@@ -1,11 +1,9 @@
-package com.jonatas.finance.service;
-
-import com.jonatas.finance.auth.User;
-import com.jonatas.finance.controller.DashboardController;
-import com.jonatas.finance.dto.dashboard.*;
-import com.jonatas.finance.wallet.Category;
+package com.jonatas.finance.analytic;
 
 import java.util.List;
+
+import com.jonatas.finance.auth.User;
+import com.jonatas.finance.wallet.Category;
 
 public interface DashboardService {
 

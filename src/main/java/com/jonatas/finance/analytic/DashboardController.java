@@ -1,19 +1,22 @@
-package com.jonatas.finance.controller;
+package com.jonatas.finance.analytic;
 
-import com.jonatas.finance.auth.User;
-import com.jonatas.finance.dto.Response;
-import com.jonatas.finance.dto.dashboard.*;
-import com.jonatas.finance.infra.swagger.annotation.DashboardTag;
-import com.jonatas.finance.service.DashboardService;
-import com.jonatas.finance.wallet.Category;
+import java.util.List;
 
-import io.swagger.v3.oas.annotations.Operation;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.jonatas.finance.auth.User;
+import com.jonatas.finance.common.dto.Response;
+import com.jonatas.finance.infra.swagger.annotation.DashboardTag;
+import com.jonatas.finance.wallet.Category;
+
+import io.swagger.v3.oas.annotations.Operation;
 
 @DashboardTag
 @RestController

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.jonatas.finance.auth.User;
-import com.jonatas.finance.domain.exception.DomainException;
+import com.jonatas.finance.common.exception.DomainException;
 import com.jonatas.finance.wallet.Category;
 import com.jonatas.finance.wallet.Transaction;
 import com.jonatas.finance.wallet.Transaction.Amount;

@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.jonatas.finance.dto.Response;
-import com.jonatas.finance.dto.Token;
+import com.jonatas.finance.common.dto.Response;
+import com.jonatas.finance.common.dto.Token;
 import com.jonatas.finance.infra.error.Error;
 import com.jonatas.finance.infra.swagger.annotation.AuthTag;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;

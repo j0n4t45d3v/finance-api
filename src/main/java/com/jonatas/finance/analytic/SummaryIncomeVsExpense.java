@@ -1,4 +1,4 @@
-package com.jonatas.finance.dto.dashboard;
+package com.jonatas.finance.analytic;
 
 import java.math.BigDecimal;
 

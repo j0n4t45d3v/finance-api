@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.jonatas.finance.auth.Email;
-import com.jonatas.finance.dto.Token;
+import com.jonatas.finance.common.dto.Token;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -1,4 +1,4 @@
-package com.jonatas.finance.repository;
+package com.jonatas.finance.analytic;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,10 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jonatas.finance.auth.User;
-import com.jonatas.finance.dto.dashboard.RankCategoryResponse;
-import com.jonatas.finance.dto.dashboard.RankTransactionResponse;
-import com.jonatas.finance.dto.dashboard.SummaryIncomeVsExpense;
-import com.jonatas.finance.dto.dashboard.TransactionGroupByResponse;
 import com.jonatas.finance.wallet.Category;
 import com.jonatas.finance.wallet.Transaction;
 
@@ -22,7 +18,7 @@ import jakarta.annotation.Nonnull;
 public interface DashboardRepository extends JpaRepository<Transaction, Long> {
 
     @Query("""
-        SELECT new com.jonatas.finance.dto.dashboard.SummaryIncomeVsExpense(
+        SELECT new com.jonatas.finance.analytic.SummaryIncomeVsExpense(
             SUM(CASE
                     WHEN c.type = INCOME THEN t.amount.value
                     ELSE 0
@@ -51,7 +47,7 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
     );
 
     @Query("""
-        select new com.jonatas.finance.dto.dashboard.RankCategoryResponse(
+        select new com.jonatas.finance.analytic.RankCategoryResponse(
                    c.name.value,
                    concat(c.type, ''),
                    sum(t.amount.value)
@@ -77,7 +73,7 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
 
 
     @Query("""
-        select new com.jonatas.finance.dto.dashboard.RankTransactionResponse(
+        select new com.jonatas.finance.analytic.RankTransactionResponse(
                    concat(c.type, ''),
                    c.name.value,
                    t.amount.value,
@@ -99,7 +95,7 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
     );
 
     @Query("""
-        select new com.jonatas.finance.dto.dashboard.TransactionGroupByResponse(
+        select new com.jonatas.finance.analytic.TransactionGroupByResponse(
                    c.name.value,
                    SUM(CASE
                             WHEN c.type = INCOME THEN t.amount.value
@@ -127,7 +123,7 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
     );
 
     @Query("""
-        select new com.jonatas.finance.dto.dashboard.TransactionGroupByResponse(
+        select new com.jonatas.finance.analytic.TransactionGroupByResponse(
                    YEAR(t.transactionAt.value),
                    MONTH(t.transactionAt.value),
                    SUM(CASE
@@ -156,7 +152,7 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
     );
 
     @Query("""
-        select new com.jonatas.finance.dto.dashboard.TransactionGroupByResponse(
+        select new com.jonatas.finance.analytic.TransactionGroupByResponse(
                    concat(cast(t.transactionAt.value as date), ''),
                    SUM(CASE
                             WHEN c.type = INCOME THEN t.amount.value

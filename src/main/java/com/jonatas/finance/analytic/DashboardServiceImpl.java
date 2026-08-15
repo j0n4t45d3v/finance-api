@@ -1,18 +1,14 @@
-package com.jonatas.finance.service.impl;
+package com.jonatas.finance.analytic;
 
-import com.jonatas.finance.auth.User;
-import com.jonatas.finance.controller.DashboardController;
-import com.jonatas.finance.dto.dashboard.*;
-import com.jonatas.finance.repository.DashboardRepository;
-import com.jonatas.finance.service.DashboardService;
-import com.jonatas.finance.wallet.Category;
+import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.jonatas.finance.auth.User;
+import com.jonatas.finance.wallet.Category;
 
 @Service
 public class DashboardServiceImpl implements DashboardService {

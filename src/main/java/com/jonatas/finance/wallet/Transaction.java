@@ -1,7 +1,8 @@
 package com.jonatas.finance.wallet;
 
 import com.jonatas.finance.auth.User;
-import com.jonatas.finance.domain.exception.DomainException;
+import com.jonatas.finance.common.exception.DomainException;
+
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 

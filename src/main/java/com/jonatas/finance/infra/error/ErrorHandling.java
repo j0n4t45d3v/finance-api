@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import com.jonatas.finance.domain.exception.DomainException;
-import com.jonatas.finance.dto.Response;
+import com.jonatas.finance.common.dto.Response;
+import com.jonatas.finance.common.exception.DomainException;
 
 @RestControllerAdvice
 public class ErrorHandling {

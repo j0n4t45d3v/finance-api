@@ -1,4 +1,4 @@
-package com.jonatas.finance.dto;
+package com.jonatas.finance.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.jonatas.finance.auth.User;
-import com.jonatas.finance.dto.Response;
+import com.jonatas.finance.common.CreateService;
+import com.jonatas.finance.common.dto.Response;
 import com.jonatas.finance.infra.swagger.annotation.CategoryTag;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
-import com.jonatas.finance.service.CreateService;
 import com.jonatas.finance.wallet.Category.Name;
 import com.jonatas.finance.wallet.Category.Type;
 
