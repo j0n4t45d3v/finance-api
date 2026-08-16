@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -20,13 +19,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 @Component
-public record JwtService(
-        @Value("${security.jwt.issuer}") String issuer,
-        @Value("${security.jwt.access.secret}") String accessSecret,
-        @Value("${security.jwt.access.exp}") Long accessExpiration,
-        @Value("${security.jwt.refresh.secret}") String refreshSecret,
-        @Value("${security.jwt.refresh.exp}") Long refreshExpiration
-) {
+public record JwtService(JwtConfig jwtConfig) {
 
     public record TokenParsed(Claims claims, String type) {
 
@@ -60,37 +53,38 @@ public record JwtService(
     }
 
     public Token generateToken(UserDetails subject) {
-        return this.buildToken(subject, "access", this.accessExpiration, this.accessSecret);
+        return this.buildToken(subject, "access", this.jwtConfig.access());
     }
 
     public Token generateRefreshToken(UserDetails subject) {
-        return this.buildToken(subject, "refresh", this.refreshExpiration, this.refreshSecret);
+        return this.buildToken(subject, "refresh", this.jwtConfig.refresh());
     }
 
     private Token buildToken(
             UserDetails subject,
             String type,
-            Long expiration,
-            String secret) {
-        Instant exp = Instant.now().plusSeconds(expiration);
+            JwtConfig.TokenSignatureConfig tokenSignatureConfig
+    ) {
+            
+        Instant exp = Instant.now().plusSeconds(tokenSignatureConfig.exp());
         String token = Jwts.builder()
                 .id(UUID.randomUUID().toString())
-                .issuer(this.issuer)
+                .issuer(this.jwtConfig.issuer())
                 .issuedAt(new Date())
                 .subject(subject.getUsername())
                 .claim("type", type)
                 .expiration(new Date(exp.toEpochMilli()))
-                .signWith(this.getSecretKey(secret))
+                .signWith(this.getSecretKey(tokenSignatureConfig.secret()))
                 .compact();
         return new Token(token, exp.getEpochSecond());
     }
 
     public Optional<TokenParsed> tryParseAccessToken(String token){
-        return  this.tryParseToken(token, "access", this.accessSecret);
+        return  this.tryParseToken(token, "access", this.jwtConfig.accessSecret());
     }
 
     public Optional<TokenParsed> tryParseRefreshToken(String token){
-        return  this.tryParseToken(token, "refresh", this.refreshSecret);
+        return  this.tryParseToken(token, "refresh", this.jwtConfig.refreshSecret());
     }
 
     public Optional<TokenParsed> tryParseToken(String token, String type, String secret){

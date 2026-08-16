@@ -5,7 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import java.util.Date;
-import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,17 +28,20 @@ class JwtServiceTest {
   private static final Long TOKEN_REFRESH_EXPIRATION = 86400000L;
   private static final String TOKEN_REFRESH_SECRET = "ZmFrZVJlZnJlc2hTZWNyZXRmYWtlUmVmcmVzaFNlY3JldGZha2VSZWZyZXNoU2VjcmV0";
 
-  private JwtService jwtService;
+  private static final JwtConfig.TokenSignatureConfig ACCESS_TOKEN_SIGNATURE =  
+        tokenSignature(TOKEN_ACCESS_SECRET, TOKEN_ACCESS_EXPIRATION);
 
-  @BeforeEach
-  void setUp() {
-    jwtService = new JwtService(
-      TOKEN_ISSUER,
-      TOKEN_ACCESS_SECRET,
-      TOKEN_ACCESS_EXPIRATION,
-      TOKEN_REFRESH_SECRET,
-      TOKEN_REFRESH_EXPIRATION
-    );
+  private static final JwtConfig.TokenSignatureConfig REFRESH_TOKEN_SIGNATURE =  
+        tokenSignature(TOKEN_REFRESH_SECRET, TOKEN_REFRESH_EXPIRATION);
+
+  private static final JwtConfig JWT_CONFIG = jwtConfig(TOKEN_ISSUER, ACCESS_TOKEN_SIGNATURE, REFRESH_TOKEN_SIGNATURE);
+
+  private static JwtService jwtService;
+
+
+  @BeforeAll
+  static void setUp() {
+    jwtService = new JwtService(JWT_CONFIG);
   }
 
   private User mockSubject() {
@@ -136,11 +140,11 @@ class JwtServiceTest {
 
     private JwtService buildJwtServiceExpired() {
       return new JwtService(
-          TOKEN_ISSUER,
-          TOKEN_ACCESS_SECRET,
-          -1L,
-          TOKEN_REFRESH_SECRET,
-          TOKEN_REFRESH_EXPIRATION
+        jwtConfig(
+            TOKEN_ISSUER,
+            tokenSignature(TOKEN_ACCESS_SECRET, -1L),
+            tokenSignature(TOKEN_REFRESH_SECRET, TOKEN_REFRESH_EXPIRATION)
+        )
       );
     }
 
@@ -217,6 +221,18 @@ class JwtServiceTest {
       var parsedToken = new JwtService.TokenParsed(mockClaims, "access");
       assertFalse(parsedToken.isValid());
     }
+  }
+
+  private static JwtConfig jwtConfig(
+    String issuer,
+    JwtConfig.TokenSignatureConfig accessTokenSignature,
+    JwtConfig.TokenSignatureConfig refreshTokenSignature
+  ) {
+    return new JwtConfig(issuer, accessTokenSignature, refreshTokenSignature);
+  }
+
+  private static JwtConfig.TokenSignatureConfig tokenSignature(String secret, long expirationTime) {
+    return new JwtConfig.TokenSignatureConfig(secret, expirationTime);
   }
 
 }
