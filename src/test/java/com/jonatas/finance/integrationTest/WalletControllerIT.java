@@ -1,10 +1,9 @@
-package com.jonatas.finance.controller;
+package com.jonatas.finance.integrationTest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.jonatas.finance.BaseIntegratioTest;
 import com.jonatas.finance.auth.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

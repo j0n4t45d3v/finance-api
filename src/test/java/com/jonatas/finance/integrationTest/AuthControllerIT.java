@@ -1,4 +1,4 @@
-package com.jonatas.finance.controller;
+package com.jonatas.finance.integrationTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.jayway.jsonpath.JsonPath;
-import com.jonatas.finance.BaseIntegratioTest;
 import com.jonatas.finance.auth.Email;
 import com.jonatas.finance.auth.Password;
 import com.jonatas.finance.auth.User;

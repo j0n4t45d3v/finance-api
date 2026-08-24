@@ -1,4 +1,4 @@
-package com.jonatas.finance.controller;
+package com.jonatas.finance.integrationTest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
