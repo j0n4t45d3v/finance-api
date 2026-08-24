@@ -24,3 +24,7 @@ security:
     refresh:
       secret: jZP2591J7dTUa01xm8L209dTUa01xm8L2BjZP2591J7B09dTUa01xm8L209dTUa01xm8L2
       exp: 604800000 # 7 days
+
+testcontainers:
+  postgres: 
+    image: postgres:17-alpine

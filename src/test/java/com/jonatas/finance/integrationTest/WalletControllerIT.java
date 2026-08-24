@@ -31,6 +31,7 @@ class WalletControllerIT extends BaseIntegratioTest {
         .perform(get("/v1/wallets").header("Authorization", "Bearer " + token))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.data[0].id").isNumber())
+        .andExpect(jsonPath("$.data[0].id").value(walletId))
         .andExpect(jsonPath("$.data[0].name").value(name))
         .andExpect(jsonPath("$.data[0].mainWallet").value(true));
   }
