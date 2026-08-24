@@ -1,4 +1,4 @@
-package com.jonatas.finance.service.impl.wallet;
+package com.jonatas.finance.wallet;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.ArgumentMatchers.any;
@@ -11,15 +11,6 @@ import static org.mockito.Mockito.when;
 
 import com.jonatas.finance.auth.User;
 import com.jonatas.finance.infra.provider.ClockProvider;
-import com.jonatas.finance.wallet.Category;
-import com.jonatas.finance.wallet.CategoryRepository;
-import com.jonatas.finance.wallet.CreateTransactionRequest;
-import com.jonatas.finance.wallet.CreateTransactionResult;
-import com.jonatas.finance.wallet.Transaction;
-import com.jonatas.finance.wallet.TransactionRepository;
-import com.jonatas.finance.wallet.TransactionServiceImpl;
-import com.jonatas.finance.wallet.Wallet;
-import com.jonatas.finance.wallet.WalletRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

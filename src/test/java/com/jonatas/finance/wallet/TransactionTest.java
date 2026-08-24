@@ -1,4 +1,4 @@
-package com.jonatas.finance.domain;
+package com.jonatas.finance.wallet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -6,12 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.jonatas.finance.auth.User;
 import com.jonatas.finance.common.exception.DomainException;
-import com.jonatas.finance.wallet.Category;
-import com.jonatas.finance.wallet.Transaction;
 import com.jonatas.finance.wallet.Transaction.Amount;
 import com.jonatas.finance.wallet.Transaction.Description;
 import com.jonatas.finance.wallet.Transaction.Timestamp;
-import com.jonatas.finance.wallet.Wallet;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

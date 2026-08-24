@@ -1,9 +1,8 @@
-package com.jonatas.finance.domain;
+package com.jonatas.finance.wallet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.jonatas.finance.auth.User;
-import com.jonatas.finance.wallet.Wallet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

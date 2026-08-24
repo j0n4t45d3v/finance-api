@@ -1,9 +1,7 @@
-package com.jonatas.finance.domain.dvo.user;
+package com.jonatas.finance.auth;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.jonatas.finance.auth.Email;
-import com.jonatas.finance.auth.EmailInvalidException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

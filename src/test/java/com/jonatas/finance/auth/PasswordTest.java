@@ -1,4 +1,4 @@
-package com.jonatas.finance.domain.dvo.user;
+package com.jonatas.finance.auth;
 
 import static org.junit.jupiter.api.Assertions.*;
 

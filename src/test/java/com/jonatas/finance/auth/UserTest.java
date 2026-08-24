@@ -1,11 +1,8 @@
-package com.jonatas.finance.domain;
+package com.jonatas.finance.auth;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.jonatas.finance.auth.Email;
-import com.jonatas.finance.auth.Password;
-import com.jonatas.finance.auth.User;
 import com.jonatas.finance.common.exception.FieldRequiredException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
