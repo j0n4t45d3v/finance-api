@@ -1,5 +1,5 @@
 package com.jonatas.finance.common;
 
 public interface CreateService<TEntity> {
-  TEntity execute (TEntity entity);
+  TEntity execute(TEntity entity);
 }

@@ -8,8 +8,7 @@ public interface AuthService {
 
   LoginResult login(Email email, String password);
 
-    RefreshTokenResult refresh(RefreshTokenRequest request);
+  RefreshTokenResult refresh(RefreshTokenRequest request);
 
   RegisterResult register(RegisterUserRequest request);
-
 }

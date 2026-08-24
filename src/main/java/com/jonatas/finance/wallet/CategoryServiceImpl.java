@@ -1,10 +1,8 @@
 package com.jonatas.finance.wallet;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.jonatas.finance.auth.User;
+import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -17,7 +15,6 @@ public class CategoryServiceImpl implements CategoryService {
 
   @Override
   public List<Category> findAllByUser(User user) {
-        return this.categoryRepository.findAllByUser(user);
+    return this.categoryRepository.findAllByUser(user);
   }
-
 }

@@ -4,8 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
-import java.util.Date;
 
+import com.jayway.jsonpath.JsonPath;
+import com.jonatas.finance.auth.Email;
+import com.jonatas.finance.auth.Password;
+import com.jonatas.finance.auth.User;
+import com.jonatas.finance.helper.JWTHelper;
+import io.jsonwebtoken.Claims;
+import java.util.Date;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -13,31 +19,27 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
-import com.jayway.jsonpath.JsonPath;
-import com.jonatas.finance.auth.Email;
-import com.jonatas.finance.auth.Password;
-import com.jonatas.finance.auth.User;
-import com.jonatas.finance.helper.JWTHelper;
-import io.jsonwebtoken.Claims;
 
 class JwtServiceTest {
 
   private static final String TOKEN_ISSUER = "fake@issuer.test";
   private static final Long TOKEN_ACCESS_EXPIRATION = 3600000L;
-  private static final String TOKEN_ACCESS_SECRET = "ZmFrZUFjY2Vzc1NlY3JldGZha2VBY2Nlc3NTZWNyZXRmYWtlQWNjZXNzU2VjcmV0" ;
+  private static final String TOKEN_ACCESS_SECRET =
+      "ZmFrZUFjY2Vzc1NlY3JldGZha2VBY2Nlc3NTZWNyZXRmYWtlQWNjZXNzU2VjcmV0";
   private static final Long TOKEN_REFRESH_EXPIRATION = 86400000L;
-  private static final String TOKEN_REFRESH_SECRET = "ZmFrZVJlZnJlc2hTZWNyZXRmYWtlUmVmcmVzaFNlY3JldGZha2VSZWZyZXNoU2VjcmV0";
+  private static final String TOKEN_REFRESH_SECRET =
+      "ZmFrZVJlZnJlc2hTZWNyZXRmYWtlUmVmcmVzaFNlY3JldGZha2VSZWZyZXNoU2VjcmV0";
 
-  private static final JwtConfig.TokenSignatureConfig ACCESS_TOKEN_SIGNATURE =  
-        tokenSignature(TOKEN_ACCESS_SECRET, TOKEN_ACCESS_EXPIRATION);
+  private static final JwtConfig.TokenSignatureConfig ACCESS_TOKEN_SIGNATURE =
+      tokenSignature(TOKEN_ACCESS_SECRET, TOKEN_ACCESS_EXPIRATION);
 
-  private static final JwtConfig.TokenSignatureConfig REFRESH_TOKEN_SIGNATURE =  
-        tokenSignature(TOKEN_REFRESH_SECRET, TOKEN_REFRESH_EXPIRATION);
+  private static final JwtConfig.TokenSignatureConfig REFRESH_TOKEN_SIGNATURE =
+      tokenSignature(TOKEN_REFRESH_SECRET, TOKEN_REFRESH_EXPIRATION);
 
-  private static final JwtConfig JWT_CONFIG = jwtConfig(TOKEN_ISSUER, ACCESS_TOKEN_SIGNATURE, REFRESH_TOKEN_SIGNATURE);
+  private static final JwtConfig JWT_CONFIG =
+      jwtConfig(TOKEN_ISSUER, ACCESS_TOKEN_SIGNATURE, REFRESH_TOKEN_SIGNATURE);
 
   private static JwtService jwtService;
-
 
   @BeforeAll
   static void setUp() {
@@ -45,10 +47,7 @@ class JwtServiceTest {
   }
 
   private User mockSubject() {
-    return new User(
-      new Email("testuser@mock.test"),
-      new Password("password")
-    );
+    return new User(new Email("testuser@mock.test"), new Password("password"));
   }
 
   @Nested
@@ -60,13 +59,16 @@ class JwtServiceTest {
       var token = jwtService.generateToken(subject);
 
       JWTHelper.assertThat()
-        .withIssuer(TOKEN_ISSUER)
-        .withSubject(subject.getUsername())
-        .withType("access")
-        .withExpirationTime(TOKEN_ACCESS_EXPIRATION)
-        .validate(token.value(), payload -> {
-          assertEquals(token.expiredAt(), JsonPath.<Number>read(payload, "$.exp").longValue());
-        });
+          .withIssuer(TOKEN_ISSUER)
+          .withSubject(subject.getUsername())
+          .withType("access")
+          .withExpirationTime(TOKEN_ACCESS_EXPIRATION)
+          .validate(
+              token.value(),
+              payload -> {
+                assertEquals(
+                    token.expiredAt(), JsonPath.<Number>read(payload, "$.exp").longValue());
+              });
     }
 
     @Test
@@ -74,13 +76,18 @@ class JwtServiceTest {
       var subject = mockSubject();
       var token = jwtService.generateRefreshToken(subject);
 
-      JWTHelper.assertThat().withIssuer(TOKEN_ISSUER).withSubject(subject.getUsername())
-          .withType("refresh").withExpirationTime(TOKEN_REFRESH_EXPIRATION)
-          .validate(token.value(), payload -> {
-            assertEquals(token.expiredAt(), JsonPath.<Number>read(payload, "$.exp").longValue());
-          });
+      JWTHelper.assertThat()
+          .withIssuer(TOKEN_ISSUER)
+          .withSubject(subject.getUsername())
+          .withType("refresh")
+          .withExpirationTime(TOKEN_REFRESH_EXPIRATION)
+          .validate(
+              token.value(),
+              payload -> {
+                assertEquals(
+                    token.expiredAt(), JsonPath.<Number>read(payload, "$.exp").longValue());
+              });
     }
-
   }
 
   @Nested
@@ -140,63 +147,60 @@ class JwtServiceTest {
 
     private JwtService buildJwtServiceExpired() {
       return new JwtService(
-        jwtConfig(
-            TOKEN_ISSUER,
-            tokenSignature(TOKEN_ACCESS_SECRET, -1L),
-            tokenSignature(TOKEN_REFRESH_SECRET, TOKEN_REFRESH_EXPIRATION)
-        )
-      );
+          jwtConfig(
+              TOKEN_ISSUER,
+              tokenSignature(TOKEN_ACCESS_SECRET, -1L),
+              tokenSignature(TOKEN_REFRESH_SECRET, TOKEN_REFRESH_EXPIRATION)));
     }
-
-
   }
 
   @Nested
   class TokenParsedTest {
 
-     class MockClaimsBuilder {
-        private Claims mockClaims = Mockito.mock(Claims.class);
+    class MockClaimsBuilder {
+      private Claims mockClaims = Mockito.mock(Claims.class);
 
-        private String subject = "subject@test.mock";
-        private String type = "access";
-        private Date expiration = new Date(System.currentTimeMillis() + 3600000);
+      private String subject = "subject@test.mock";
+      private String type = "access";
+      private Date expiration = new Date(System.currentTimeMillis() + 3600000);
 
-        public MockClaimsBuilder withSubject(String subject) {
-          this.subject = subject;
-          return this;
-        }
+      public MockClaimsBuilder withSubject(String subject) {
+        this.subject = subject;
+        return this;
+      }
 
-        public MockClaimsBuilder withType(String type) {
-          this.type = type;
-          return this;
-        }
+      public MockClaimsBuilder withType(String type) {
+        this.type = type;
+        return this;
+      }
 
-        public MockClaimsBuilder withExpiration(Date expiration) {
-          this.expiration = expiration;
-          return this;
-        }
+      public MockClaimsBuilder withExpiration(Date expiration) {
+        this.expiration = expiration;
+        return this;
+      }
 
-        public Claims build() {
-          when(mockClaims.getSubject()).thenReturn(subject);
-          when(mockClaims.get("type", String.class)).thenReturn(type);
-          when(mockClaims.getExpiration()).thenReturn(expiration);
-          return mockClaims;
-        }
-     }
+      public Claims build() {
+        when(mockClaims.getSubject()).thenReturn(subject);
+        when(mockClaims.get("type", String.class)).thenReturn(type);
+        when(mockClaims.getExpiration()).thenReturn(expiration);
+        return mockClaims;
+      }
+    }
 
-     @Test
-     void shouldBeValidWhenTokenIsValid() {
-       var mockClaims = new MockClaimsBuilder().build();
-       var parsedToken = new JwtService.TokenParsed(mockClaims, "access");
-       assertTrue(parsedToken.isValid());
-       assertFalse(parsedToken.isExpired());
-     }
+    @Test
+    void shouldBeValidWhenTokenIsValid() {
+      var mockClaims = new MockClaimsBuilder().build();
+      var parsedToken = new JwtService.TokenParsed(mockClaims, "access");
+      assertTrue(parsedToken.isValid());
+      assertFalse(parsedToken.isExpired());
+    }
 
     @Test
     void shouldNotBeValidWhenTokenIsExpired() {
-      var mockClaims = new MockClaimsBuilder()
-          .withExpiration(new Date(System.currentTimeMillis() - 1000))
-          .build();
+      var mockClaims =
+          new MockClaimsBuilder()
+              .withExpiration(new Date(System.currentTimeMillis() - 1000))
+              .build();
       var parsedToken = new JwtService.TokenParsed(mockClaims, "access");
       assertFalse(parsedToken.isValid());
       assertTrue(parsedToken.isExpired());
@@ -204,9 +208,7 @@ class JwtServiceTest {
 
     @Test
     void shouldNotBeValidWhenTypeIsInvalid() {
-      var mockClaims = new MockClaimsBuilder()
-          .withType("invalid")
-          .build();
+      var mockClaims = new MockClaimsBuilder().withType("invalid").build();
       var parsedToken = new JwtService.TokenParsed(mockClaims, "access");
       assertFalse(parsedToken.isValid());
     }
@@ -215,24 +217,20 @@ class JwtServiceTest {
     @NullAndEmptySource
     @ValueSource(strings = {"   ", " "})
     void shouldNotBeValidWithoutSubject(String subject) {
-      var mockClaims = new MockClaimsBuilder()
-          .withSubject(subject)
-          .build();
+      var mockClaims = new MockClaimsBuilder().withSubject(subject).build();
       var parsedToken = new JwtService.TokenParsed(mockClaims, "access");
       assertFalse(parsedToken.isValid());
     }
   }
 
   private static JwtConfig jwtConfig(
-    String issuer,
-    JwtConfig.TokenSignatureConfig accessTokenSignature,
-    JwtConfig.TokenSignatureConfig refreshTokenSignature
-  ) {
+      String issuer,
+      JwtConfig.TokenSignatureConfig accessTokenSignature,
+      JwtConfig.TokenSignatureConfig refreshTokenSignature) {
     return new JwtConfig(issuer, accessTokenSignature, refreshTokenSignature);
   }
 
   private static JwtConfig.TokenSignatureConfig tokenSignature(String secret, long expirationTime) {
     return new JwtConfig.TokenSignatureConfig(secret, expirationTime);
   }
-
 }

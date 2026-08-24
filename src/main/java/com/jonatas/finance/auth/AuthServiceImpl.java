@@ -1,98 +1,94 @@
 package com.jonatas.finance.auth;
 
-import java.util.Optional;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import com.jonatas.finance.auth.AuthController.RefreshTokenRequest;
 import com.jonatas.finance.auth.AuthController.RegisterUserRequest;
 import com.jonatas.finance.common.dto.Token;
 import com.jonatas.finance.infra.security.JwtService;
+import java.util.Optional;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final JwtService jwtService;
 
-    public AuthServiceImpl(
-            UserRepository userRepository,
-            JwtService jwtService,
-            PasswordEncoder passwordEncoder
-    ) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
+  public AuthServiceImpl(
+      UserRepository userRepository, JwtService jwtService, PasswordEncoder passwordEncoder) {
+    this.userRepository = userRepository;
+    this.passwordEncoder = passwordEncoder;
+    this.jwtService = jwtService;
+  }
+
+  @Override
+  public LoginResult login(Email email, String password) {
+    Optional<User> userFound = this.userRepository.findByEmail(email);
+    if (userFound.isEmpty()) {
+      return new LoginResult.InvalidCredentials();
     }
 
-    @Override
-    public LoginResult login(Email email, String password) {
-        Optional<User> userFound = this.userRepository.findByEmail(email);
-        if (userFound.isEmpty()) {
-            return new LoginResult.InvalidCredentials();
-        }
-
-        User user = userFound.get();
-        if (!this.passwordEncoder.matches(password, user.getPassword())) {
-            return new LoginResult.InvalidCredentials();
-        }
-
-        Token accessToken = this.jwtService.generateToken(user);
-        Token refreshToken = this.jwtService.generateRefreshToken(user);
-        return new LoginResult.Success(accessToken, refreshToken);
+    User user = userFound.get();
+    if (!this.passwordEncoder.matches(password, user.getPassword())) {
+      return new LoginResult.InvalidCredentials();
     }
 
-    @Override
-    public RefreshTokenResult refresh(RefreshTokenRequest request) {
-        Optional<JwtService.TokenParsed> tokenParsed = this.tryParseValidRefreshToken(request.refreshToken());
-        if (tokenParsed.isEmpty()) {
-            return new RefreshTokenResult.InvalidRefreshToken();
-        }
+    Token accessToken = this.jwtService.generateToken(user);
+    Token refreshToken = this.jwtService.generateRefreshToken(user);
+    return new LoginResult.Success(accessToken, refreshToken);
+  }
 
-        Optional<User> subjectFound = this.findSubject(tokenParsed.get());
-        if (subjectFound.isEmpty()) {
-            return new RefreshTokenResult.InvalidSubject();
-        }
-
-        User subject = subjectFound.get();
-        Token newAccessToken = this.jwtService.generateToken(subject);
-        Token newRefreshToken = this.jwtService.generateRefreshToken(subject);
-        return new RefreshTokenResult.Success(newAccessToken, newRefreshToken);
+  @Override
+  public RefreshTokenResult refresh(RefreshTokenRequest request) {
+    Optional<JwtService.TokenParsed> tokenParsed =
+        this.tryParseValidRefreshToken(request.refreshToken());
+    if (tokenParsed.isEmpty()) {
+      return new RefreshTokenResult.InvalidRefreshToken();
     }
 
-    private Optional<JwtService.TokenParsed> tryParseValidRefreshToken(String refreshToken) {
-        Optional<JwtService.TokenParsed> refreshTokenParsed = this.jwtService.tryParseRefreshToken(refreshToken);
-        if (refreshTokenParsed.isEmpty()) {
-            return Optional.empty();
-        }
-
-        JwtService.TokenParsed tokenParsed = refreshTokenParsed.get();
-        if (!tokenParsed.isValid()) {
-            return Optional.empty();
-        }
-        return Optional.of(tokenParsed);
+    Optional<User> subjectFound = this.findSubject(tokenParsed.get());
+    if (subjectFound.isEmpty()) {
+      return new RefreshTokenResult.InvalidSubject();
     }
 
-    private Optional<User> findSubject(JwtService.TokenParsed tokenParsed) {
-        return this.userRepository.findByEmail(tokenParsed.getSubject());
+    User subject = subjectFound.get();
+    Token newAccessToken = this.jwtService.generateToken(subject);
+    Token newRefreshToken = this.jwtService.generateRefreshToken(subject);
+    return new RefreshTokenResult.Success(newAccessToken, newRefreshToken);
+  }
+
+  private Optional<JwtService.TokenParsed> tryParseValidRefreshToken(String refreshToken) {
+    Optional<JwtService.TokenParsed> refreshTokenParsed =
+        this.jwtService.tryParseRefreshToken(refreshToken);
+    if (refreshTokenParsed.isEmpty()) {
+      return Optional.empty();
     }
 
-    @Override
-    public RegisterResult register(RegisterUserRequest request) {
-        if (!request.password().equals(request.confirmPassword())) {
-            return new RegisterResult.NotMatchPasswords();
-        }
+    JwtService.TokenParsed tokenParsed = refreshTokenParsed.get();
+    if (!tokenParsed.isValid()) {
+      return Optional.empty();
+    }
+    return Optional.of(tokenParsed);
+  }
 
-        Email email = new Email(request.email());
-        Optional<User> userFound = this.userRepository.findByEmail(email);
-        if (userFound.isPresent()) {
-            return new RegisterResult.FailRegister();
-        }
-        Password passwordEncoded = new Password(this.passwordEncoder.encode(request.password()));
-        this.userRepository.save(new User(email, passwordEncoded));
-        return new RegisterResult.Success();
+  private Optional<User> findSubject(JwtService.TokenParsed tokenParsed) {
+    return this.userRepository.findByEmail(tokenParsed.getSubject());
+  }
+
+  @Override
+  public RegisterResult register(RegisterUserRequest request) {
+    if (!request.password().equals(request.confirmPassword())) {
+      return new RegisterResult.NotMatchPasswords();
     }
 
+    Email email = new Email(request.email());
+    Optional<User> userFound = this.userRepository.findByEmail(email);
+    if (userFound.isPresent()) {
+      return new RegisterResult.FailRegister();
+    }
+    Password passwordEncoded = new Password(this.passwordEncoder.encode(request.password()));
+    this.userRepository.save(new User(email, passwordEncoded));
+    return new RegisterResult.Success();
+  }
 }

@@ -1,88 +1,84 @@
 package com.jonatas.finance.auth;
 
+import com.jonatas.finance.common.exception.FieldRequiredException;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
+import java.util.Collection;
+import java.util.Collections;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.jonatas.finance.common.exception.FieldRequiredException;
-
-import java.util.Collection;
-import java.util.Collections;
-
-
 @Entity
-@Table(name= "tb_users")
+@Table(name = "tb_users")
 public class User implements UserDetails {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Embedded
-    @AttributeOverride( name = "value", column = @Column(name="email"))
-    private Email email;
+  @Embedded
+  @AttributeOverride(name = "value", column = @Column(name = "email"))
+  private Email email;
 
-    @Embedded
-    @AttributeOverride( name = "value", column = @Column(name="password"))
-    private Password password;
+  @Embedded
+  @AttributeOverride(name = "value", column = @Column(name = "password"))
+  private Password password;
 
-    protected User() {
+  protected User() {}
+
+  private User(Long id) {
+    this.id = id;
+  }
+
+  public User(Email email, Password password) {
+    if (password == null) {
+      throw new FieldRequiredException("password");
     }
 
-    private User(Long id) {
-      this.id = id;
+    if (email == null) {
+      throw new FieldRequiredException("email");
     }
+    this.email = email;
+    this.password = password;
+  }
 
-    public User(Email email, Password password) {
-        if (password == null) {
-            throw new FieldRequiredException("password");
-        }
+  public static User reference(@Nonnull Long userId) {
+    return new User(userId);
+  }
 
-        if (email == null) {
-            throw new FieldRequiredException("email");
-        }
-        this.email = email;
-        this.password = password;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public static User reference(@Nonnull Long userId) {
-      return new User(userId);
-    }
+  public String getPasswordValue() {
+    return this.password.value();
+  }
 
-    public Long getId() {
-        return id;
-    }
+  public void setPassword(String password) {
+    this.password = new Password(password);
+  }
 
-    public String getPasswordValue() {
-        return this.password.value();
-    }
+  public Email getEmail() {
+    return email;
+  }
 
-    public void setPassword(String password) {
-        this.password = new Password(password);
-    }
+  public String getEmailValue() {
+    return this.email.value();
+  }
 
-    public Email getEmail() {
-        return email;
-    }
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return Collections.emptyList();
+  }
 
-    public String getEmailValue() {
-        return this.email.value();
-    }
+  @Override
+  public @Nullable String getPassword() {
+    return this.getPasswordValue();
+  }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-      return Collections.emptyList();
-    }
-
-    @Override
-    public @Nullable String getPassword() {
-      return this.getPasswordValue();
-    }
-
-    @Override
-    public String getUsername() {
-      return this.getEmailValue();
-    }
+  @Override
+  public String getUsername() {
+    return this.getEmailValue();
+  }
 }

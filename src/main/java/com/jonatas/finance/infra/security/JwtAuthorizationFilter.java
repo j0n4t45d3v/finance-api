@@ -9,6 +9,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Optional;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,97 +22,92 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Optional;
-
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
-    private final ObjectMapper objectMapper;
-    private final AntPathMatcher antPathMatcher ;
+  private final JwtService jwtService;
+  private final UserDetailsService userDetailsService;
+  private final ObjectMapper objectMapper;
+  private final AntPathMatcher antPathMatcher;
 
-    public JwtAuthorizationFilter(
-        JwtService jwtService,
-        UserDetailsService userDetailsService,
-        ObjectMapper objectMapper,
-        AntPathMatcher antPathMatcher
-    ) {
-        this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
-        this.objectMapper = objectMapper;
-        this.antPathMatcher = antPathMatcher;
+  public JwtAuthorizationFilter(
+      JwtService jwtService,
+      UserDetailsService userDetailsService,
+      ObjectMapper objectMapper,
+      AntPathMatcher antPathMatcher) {
+    this.jwtService = jwtService;
+    this.userDetailsService = userDetailsService;
+    this.objectMapper = objectMapper;
+    this.antPathMatcher = antPathMatcher;
+  }
+
+  @Override
+  protected void doFilterInternal(
+      @Nonnull HttpServletRequest request,
+      @Nonnull HttpServletResponse response,
+      @Nonnull FilterChain filterChain)
+      throws ServletException, IOException {
+
+    if (this.antPathMatcher.match("/api/v1/auth/**", request.getRequestURI())) {
+      filterChain.doFilter(request, response);
+      return;
     }
 
-    @Override
-    protected void doFilterInternal(
-            @Nonnull HttpServletRequest request,
-            @Nonnull HttpServletResponse response,
-            @Nonnull FilterChain filterChain) throws ServletException, IOException {
-
-        if (this.antPathMatcher.match("/api/v1/auth/**", request.getRequestURI())) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        var authentication = Optional
-                .ofNullable(request.getHeader("Authorization"))
-                .orElse("");
-        if (authentication.isBlank() || !authentication.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String token = authentication.substring(7).trim();
-        if (token.isBlank()) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        var tokenParsedOpt = this.jwtService.tryParseAccessToken(token);
-        if (tokenParsedOpt.isEmpty() || !tokenParsedOpt.get().isValid()) {
-            Error<String> error = new Error<>("INVALID_TOKEN", "invalid token");
-            this.writeErrorMessage(response, error);
-            return;
-        }
-
-        var tokenParsed = tokenParsedOpt.get();
-        String subject = tokenParsed.getSubject().value();
-        Optional<UserDetails> userDetailsOptional = this.tryLoadUser(subject);
-        if (userDetailsOptional.isEmpty()) {
-            Error<String> error = new Error<>("INVALID_TOKEN", "subject not found");
-            this.writeErrorMessage(response, error);
-            return;
-        }
-
-        UserDetails userDetails = userDetailsOptional.get();
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            var authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authToken);
-        }
-
-        filterChain.doFilter(request, response);
+    var authentication = Optional.ofNullable(request.getHeader("Authorization")).orElse("");
+    if (authentication.isBlank() || !authentication.startsWith("Bearer ")) {
+      filterChain.doFilter(request, response);
+      return;
     }
 
-    private Optional<UserDetails> tryLoadUser(String subject) {
-        try {
-            return Optional.of(this.userDetailsService.loadUserByUsername(subject));
-        } catch (UsernameNotFoundException error) {
-            return Optional.empty();
-        }
+    String token = authentication.substring(7).trim();
+    if (token.isBlank()) {
+      filterChain.doFilter(request, response);
+      return;
     }
 
-    private <TError> void writeErrorMessage(HttpServletResponse response, Error<TError> error) throws IOException {
-        OutputStream out = response.getOutputStream();
-        Response<Void, Error<TError>> data = Response.ofError(error, Status.BAD_REQUEST);
-        response.setStatus(401);
-        response.setHeader("Content-Type", "application/json");
-        out.write(this.objectMapper.writeValueAsBytes(data));
-        out.flush();
+    var tokenParsedOpt = this.jwtService.tryParseAccessToken(token);
+    if (tokenParsedOpt.isEmpty() || !tokenParsedOpt.get().isValid()) {
+      Error<String> error = new Error<>("INVALID_TOKEN", "invalid token");
+      this.writeErrorMessage(response, error);
+      return;
     }
 
+    var tokenParsed = tokenParsedOpt.get();
+    String subject = tokenParsed.getSubject().value();
+    Optional<UserDetails> userDetailsOptional = this.tryLoadUser(subject);
+    if (userDetailsOptional.isEmpty()) {
+      Error<String> error = new Error<>("INVALID_TOKEN", "subject not found");
+      this.writeErrorMessage(response, error);
+      return;
+    }
+
+    UserDetails userDetails = userDetailsOptional.get();
+    if (SecurityContextHolder.getContext().getAuthentication() == null) {
+      var authToken =
+          new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+      authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+      SecurityContextHolder.getContext().setAuthentication(authToken);
+    }
+
+    filterChain.doFilter(request, response);
+  }
+
+  private Optional<UserDetails> tryLoadUser(String subject) {
+    try {
+      return Optional.of(this.userDetailsService.loadUserByUsername(subject));
+    } catch (UsernameNotFoundException error) {
+      return Optional.empty();
+    }
+  }
+
+  private <TError> void writeErrorMessage(HttpServletResponse response, Error<TError> error)
+      throws IOException {
+    OutputStream out = response.getOutputStream();
+    Response<Void, Error<TError>> data = Response.ofError(error, Status.BAD_REQUEST);
+    response.setStatus(401);
+    response.setHeader("Content-Type", "application/json");
+    out.write(this.objectMapper.writeValueAsBytes(data));
+    out.flush();
+  }
 }

@@ -6,47 +6,46 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.MDC;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 import java.util.UUID;
+import org.slf4j.MDC;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
 public class RequestIdFilter extends OncePerRequestFilter {
 
-    private static final String TRACE_ID = "traceId";
-    private static final String X_HEADER_REQUEST_ID = "X-Request-Id";
+  private static final String TRACE_ID = "traceId";
+  private static final String X_HEADER_REQUEST_ID = "X-Request-Id";
 
-    @Override
-    protected void doFilterInternal(
-            @Nonnull HttpServletRequest request,
-            @Nonnull HttpServletResponse response,
-            @Nonnull FilterChain filterChain
-    ) throws ServletException, IOException {
-        try {
-            String requestId  = Optional.ofNullable(request.getHeader(X_HEADER_REQUEST_ID))
-                    .orElse(this.shortUUIDWithBase62(UUID.randomUUID()));
+  @Override
+  protected void doFilterInternal(
+      @Nonnull HttpServletRequest request,
+      @Nonnull HttpServletResponse response,
+      @Nonnull FilterChain filterChain)
+      throws ServletException, IOException {
+    try {
+      String requestId =
+          Optional.ofNullable(request.getHeader(X_HEADER_REQUEST_ID))
+              .orElse(this.shortUUIDWithBase62(UUID.randomUUID()));
 
-            response.setHeader(X_HEADER_REQUEST_ID, requestId);
+      response.setHeader(X_HEADER_REQUEST_ID, requestId);
 
-            if (MDC.get(TRACE_ID) == null) {
-                MDC.put(TRACE_ID, requestId);
-            }
-            filterChain.doFilter(request, response);
-        } finally {
-            MDC.clear();
-        }
+      if (MDC.get(TRACE_ID) == null) {
+        MDC.put(TRACE_ID, requestId);
+      }
+      filterChain.doFilter(request, response);
+    } finally {
+      MDC.clear();
     }
+  }
 
-    private String shortUUIDWithBase62(UUID uuid) {
-        ByteBuffer buffer = ByteBuffer.allocate(16);
-        buffer.putLong(uuid.getMostSignificantBits());
-        buffer.putLong(uuid.getLeastSignificantBits());
-        return Base62.encode(buffer.array());
-    }
-
+  private String shortUUIDWithBase62(UUID uuid) {
+    ByteBuffer buffer = ByteBuffer.allocate(16);
+    buffer.putLong(uuid.getMostSignificantBits());
+    buffer.putLong(uuid.getLeastSignificantBits());
+    return Base62.encode(buffer.array());
+  }
 }

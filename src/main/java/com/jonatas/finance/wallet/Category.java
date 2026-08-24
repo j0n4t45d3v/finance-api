@@ -2,7 +2,6 @@ package com.jonatas.finance.wallet;
 
 import com.jonatas.finance.auth.User;
 import com.jonatas.finance.common.exception.DomainException;
-
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
@@ -22,8 +21,8 @@ import jakarta.persistence.Table;
 public class Category {
 
   public record Name(String value) {
-    public Name{
-      if (value == null || value.isBlank())  {
+    public Name {
+      if (value == null || value.isBlank()) {
         throw new DomainException("Category name cannot be empty");
       }
       if (value.length() > 50) {
@@ -33,7 +32,8 @@ public class Category {
   }
 
   public enum Type {
-    EXPENSE, INCOME;
+    EXPENSE,
+    INCOME;
   }
 
   @Id
@@ -51,8 +51,7 @@ public class Category {
   @JoinColumn(name = "user_id")
   private User user;
 
-  protected Category() {
-  }
+  protected Category() {}
 
   private Category(Long id) {
     this.id = id;
@@ -89,7 +88,6 @@ public class Category {
   }
 
   public String getNameValue() {
-        return this.name.value();
+    return this.name.value();
   }
-
 }

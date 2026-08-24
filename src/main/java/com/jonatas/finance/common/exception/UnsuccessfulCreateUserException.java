@@ -1,7 +1,7 @@
 package com.jonatas.finance.common.exception;
 
 public class UnsuccessfulCreateUserException extends DomainException {
-    public UnsuccessfulCreateUserException() {
-        super("UNSUCCESSFUL_CREATE_USER");
-    }
+  public UnsuccessfulCreateUserException() {
+    super("UNSUCCESSFUL_CREATE_USER");
+  }
 }

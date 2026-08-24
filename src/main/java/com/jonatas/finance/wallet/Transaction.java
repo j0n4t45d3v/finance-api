@@ -2,10 +2,8 @@ package com.jonatas.finance.wallet;
 
 import com.jonatas.finance.auth.User;
 import com.jonatas.finance.common.exception.DomainException;
-
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -15,119 +13,118 @@ import java.util.Objects;
 @Table(name = "tb_transactions")
 public class Transaction {
 
-    public record Description(String value) {
-        public Description {
-            if (value == null || value.isBlank()) {
-                value = "<without description>";
-            }
-        }
-
-        public static Description empty() {
-            return new Description(null);
-        }
+  public record Description(String value) {
+    public Description {
+      if (value == null || value.isBlank()) {
+        value = "<without description>";
+      }
     }
 
-    public record Amount(@Nonnull BigDecimal value) {
-        public Amount {
-            if (value.doubleValue() <= 0) {
-                throw new DomainException("amount can not be less that zero");
-            }
-        }
+    public static Description empty() {
+      return new Description(null);
     }
+  }
 
-    public record Timestamp(@Nonnull LocalDateTime value) {
-        public static Timestamp now() {
-            return new Timestamp(LocalDateTime.now(ZoneId.of("UTC")));
-        }
+  public record Amount(@Nonnull BigDecimal value) {
+    public Amount {
+      if (value.doubleValue() <= 0) {
+        throw new DomainException("amount can not be less that zero");
+      }
     }
+  }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "description"))
-    private Description description;
-
-    @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "amount"))
-    private Amount amount;
-
-    @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "transaction_at"))
-    private Timestamp transactionAt;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "wallet_id")
-    private Wallet wallet;
-
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
-
-    protected Transaction() {}
-
-    public Transaction(
-        Description description,
-        Amount amount,
-        Timestamp transactionAt,
-        Wallet wallet,
-        User user,
-        Category category
-    ) {
-        this.description = Objects.requireNonNullElse(description, Description.empty());
-        this.amount = Objects.requireNonNull(amount, "amount is required");
-        this.user = Objects.requireNonNull(user, "user is required");
-        this.transactionAt = Objects.requireNonNull(transactionAt, "transactionAt is required");
-        this.wallet = Objects.requireNonNull(wallet, "wallet is required");
-        this.category = Objects.requireNonNull(category, "category is required");
+  public record Timestamp(@Nonnull LocalDateTime value) {
+    public static Timestamp now() {
+      return new Timestamp(LocalDateTime.now(ZoneId.of("UTC")));
     }
+  }
 
-    public Long getId() {
-        return id;
-    }
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    public String getDescriptionValue() {
-        return description.value();
-    }
+  @Embedded
+  @AttributeOverride(name = "value", column = @Column(name = "description"))
+  private Description description;
 
-    public Amount getAmount() {
-        return amount;
-    }
+  @Embedded
+  @AttributeOverride(name = "value", column = @Column(name = "amount"))
+  private Amount amount;
 
-    public BigDecimal getAmountValue() {
-        return amount.value();
-    }
+  @Embedded
+  @AttributeOverride(name = "value", column = @Column(name = "transaction_at"))
+  private Timestamp transactionAt;
 
-    public Timestamp getTransactionAt() {
-        return transactionAt;
-    }
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 
-    public LocalDateTime getTransactionAtValue() {
-        return this.transactionAt.value();
-    }
+  @ManyToOne
+  @JoinColumn(name = "wallet_id")
+  private Wallet wallet;
 
-    public Wallet getWallet() {
-        return wallet;
-    }
+  @ManyToOne
+  @JoinColumn(name = "category_id")
+  private Category category;
 
-    public User getUser() {
-        return user;
-    }
+  protected Transaction() {}
 
-    public Category getCategory() {
-        return category;
-    }
+  public Transaction(
+      Description description,
+      Amount amount,
+      Timestamp transactionAt,
+      Wallet wallet,
+      User user,
+      Category category) {
+    this.description = Objects.requireNonNullElse(description, Description.empty());
+    this.amount = Objects.requireNonNull(amount, "amount is required");
+    this.user = Objects.requireNonNull(user, "user is required");
+    this.transactionAt = Objects.requireNonNull(transactionAt, "transactionAt is required");
+    this.wallet = Objects.requireNonNull(wallet, "wallet is required");
+    this.category = Objects.requireNonNull(category, "category is required");
+  }
 
-    public Category.Type getType() {
-        return this.category.getType();
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public Long getWalletId() {
-        return this.wallet.getId();
-    }
+  public String getDescriptionValue() {
+    return description.value();
+  }
+
+  public Amount getAmount() {
+    return amount;
+  }
+
+  public BigDecimal getAmountValue() {
+    return amount.value();
+  }
+
+  public Timestamp getTransactionAt() {
+    return transactionAt;
+  }
+
+  public LocalDateTime getTransactionAtValue() {
+    return this.transactionAt.value();
+  }
+
+  public Wallet getWallet() {
+    return wallet;
+  }
+
+  public User getUser() {
+    return user;
+  }
+
+  public Category getCategory() {
+    return category;
+  }
+
+  public Category.Type getType() {
+    return this.category.getType();
+  }
+
+  public Long getWalletId() {
+    return this.wallet.getId();
+  }
 }

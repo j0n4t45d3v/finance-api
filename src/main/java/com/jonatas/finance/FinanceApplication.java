@@ -8,8 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 @SpringBootApplication
 public class FinanceApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(FinanceApplication.class, args);
-    }
-
+  public static void main(String[] args) {
+    SpringApplication.run(FinanceApplication.class, args);
+  }
 }

@@ -1,33 +1,24 @@
 package com.jonatas.finance.analytic;
 
-import java.util.List;
-
 import com.jonatas.finance.auth.User;
 import com.jonatas.finance.wallet.Category;
+import java.util.List;
 
 public interface DashboardService {
 
-    SummaryIncomeVsExpense getSummaryIncomeVsExpense(DashboardFiltersRequest filters, User user);
+  SummaryIncomeVsExpense getSummaryIncomeVsExpense(DashboardFiltersRequest filters, User user);
 
-    List<RankCategoryResponse> rankCategory(Category.Type type, Integer topIncomes, DashboardFiltersRequest request, User user);
+  List<RankCategoryResponse> rankCategory(
+      Category.Type type, Integer topIncomes, DashboardFiltersRequest request, User user);
 
-    List<RankTransactionResponse> rankTransactions(
-        Integer topTransactions,
-        DashboardFiltersRequest request,
-        User user
-    );
+  List<RankTransactionResponse> rankTransactions(
+      Integer topTransactions, DashboardFiltersRequest request, User user);
 
+  List<TransactionGroupByResponse> transactions(
+      DashboardController.RankCategoryGroupBy rankCategoryGroupBy,
+      DashboardFiltersRequest request,
+      User user);
 
-    List<TransactionGroupByResponse> transactions(
-        DashboardController.RankCategoryGroupBy rankCategoryGroupBy,
-        DashboardFiltersRequest request,
-        User user
-    );
-
-    List<RankTransactionResponse> lastTransactions(
-        Integer topTransactions,
-        DashboardFiltersRequest request,
-        User user
-    );
-
+  List<RankTransactionResponse> lastTransactions(
+      Integer topTransactions, DashboardFiltersRequest request, User user);
 }

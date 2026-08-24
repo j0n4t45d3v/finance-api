@@ -1,23 +1,21 @@
 package com.jonatas.finance.analytic;
 
+import com.jonatas.finance.auth.User;
+import com.jonatas.finance.wallet.Category;
+import com.jonatas.finance.wallet.Transaction;
+import jakarta.annotation.Nonnull;
 import java.time.LocalDateTime;
 import java.util.List;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jonatas.finance.auth.User;
-import com.jonatas.finance.wallet.Category;
-import com.jonatas.finance.wallet.Transaction;
-
-import jakarta.annotation.Nonnull;
-
 @Transactional(readOnly = true)
 public interface DashboardRepository extends JpaRepository<Transaction, Long> {
 
-    @Query("""
+  @Query(
+      """
         SELECT new com.jonatas.finance.analytic.SummaryIncomeVsExpense(
             SUM(CASE
                     WHEN c.type = INCOME THEN t.amount.value
@@ -39,14 +37,14 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
           AND t.transactionAt.value BETWEEN :startDate AND :endDate
           AND (:walletId is null or t.wallet.id = :walletId)
         """)
-    SummaryIncomeVsExpense findSummaryIncomesVsExpenses(
-        @Nonnull User user,
-        @Nonnull LocalDateTime startDate,
-        @Nonnull LocalDateTime endDate,
-        Long walletId
-    );
+  SummaryIncomeVsExpense findSummaryIncomesVsExpenses(
+      @Nonnull User user,
+      @Nonnull LocalDateTime startDate,
+      @Nonnull LocalDateTime endDate,
+      Long walletId);
 
-    @Query("""
+  @Query(
+      """
         select new com.jonatas.finance.analytic.RankCategoryResponse(
                    c.name.value,
                    concat(c.type, ''),
@@ -62,17 +60,16 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
          group by c.name, c.type
          order by sum(t.amount.value) desc
         """)
-    List<RankCategoryResponse> findTopRankCategory(
-        @Nonnull User user,
-        @Nonnull LocalDateTime startDate,
-        @Nonnull LocalDateTime endDate,
-        Category.Type type,
-        Long walletId,
-        Pageable pageable
-    );
+  List<RankCategoryResponse> findTopRankCategory(
+      @Nonnull User user,
+      @Nonnull LocalDateTime startDate,
+      @Nonnull LocalDateTime endDate,
+      Category.Type type,
+      Long walletId,
+      Pageable pageable);
 
-
-    @Query("""
+  @Query(
+      """
         select new com.jonatas.finance.analytic.RankTransactionResponse(
                    concat(c.type, ''),
                    c.name.value,
@@ -86,15 +83,15 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
           and t.transactionAt.value between ?2 and ?3
           and (?4 is null or t.wallet.id = ?4)
         """)
-    List<RankTransactionResponse> findTopRankTransaction(
-        @Nonnull User user,
-        @Nonnull LocalDateTime startDate,
-        @Nonnull LocalDateTime endDate,
-        Long walletId,
-        Pageable pageable
-    );
+  List<RankTransactionResponse> findTopRankTransaction(
+      @Nonnull User user,
+      @Nonnull LocalDateTime startDate,
+      @Nonnull LocalDateTime endDate,
+      Long walletId,
+      Pageable pageable);
 
-    @Query("""
+  @Query(
+      """
         select new com.jonatas.finance.analytic.TransactionGroupByResponse(
                    c.name.value,
                    SUM(CASE
@@ -115,14 +112,14 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
           and (?4 is null or t.wallet.id = ?4)
         group by c.name.value
         """)
-    List<TransactionGroupByResponse> findTransactionGroupByCategory(
-        @Nonnull User user,
-        @Nonnull LocalDateTime startDate,
-        @Nonnull LocalDateTime endDate,
-        Long walletId
-    );
+  List<TransactionGroupByResponse> findTransactionGroupByCategory(
+      @Nonnull User user,
+      @Nonnull LocalDateTime startDate,
+      @Nonnull LocalDateTime endDate,
+      Long walletId);
 
-    @Query("""
+  @Query(
+      """
         select new com.jonatas.finance.analytic.TransactionGroupByResponse(
                    YEAR(t.transactionAt.value),
                    MONTH(t.transactionAt.value),
@@ -144,14 +141,14 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
           and (?4 is null or t.wallet.id = ?4)
         group by YEAR(t.transactionAt.value), MONTH(t.transactionAt.value)
         """)
-    List<TransactionGroupByResponse> findTransactionGroupByMonth(
-        @Nonnull User user,
-        @Nonnull LocalDateTime startDate,
-        @Nonnull LocalDateTime endDate,
-        Long walletId
-    );
+  List<TransactionGroupByResponse> findTransactionGroupByMonth(
+      @Nonnull User user,
+      @Nonnull LocalDateTime startDate,
+      @Nonnull LocalDateTime endDate,
+      Long walletId);
 
-    @Query("""
+  @Query(
+      """
         select new com.jonatas.finance.analytic.TransactionGroupByResponse(
                    concat(cast(t.transactionAt.value as date), ''),
                    SUM(CASE
@@ -172,10 +169,9 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
           and (?4 is null or t.wallet.id = ?4)
         group by cast(t.transactionAt.value as date)
         """)
-    List<TransactionGroupByResponse> findTransactionGroupByDay(
-        @Nonnull User user,
-        @Nonnull LocalDateTime startDate,
-        @Nonnull LocalDateTime endDate,
-        Long walletId
-    );
+  List<TransactionGroupByResponse> findTransactionGroupByDay(
+      @Nonnull User user,
+      @Nonnull LocalDateTime startDate,
+      @Nonnull LocalDateTime endDate,
+      Long walletId);
 }
