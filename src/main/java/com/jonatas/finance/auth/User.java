@@ -32,6 +32,10 @@ public class User implements UserDetails {
   }
 
   public User(Email email, Password password) {
+    this(null, email, password);
+  }
+
+  public User(Long id, Email email, Password password) {
     if (password == null) {
       throw new FieldRequiredException("password");
     }
@@ -39,6 +43,7 @@ public class User implements UserDetails {
     if (email == null) {
       throw new FieldRequiredException("email");
     }
+    this.id = id;
     this.email = email;
     this.password = password;
   }
