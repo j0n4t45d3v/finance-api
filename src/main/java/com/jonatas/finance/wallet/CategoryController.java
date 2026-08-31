@@ -49,7 +49,7 @@ public class CategoryController {
       @Schema(example = "EXPENSE") @NotNull(message = "type is required") Type type) {
 
     private Category toEntity(User user) {
-      return new Category(new Name(this.name), this.type, user);
+      return new Category(Name.of(this.name), this.type, user);
     }
   }
 

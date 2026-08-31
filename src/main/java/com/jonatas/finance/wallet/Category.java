@@ -1,5 +1,7 @@
 package com.jonatas.finance.wallet;
 
+import java.util.Objects;
+
 import com.jonatas.finance.auth.User;
 import com.jonatas.finance.common.exception.DomainException;
 import jakarta.annotation.Nonnull;
@@ -28,6 +30,10 @@ public class Category {
       if (value.length() > 50) {
         throw new DomainException("Category name cannot be greater to 50");
       }
+    }
+
+    public static Name of(String value) {
+        return new Name(value);
     }
   }
 
