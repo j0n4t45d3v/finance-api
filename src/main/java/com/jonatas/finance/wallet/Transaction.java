@@ -5,6 +5,7 @@ import com.jonatas.finance.common.exception.DomainException;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Objects;
@@ -39,6 +40,11 @@ public class Transaction {
       if (value.doubleValue() <= 0) {
         throw new DomainException("amount can not be less that zero");
       }
+      value = value.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public static Amount of(BigDecimal value) {
+      return new Amount(value);
     }
   }
 

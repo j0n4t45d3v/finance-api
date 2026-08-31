@@ -1,7 +1,9 @@
 package com.jonatas.finance.wallet;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -12,6 +14,7 @@ import com.jonatas.finance.wallet.Transaction.Amount;
 import com.jonatas.finance.wallet.Transaction.Description;
 import com.jonatas.finance.wallet.Transaction.Timestamp;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -36,7 +39,7 @@ class TransactionTest {
             Category.reference(1L));
 
     assertEquals("test transaction", transaction.getDescriptionValue());
-    assertEquals(BigDecimal.ONE, transaction.getAmountValue());
+    assertEquals(BigDecimal.ONE.setScale(2, RoundingMode.HALF_UP), transaction.getAmountValue());
     assertEquals(now, transaction.getTransactionAt());
     assertNotNull(transaction.getWallet());
     assertNotNull(transaction.getUser());
@@ -57,7 +60,7 @@ class TransactionTest {
             Category.reference(1L));
 
     assertEquals("<without description>", transaction.getDescriptionValue());
-    assertEquals(BigDecimal.ONE, transaction.getAmountValue());
+    assertEquals(BigDecimal.ONE.setScale(2), transaction.getAmountValue());
     assertEquals(now, transaction.getTransactionAt());
     assertNotNull(transaction.getWallet());
     assertNotNull(transaction.getUser());
@@ -200,6 +203,46 @@ class TransactionTest {
       return Stream.of(
           Arguments.of("1 above maximum length", "a".repeat(Description.MAX_LENGTH + 1)),
           Arguments.of("50 above maximum length", "a".repeat(Description.MAX_LENGTH + 50)));
+    }
+  }
+
+  @Nested
+  class AmountTest {
+
+    @MethodSource("validValues")
+    @ParameterizedTest(name = "{0}")
+    void shouldInstanceAmount(String scenary, BigDecimal value) {
+      assertThat(Amount.of(value))
+          .extracting(Amount::value)
+          .satisfies(
+              v -> {
+                assertThat(v).isEqualTo(value.setScale(2, RoundingMode.HALF_UP));
+              });
+    }
+
+    static Stream<Arguments> validValues() {
+      return Stream.of(
+          Arguments.of("1 value", BigDecimal.ONE),
+          Arguments.of("10 value", BigDecimal.TEN),
+          Arguments.of("fractional value 1.5", BigDecimal.valueOf(1.5)),
+          Arguments.of("large number", new BigDecimal("999999999.99")));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenValueIsNull() {
+      assertThatNullPointerException().isThrownBy(() -> Amount.of(null));
+    }
+
+    @MethodSource("invalidValues")
+    @ParameterizedTest(name = "{0}")
+    void shouldThrowExceptionWhenGivenInvalidInput(String scenary, BigDecimal value) {
+      assertThatException().isThrownBy(() -> Amount.of(value)).isInstanceOf(DomainException.class);
+    }
+
+    static Stream<Arguments> invalidValues() {
+      return Stream.of(
+          Arguments.of("amount zero", BigDecimal.ZERO),
+          Arguments.of("amount negative", BigDecimal.TEN.multiply(BigDecimal.ONE.negate())));
     }
   }
 }
