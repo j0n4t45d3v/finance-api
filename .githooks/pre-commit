@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+./mvnw spotless:apply
+
+if [ $? != 0 ]; then
+  echo "Fail to format code"
+  exit 1
+fi
+
+git add -u
