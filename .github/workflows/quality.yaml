@@ -2,8 +2,8 @@ name: Code Quality
 
 on:
   pull_request:
-  push: 
-    branches: 
+  push:
+    branches:
       - main
       - dev
 
@@ -22,8 +22,3 @@ jobs:
 
       - name: Maven Verify
         run: ./mvnw verify
-
-
-
-        
-
