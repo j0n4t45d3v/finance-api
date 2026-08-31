@@ -2,6 +2,7 @@ package com.jonatas.finance.wallet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -12,6 +13,8 @@ import static org.mockito.Mockito.when;
 import com.jonatas.finance.faker.Faker;
 import com.jonatas.finance.wallet.Wallet.Description;
 import com.jonatas.finance.wallet.WalletController.CreateWalletRequest;
+import com.jonatas.finance.wallet.WalletController.EditWalletRequest;
+import java.util.Optional;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -91,6 +94,86 @@ public class WalletServiceImplTest {
 
     CreateWalletRequest makeRequest(boolean mainWallet) {
       return new CreateWalletRequest("WalletName", mainWallet);
+    }
+  }
+
+  @Nested
+  class Edit {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void shouldEditAWallet(boolean mainWallet) {
+      var wallet = Faker.wallet().isMainWallet().get();
+
+      when(walletRepository.findByIdAndUser(wallet.getId(), wallet.getUser()))
+          .thenReturn(Optional.of(wallet));
+      if (mainWallet) {
+        when(walletRepository.existsMainWalletForUser(wallet.getUser(), wallet.getId()))
+            .thenReturn(false);
+      }
+      when(walletRepository.existsByDescriptionAndUserNotAndId(
+              any(Description.class), eq(wallet.getUser()), eq(wallet.getId())))
+          .thenReturn(false);
+
+      var result = walletService.update(wallet.getId(), makeRequest(mainWallet), wallet.getUser());
+
+      assertThat(result).isNotNull().isInstanceOf(EditWalletResult.Success.class);
+      verify(walletRepository, times(1)).save(wallet);
+    }
+
+    @Test
+    void notShouldAllowEditWhenNotExistTheWallet() {
+      var user = Faker.user().get();
+
+      when(walletRepository.findByIdAndUser(anyLong(), eq(user))).thenReturn(Optional.empty());
+
+      var result = walletService.update(1L, makeRequest(true), user);
+
+      assertThat(result).isNotNull().isInstanceOf(EditWalletResult.WalletNotFound.class);
+
+      verify(walletRepository, never()).save(any(Wallet.class));
+    }
+
+    @Test
+    void notShouldAllowChangeToMainWalletWhenAlreadyExistOtherMainWallet() {
+      var wallet = Faker.wallet().isNotMainWallet().get();
+
+      when(walletRepository.findByIdAndUser(wallet.getId(), wallet.getUser()))
+          .thenReturn(Optional.of(wallet));
+      when(walletRepository.existsMainWalletForUser(wallet.getUser(), wallet.getId()))
+          .thenReturn(true);
+
+      var result = walletService.update(wallet.getId(), makeRequest(true), wallet.getUser());
+
+      assertThat(result)
+          .isNotNull()
+          .isInstanceOf(EditWalletResult.AlreadyExistsMainWalletForUser.class);
+
+      verify(walletRepository, never()).save(any(Wallet.class));
+    }
+
+    @Test
+    void notShouldAllowEditWhenUserAlreadyHasOtherWalletWithSameDescription() {
+      var wallet = Faker.wallet().isNotMainWallet().get();
+
+      when(walletRepository.findByIdAndUser(wallet.getId(), wallet.getUser()))
+          .thenReturn(Optional.of(wallet));
+      when(walletRepository.existsMainWalletForUser(wallet.getUser(), wallet.getId()))
+          .thenReturn(false);
+      when(walletRepository.existsByDescriptionAndUserNotAndId(
+              any(Description.class), eq(wallet.getUser()), eq(wallet.getId())))
+          .thenReturn(true);
+
+      var result = walletService.update(wallet.getId(), makeRequest(true), wallet.getUser());
+
+      assertThat(result)
+          .isNotNull()
+          .isInstanceOf(EditWalletResult.AlreadyExistsWalletWithThisName.class);
+
+      verify(walletRepository, never()).save(any(Wallet.class));
+    }
+
+    EditWalletRequest makeRequest(boolean mainWallet) {
+      return new EditWalletRequest("WalletName", mainWallet);
     }
   }
 }

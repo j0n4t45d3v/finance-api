@@ -38,6 +38,11 @@ public class Wallet {
   }
 
   public Wallet(Description description, User user, boolean main) {
+    this(null, description, user, main);
+  }
+
+  public Wallet(Long id, Description description, User user, boolean main) {
+    this.id = id;
     this.description = Objects.requireNonNull(description);
     this.main = main;
     this.user = Objects.requireNonNull(user);
@@ -69,5 +74,9 @@ public class Wallet {
 
   public void setDescription(Description description) {
     this.description = description;
+  }
+
+  public Description getDescription() {
+    return this.description;
   }
 }
