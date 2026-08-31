@@ -68,9 +68,9 @@ public class Category {
   }
 
   public Category(@Nonnull Name name, @Nonnull Type type, @Nonnull User user) {
-    this.name = name;
-    this.type = type;
-    this.user = user;
+    this.name = Objects.requireNonNull(name, "name is required");
+    this.type = Objects.requireNonNull(type, "type is required");
+    this.user = Objects.requireNonNull(user, "user is required");
   }
 
   public static Category reference(Long id) {
