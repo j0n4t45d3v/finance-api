@@ -6,7 +6,7 @@ import com.jonatas.finance.auth.Email;
 import com.jonatas.finance.auth.Password;
 import com.jonatas.finance.auth.User;
 
-public final class UserFaker extends Faker<UserFaker, User> {
+public final class UserFaker extends Faker<User> {
 
     private Long id;
     private String email;
