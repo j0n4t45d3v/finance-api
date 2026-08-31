@@ -1,7 +1,5 @@
 package com.jonatas.finance.wallet;
 
-import java.util.Objects;
-
 import com.jonatas.finance.auth.User;
 import com.jonatas.finance.common.exception.DomainException;
 import jakarta.annotation.Nonnull;
@@ -17,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.util.Objects;
 
 @Entity
 @Table(name = "tb_categories")
@@ -33,7 +32,7 @@ public class Category {
     }
 
     public static Name of(String value) {
-        return new Name(value);
+      return new Name(value);
     }
   }
 
