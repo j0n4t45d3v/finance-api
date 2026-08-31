@@ -14,10 +14,19 @@ import java.util.Objects;
 public class Transaction {
 
   public record Description(String value) {
+    public static final int MAX_LENGTH = 100;
+
     public Description {
       if (value == null || value.isBlank()) {
         value = "<without description>";
       }
+      if (value.length() > MAX_LENGTH) {
+        throw new DomainException("value provide exceed maximum length: " + MAX_LENGTH);
+      }
+    }
+
+    public static Description of(String value) {
+      return new Description(value);
     }
 
     public static Description empty() {

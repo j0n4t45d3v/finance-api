@@ -1,5 +1,7 @@
 package com.jonatas.finance.wallet;
 
+import static org.assertj.core.api.Assertions.assertThatException;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -10,8 +12,13 @@ import com.jonatas.finance.wallet.Transaction.Amount;
 import com.jonatas.finance.wallet.Transaction.Description;
 import com.jonatas.finance.wallet.Transaction.Timestamp;
 import java.math.BigDecimal;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class TransactionTest {
 
@@ -160,5 +167,39 @@ class TransactionTest {
                 Wallet.reference(1L),
                 User.reference(1L),
                 null));
+  }
+
+  @Nested
+  class DescriptionTest {
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("validValues")
+    void shouldInstanceDescription(String scenary, String value) {
+      assertThatNoException().isThrownBy(() -> Description.of(value));
+    }
+
+    static Stream<Arguments> validValues() {
+      return Stream.of(
+          Arguments.of("empty value", ""),
+          Arguments.of("blank value", " "),
+          Arguments.of("null value", null),
+          Arguments.of("one character", "a"),
+          Arguments.of("below maximum length", "a".repeat(Description.MAX_LENGTH - 1)),
+          Arguments.of("exactly maximum length", "a".repeat(Description.MAX_LENGTH)));
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("invalidValues")
+    void shouldThrowExceptionWhenLengthExceedMaximun(String scenary, String value) {
+      assertThatException()
+          .isThrownBy(() -> Description.of(value))
+          .isInstanceOf(DomainException.class);
+    }
+
+    static Stream<Arguments> invalidValues() {
+      return Stream.of(
+          Arguments.of("1 above maximum length", "a".repeat(Description.MAX_LENGTH + 1)),
+          Arguments.of("50 above maximum length", "a".repeat(Description.MAX_LENGTH + 50)));
+    }
   }
 }
