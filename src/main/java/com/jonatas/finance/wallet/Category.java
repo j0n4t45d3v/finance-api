@@ -67,6 +67,11 @@ public class Category {
   }
 
   public Category(@Nonnull Name name, @Nonnull Type type, @Nonnull User user) {
+    this(null, name, type, user);
+  }
+
+  public Category(Long id, @Nonnull Name name, @Nonnull Type type, @Nonnull User user) {
+    this.id = id;
     this.name = Objects.requireNonNull(name, "name is required");
     this.type = Objects.requireNonNull(type, "type is required");
     this.user = Objects.requireNonNull(user, "user is required");
