@@ -1,15 +1,14 @@
 package com.jonatas.finance.auth;
 
-import com.jonatas.finance.common.exception.FieldRequiredException;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
-
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
 
 @Entity
 @Table(name = "tb_users")
@@ -40,8 +39,8 @@ public class User implements UserDetails {
 
     public User(Long id, Email email, Password password) {
         this.id = id;
-        this.email = Objects.requireNonNull(email,"email is required");
-        this.password = Objects.requireNonNull(password,"password is required");
+        this.email = Objects.requireNonNull(email, "email is required");
+        this.password = Objects.requireNonNull(password, "password is required");
     }
 
     public static User reference(@Nonnull Long userId) {
