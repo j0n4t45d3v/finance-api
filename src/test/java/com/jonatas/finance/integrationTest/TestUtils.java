@@ -21,7 +21,9 @@ public final class TestUtils {
     }
 
     public static User createUser(
-                                  UserRepository userRepository, PasswordEncoder passwordEncoder, String email) {
+                                  UserRepository userRepository,
+                                  PasswordEncoder passwordEncoder,
+                                  String email) {
         var user = new User(new Email(email), new Password(passwordEncoder.encode(DEFAULT_PASSWORD)));
         return userRepository.save(user);
     }
@@ -30,7 +32,10 @@ public final class TestUtils {
         var payload = "{" + "\"email\": \"" + email + "\"," + "\"password\": \"" + DEFAULT_PASSWORD + "\"" + "}";
 
         MvcResult result = mockMvc.perform(
-                post("/v1/auth/login").contentType(MediaType.APPLICATION_JSON).content(payload)).andExpect(status().isOk()).andReturn();
+                                           post("/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
+                                                                 .content(payload))
+                                  .andExpect(status().isOk())
+                                  .andReturn();
 
         var json = result.getResponse().getContentAsString();
         return (String) JsonPath.read(json, "$.data.access.token");
@@ -40,7 +45,11 @@ public final class TestUtils {
         var payload = "{" + "\"name\": \"" + name + "\"," + "\"type\": \"" + type + "\"" + "}";
 
         MvcResult result = mockMvc.perform(
-                post("/v1/categories").contentType(MediaType.APPLICATION_JSON).content(payload).header("Authorization", "Bearer " + token)).andExpect(status().isCreated()).andReturn();
+                                           post("/v1/categories").contentType(MediaType.APPLICATION_JSON)
+                                                                 .content(payload)
+                                                                 .header("Authorization", "Bearer " + token))
+                                  .andExpect(status().isCreated())
+                                  .andReturn();
 
         String location = result.getResponse().getHeader("Location");
         String[] parts = location.split("/");
@@ -51,7 +60,11 @@ public final class TestUtils {
         var payload = "{" + "\"name\": \"" + name + "\"," + "\"mainWallet\": " + mainWallet + "}";
 
         MvcResult result = mockMvc.perform(
-                post("/v1/wallets").contentType(MediaType.APPLICATION_JSON).content(payload).header("Authorization", "Bearer " + token)).andExpect(status().isCreated()).andReturn();
+                                           post("/v1/wallets").contentType(MediaType.APPLICATION_JSON)
+                                                              .content(payload)
+                                                              .header("Authorization", "Bearer " + token))
+                                  .andExpect(status().isCreated())
+                                  .andReturn();
 
         String location = result.getResponse().getHeader("Location");
         String[] parts = location.split("/");

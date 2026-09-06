@@ -23,19 +23,22 @@ public class ErrorHandling {
     @ExceptionHandler(DomainException.class)
     public ResponseEntity<Response<Void, Error<String>>> domainError(DomainException error) {
         Error<String> domainViolation = new Error<>("domain_violation", error.getMessage());
-        return ResponseEntity.unprocessableContent().body(Response.ofError(domainViolation, Response.Status.UNPROCESSABLE_ENTITY));
+        return ResponseEntity.unprocessableContent()
+                             .body(Response.ofError(domainViolation, Response.Status.UNPROCESSABLE_ENTITY));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Response<Void, Error<Map<String, String>>>> handleValidationExceptions(
                                                                                                  MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(
-                error -> {
-                    String fieldName = ((FieldError) error).getField();
-                    String errorMessage = error.getDefaultMessage();
-                    errors.put(fieldName, errorMessage);
-                });
+        ex.getBindingResult()
+          .getAllErrors()
+          .forEach(
+                   error -> {
+                       String fieldName = ((FieldError) error).getField();
+                       String errorMessage = error.getDefaultMessage();
+                       errors.put(fieldName, errorMessage);
+                   });
         Error<Map<String, String>> contractViolation = new Error<>("contract_violation", errors);
         return ResponseEntity.badRequest().body(Response.ofError(contractViolation, Response.Status.BAD_REQUEST));
     }

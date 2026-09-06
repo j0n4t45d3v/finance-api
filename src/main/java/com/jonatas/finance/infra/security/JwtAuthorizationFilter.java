@@ -31,7 +31,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final AntPathMatcher antPathMatcher;
 
     public JwtAuthorizationFilter(
-                                  JwtService jwtService, UserDetailsService userDetailsService, ObjectMapper objectMapper, AntPathMatcher antPathMatcher) {
+                                  JwtService jwtService,
+                                  UserDetailsService userDetailsService,
+                                  ObjectMapper objectMapper,
+                                  AntPathMatcher antPathMatcher) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
         this.objectMapper = objectMapper;
@@ -40,7 +43,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-                                    @Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response, @Nonnull FilterChain filterChain) throws ServletException, IOException {
+                                    @Nonnull
+                                    HttpServletRequest request,
+                                    @Nonnull
+                                    HttpServletResponse response,
+                                    @Nonnull
+                                    FilterChain filterChain) throws ServletException, IOException {
 
         if (this.antPathMatcher.match("/api/v1/auth/**", request.getRequestURI())) {
             filterChain.doFilter(request, response);

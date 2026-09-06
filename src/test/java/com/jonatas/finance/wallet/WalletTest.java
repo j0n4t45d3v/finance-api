@@ -22,7 +22,8 @@ class WalletTest {
     @DisplayName("should not allowed create wallet without user")
     void shouldNotAllowedCreateWalletWithoutUser() {
         assertThrows(
-                NullPointerException.class, () -> new Wallet(new Wallet.Description("test create wallet"), null, true));
+                     NullPointerException.class,
+                     () -> new Wallet(new Wallet.Description("test create wallet"), null, true));
     }
 
     @Test
@@ -35,13 +36,15 @@ class WalletTest {
     @DisplayName("should not allowed create wallet with empty description")
     void shouldNotAllowedCreateWalletWithEmptyDescription() {
         assertThrows(
-                IllegalArgumentException.class, () -> new Wallet(new Wallet.Description(""), User.reference(1L), true));
+                     IllegalArgumentException.class,
+                     () -> new Wallet(new Wallet.Description(""), User.reference(1L), true));
     }
 
     @Test
     @DisplayName("should not allowed create wallet with blank description")
     void shouldNotAllowedCreateWalletWithBlankDescription() {
         assertThrows(
-                IllegalArgumentException.class, () -> new Wallet(new Wallet.Description(""), User.reference(1L), true));
+                     IllegalArgumentException.class,
+                     () -> new Wallet(new Wallet.Description(""), User.reference(1L), true));
     }
 }

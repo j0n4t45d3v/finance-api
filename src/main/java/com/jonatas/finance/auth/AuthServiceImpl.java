@@ -16,7 +16,9 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
 
     public AuthServiceImpl(
-                           UserRepository userRepository, JwtService jwtService, PasswordEncoder passwordEncoder) {
+                           UserRepository userRepository,
+                           JwtService jwtService,
+                           PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;

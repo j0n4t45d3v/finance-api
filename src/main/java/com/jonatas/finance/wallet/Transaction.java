@@ -35,7 +35,8 @@ public class Transaction {
         }
     }
 
-    public record Amount(@Nonnull BigDecimal value) {
+    public record Amount(@Nonnull
+    BigDecimal value) {
         public Amount {
             if (value.doubleValue() <= 0) {
                 throw new DomainException("amount can not be less that zero");
@@ -48,7 +49,8 @@ public class Transaction {
         }
     }
 
-    public record Timestamp(@Nonnull LocalDateTime value) {
+    public record Timestamp(@Nonnull
+    LocalDateTime value) {
         public static Timestamp now() {
             return new Timestamp(LocalDateTime.now(ZoneId.of("UTC")));
         }
@@ -86,7 +88,12 @@ public class Transaction {
     }
 
     public Transaction(
-                       Description description, Amount amount, Timestamp transactionAt, Wallet wallet, User user, Category category) {
+                       Description description,
+                       Amount amount,
+                       Timestamp transactionAt,
+                       Wallet wallet,
+                       User user,
+                       Category category) {
         this.description = Objects.requireNonNullElse(description, Description.empty());
         this.amount = Objects.requireNonNull(amount, "amount is required");
         this.user = Objects.requireNonNull(user, "user is required");
@@ -95,47 +102,25 @@ public class Transaction {
         this.category = Objects.requireNonNull(category, "category is required");
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public String getDescriptionValue() {
-        return description.value();
-    }
+    public String getDescriptionValue() { return description.value(); }
 
-    public Amount getAmount() {
-        return amount;
-    }
+    public Amount getAmount() { return amount; }
 
-    public BigDecimal getAmountValue() {
-        return amount.value();
-    }
+    public BigDecimal getAmountValue() { return amount.value(); }
 
-    public Timestamp getTransactionAt() {
-        return transactionAt;
-    }
+    public Timestamp getTransactionAt() { return transactionAt; }
 
-    public LocalDateTime getTransactionAtValue() {
-        return this.transactionAt.value();
-    }
+    public LocalDateTime getTransactionAtValue() { return this.transactionAt.value(); }
 
-    public Wallet getWallet() {
-        return wallet;
-    }
+    public Wallet getWallet() { return wallet; }
 
-    public User getUser() {
-        return user;
-    }
+    public User getUser() { return user; }
 
-    public Category getCategory() {
-        return category;
-    }
+    public Category getCategory() { return category; }
 
-    public Category.Type getType() {
-        return this.category.getType();
-    }
+    public Category.Type getType() { return this.category.getType(); }
 
-    public Long getWalletId() {
-        return this.wallet.getId();
-    }
+    public Long getWalletId() { return this.wallet.getId(); }
 }

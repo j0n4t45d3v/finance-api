@@ -26,26 +26,32 @@ class CategoryTest {
         var categoryFaker = Faker.category().withType(type);
         assertThatNoException().isThrownBy(categoryFaker::get);
         assertThat(categoryFaker.get()).satisfies(
-                c -> {
-                    assertThat(c.getId()).isNotNull();
-                    assertThat(c.getName()).isNotNull();
-                    assertThat(c.getType()).isEqualTo(type);
-                    assertThat(c.getUser()).isNotNull();
-                });
+                                                  c -> {
+                                                      assertThat(c.getId()).isNotNull();
+                                                      assertThat(c.getName()).isNotNull();
+                                                      assertThat(c.getType()).isEqualTo(type);
+                                                      assertThat(c.getUser()).isNotNull();
+                                                  });
     }
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("providerNullFieldsRequired")
-    void shouldThrowExceptionWhenNotGivenRequiredFields(
-                                                        String scenery, String name, Type type, User user) {
+    void shouldThrowExceptionWhenNotGivenRequiredFields(String scenery,
+                                                        String name,
+                                                        Type type,
+                                                        User user) {
         var categoryFaker = Faker.category().withName(name).withUser(user).withType(type);
-        Assertions.assertThatNullPointerException().isThrownBy(() -> categoryFaker.get()).withMessageContainingAll("is required");
+        Assertions.assertThatNullPointerException()
+                  .isThrownBy(() -> categoryFaker.get())
+                  .withMessageContainingAll("is required");
     }
 
     public static Stream<Arguments> providerNullFieldsRequired() {
         var user = Faker.user().get();
         return Stream.of(
-                Arguments.arguments("Name is null", null, Type.EXPENSE, user), Arguments.arguments("Type is null", Faker.text(10), null, user), Arguments.arguments("User is null", Faker.text(2), Type.EXPENSE, null));
+                         Arguments.arguments("Name is null", null, Type.EXPENSE, user),
+                         Arguments.arguments("Type is null", Faker.text(10), null, user),
+                         Arguments.arguments("User is null", Faker.text(2), Type.EXPENSE, null));
     }
 
     @Nested

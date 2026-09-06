@@ -121,11 +121,19 @@ class TransactionServiceImplTest {
 
     private CreateTransactionRequest getCreateTransactionRequest() {
         return new CreateTransactionRequest(
-                "test transaction", BigDecimal.ONE, LocalDateTime.of(LocalDate.of(1999, 12, 1), LocalTime.of(15, 12)), 1L, 1L);
+                                            "test transaction",
+                                            BigDecimal.ONE,
+                                            LocalDateTime.of(LocalDate.of(1999, 12, 1), LocalTime.of(15, 12)),
+                                            1L,
+                                            1L);
     }
 
     private CreateTransactionRequest getCreateTransactionRequestInFuture() {
         return new CreateTransactionRequest(
-                "test transaction", BigDecimal.ONE, LocalDateTime.of(LocalDate.of(9999, 12, 31), LocalTime.of(23, 59)), 1L, 1L);
+                                            "test transaction",
+                                            BigDecimal.ONE,
+                                            LocalDateTime.of(LocalDate.of(9999, 12, 31), LocalTime.of(23, 59)),
+                                            1L,
+                                            1L);
     }
 }

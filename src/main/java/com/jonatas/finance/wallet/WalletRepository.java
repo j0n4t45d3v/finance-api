@@ -12,7 +12,9 @@ public interface WalletRepository extends JpaRepository<Wallet, Long> {
     boolean existsByDescriptionAndUser(Wallet.Description description, User user);
 
     boolean existsByDescriptionAndUserNotAndId(
-                                               Wallet.Description description, User user, Long walletId);
+                                               Wallet.Description description,
+                                               User user,
+                                               Long walletId);
 
     @Query(
         """
@@ -24,7 +26,8 @@ public interface WalletRepository extends JpaRepository<Wallet, Long> {
                     where a.user = :user
                       and a.main = true
                 """)
-    boolean existsMainWalletForUser(@Param("user") User user);
+    boolean existsMainWalletForUser(@Param("user")
+    User user);
 
     @Query(
         """
@@ -37,7 +40,8 @@ public interface WalletRepository extends JpaRepository<Wallet, Long> {
                       and a.main = true
                       and a.id <> :walletId
                 """)
-    boolean existsMainWalletForUser(@Param("user") User user, Long walletId);
+    boolean existsMainWalletForUser(@Param("user")
+    User user, Long walletId);
 
     List<Wallet> findAllByUser(User user);
 

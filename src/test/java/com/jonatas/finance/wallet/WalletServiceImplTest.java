@@ -45,16 +45,19 @@ public class WalletServiceImplTest {
                 when(walletRepository.existsMainWalletForUser(user)).thenReturn(!mainWallet);
             }
 
-            when(walletRepository.existsByDescriptionAndUser(any(Wallet.Description.class), eq(user))).thenReturn(false);
+            when(walletRepository.existsByDescriptionAndUser(any(Wallet.Description.class), eq(user))).thenReturn(
+                                                                                                                  false);
 
             when(walletRepository.save(any(Wallet.class))).thenReturn(mock(Wallet.class));
 
             var result = walletService.create(makeRequest(mainWallet), user);
 
-            assertThat(result).isNotNull().isInstanceOfSatisfying(
-                    CreateWalletResult.Success.class, s -> {
-                        assertThat(s.wallet()).isNotNull();
-                    });
+            assertThat(result).isNotNull()
+                              .isInstanceOfSatisfying(
+                                                      CreateWalletResult.Success.class,
+                                                      s -> {
+                                                          assertThat(s.wallet()).isNotNull();
+                                                      });
 
             verify(walletRepository, times(1)).save(any(Wallet.class));
         }
@@ -102,7 +105,9 @@ public class WalletServiceImplTest {
                 when(walletRepository.existsMainWalletForUser(wallet.getUser(), wallet.getId())).thenReturn(false);
             }
             when(walletRepository.existsByDescriptionAndUserNotAndId(
-                    any(Description.class), eq(wallet.getUser()), eq(wallet.getId()))).thenReturn(false);
+                                                                     any(Description.class),
+                                                                     eq(wallet.getUser()),
+                                                                     eq(wallet.getId()))).thenReturn(false);
 
             var result = walletService.update(wallet.getId(), makeRequest(mainWallet), wallet.getUser());
 
@@ -144,7 +149,9 @@ public class WalletServiceImplTest {
             when(walletRepository.findByIdAndUser(wallet.getId(), wallet.getUser())).thenReturn(Optional.of(wallet));
             when(walletRepository.existsMainWalletForUser(wallet.getUser(), wallet.getId())).thenReturn(false);
             when(walletRepository.existsByDescriptionAndUserNotAndId(
-                    any(Description.class), eq(wallet.getUser()), eq(wallet.getId()))).thenReturn(true);
+                                                                     any(Description.class),
+                                                                     eq(wallet.getUser()),
+                                                                     eq(wallet.getId()))).thenReturn(true);
 
             var result = walletService.update(wallet.getId(), makeRequest(true), wallet.getUser());
 

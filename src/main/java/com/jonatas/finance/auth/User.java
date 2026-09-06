@@ -43,42 +43,27 @@ public class User implements UserDetails {
         this.password = Objects.requireNonNull(password, "password is required");
     }
 
-    public static User reference(@Nonnull Long userId) {
+    public static User reference(@Nonnull
+    Long userId) {
         return new User(userId);
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public String getPasswordValue() {
-        return this.password.value();
-    }
+    public String getPasswordValue() { return this.password.value(); }
 
-    public void setPassword(String password) {
-        this.password = new Password(password);
-    }
+    public void setPassword(String password) { this.password = new Password(password); }
 
-    public Email getEmail() {
-        return email;
-    }
+    public Email getEmail() { return email; }
 
-    public String getEmailValue() {
-        return this.email.value();
-    }
+    public String getEmailValue() { return this.email.value(); }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
-    }
+    public Collection<? extends GrantedAuthority> getAuthorities() { return Collections.emptyList(); }
 
     @Override
-    public @Nullable String getPassword() {
-        return this.getPasswordValue();
-    }
+    public @Nullable String getPassword() { return this.getPasswordValue(); }
 
     @Override
-    public String getUsername() {
-        return this.getEmailValue();
-    }
+    public String getUsername() { return this.getEmailValue(); }
 }

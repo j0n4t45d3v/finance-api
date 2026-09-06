@@ -8,8 +8,10 @@ import java.time.ZoneId;
 public record Response<TData, TError>(
                                       LocalDateTime timestamp,
                                       Status status,
-                                      @JsonInclude(JsonInclude.Include.NON_NULL) TData data,
-                                      @JsonInclude(JsonInclude.Include.NON_NULL) TError error) {
+                                      @JsonInclude(JsonInclude.Include.NON_NULL)
+                                      TData data,
+                                      @JsonInclude(JsonInclude.Include.NON_NULL)
+                                      TError error) {
 
     public Response {
         if (timestamp == null) {
@@ -27,9 +29,7 @@ public record Response<TData, TError>(
         }
 
         @JsonValue
-        public int getValue() {
-            return value;
-        }
+        public int getValue() { return value; }
     }
 
     public static <TError> Response<Void, TError> ofError(TError error, Status status) {

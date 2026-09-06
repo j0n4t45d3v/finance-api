@@ -20,7 +20,10 @@ public class TransactionServiceImpl implements TransactionService {
     private final ClockProvider clockProvider;
 
     public TransactionServiceImpl(
-                                  WalletRepository walletRepository, TransactionRepository transactionRepository, CategoryRepository categoryRepository, ClockProvider clockProvider) {
+                                  WalletRepository walletRepository,
+                                  TransactionRepository transactionRepository,
+                                  CategoryRepository categoryRepository,
+                                  ClockProvider clockProvider) {
         this.walletRepository = walletRepository;
         this.transactionRepository = transactionRepository;
         this.categoryRepository = categoryRepository;
@@ -45,7 +48,12 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         Transaction transaction = new Transaction(
-                new Description(request.description()), new Amount(request.amount()), new Timestamp(request.datetime()), wallet.get(), user, category.get());
+                                                  new Description(request.description()),
+                                                  new Amount(request.amount()),
+                                                  new Timestamp(request.datetime()),
+                                                  wallet.get(),
+                                                  user,
+                                                  category.get());
 
         Transaction created = this.transactionRepository.save(transaction);
         return new CreateTransactionResult.Success(created);

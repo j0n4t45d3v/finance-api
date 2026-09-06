@@ -28,11 +28,15 @@ class JwtServiceTest {
     private static final Long TOKEN_REFRESH_EXPIRATION = 86400000L;
     private static final String TOKEN_REFRESH_SECRET = "ZmFrZVJlZnJlc2hTZWNyZXRmYWtlUmVmcmVzaFNlY3JldGZha2VSZWZyZXNoU2VjcmV0";
 
-    private static final JwtConfig.TokenSignatureConfig ACCESS_TOKEN_SIGNATURE = tokenSignature(TOKEN_ACCESS_SECRET, TOKEN_ACCESS_EXPIRATION);
+    private static final JwtConfig.TokenSignatureConfig ACCESS_TOKEN_SIGNATURE = tokenSignature(TOKEN_ACCESS_SECRET,
+                                                                                                TOKEN_ACCESS_EXPIRATION);
 
-    private static final JwtConfig.TokenSignatureConfig REFRESH_TOKEN_SIGNATURE = tokenSignature(TOKEN_REFRESH_SECRET, TOKEN_REFRESH_EXPIRATION);
+    private static final JwtConfig.TokenSignatureConfig REFRESH_TOKEN_SIGNATURE = tokenSignature(TOKEN_REFRESH_SECRET,
+                                                                                                 TOKEN_REFRESH_EXPIRATION);
 
-    private static final JwtConfig JWT_CONFIG = jwtConfig(TOKEN_ISSUER, ACCESS_TOKEN_SIGNATURE, REFRESH_TOKEN_SIGNATURE);
+    private static final JwtConfig JWT_CONFIG = jwtConfig(TOKEN_ISSUER,
+                                                          ACCESS_TOKEN_SIGNATURE,
+                                                          REFRESH_TOKEN_SIGNATURE);
 
     private static JwtService jwtService;
 
@@ -53,11 +57,18 @@ class JwtServiceTest {
             var subject = mockSubject();
             var token = jwtService.generateToken(subject);
 
-            JWTHelper.assertThat().withIssuer(TOKEN_ISSUER).withSubject(subject.getUsername()).withType("access").withExpirationTime(TOKEN_ACCESS_EXPIRATION).validate(
-                    token.value(), payload -> {
-                        assertEquals(
-                                token.expiredAt(), JsonPath.<Number>read(payload, "$.exp").longValue());
-                    });
+            JWTHelper.assertThat()
+                     .withIssuer(TOKEN_ISSUER)
+                     .withSubject(subject.getUsername())
+                     .withType("access")
+                     .withExpirationTime(TOKEN_ACCESS_EXPIRATION)
+                     .validate(
+                               token.value(),
+                               payload -> {
+                                   assertEquals(
+                                                token.expiredAt(),
+                                                JsonPath.<Number>read(payload, "$.exp").longValue());
+                               });
         }
 
         @Test
@@ -65,11 +76,18 @@ class JwtServiceTest {
             var subject = mockSubject();
             var token = jwtService.generateRefreshToken(subject);
 
-            JWTHelper.assertThat().withIssuer(TOKEN_ISSUER).withSubject(subject.getUsername()).withType("refresh").withExpirationTime(TOKEN_REFRESH_EXPIRATION).validate(
-                    token.value(), payload -> {
-                        assertEquals(
-                                token.expiredAt(), JsonPath.<Number>read(payload, "$.exp").longValue());
-                    });
+            JWTHelper.assertThat()
+                     .withIssuer(TOKEN_ISSUER)
+                     .withSubject(subject.getUsername())
+                     .withType("refresh")
+                     .withExpirationTime(TOKEN_REFRESH_EXPIRATION)
+                     .validate(
+                               token.value(),
+                               payload -> {
+                                   assertEquals(
+                                                token.expiredAt(),
+                                                JsonPath.<Number>read(payload, "$.exp").longValue());
+                               });
         }
     }
 
@@ -130,8 +148,10 @@ class JwtServiceTest {
 
         private JwtService buildJwtServiceExpired() {
             return new JwtService(
-                    jwtConfig(
-                            TOKEN_ISSUER, tokenSignature(TOKEN_ACCESS_SECRET, -1L), tokenSignature(TOKEN_REFRESH_SECRET, TOKEN_REFRESH_EXPIRATION)));
+                                  jwtConfig(
+                                            TOKEN_ISSUER,
+                                            tokenSignature(TOKEN_ACCESS_SECRET, -1L),
+                                            tokenSignature(TOKEN_REFRESH_SECRET, TOKEN_REFRESH_EXPIRATION)));
         }
     }
 
@@ -178,7 +198,8 @@ class JwtServiceTest {
 
         @Test
         void shouldNotBeValidWhenTokenIsExpired() {
-            var mockClaims = new MockClaimsBuilder().withExpiration(new Date(System.currentTimeMillis() - 1000)).build();
+            var mockClaims = new MockClaimsBuilder().withExpiration(new Date(System.currentTimeMillis() - 1000))
+                                                    .build();
             var parsedToken = new JwtService.TokenParsed(mockClaims, "access");
             assertFalse(parsedToken.isValid());
             assertTrue(parsedToken.isExpired());
@@ -202,7 +223,9 @@ class JwtServiceTest {
     }
 
     private static JwtConfig jwtConfig(
-                                       String issuer, JwtConfig.TokenSignatureConfig accessTokenSignature, JwtConfig.TokenSignatureConfig refreshTokenSignature) {
+                                       String issuer,
+                                       JwtConfig.TokenSignatureConfig accessTokenSignature,
+                                       JwtConfig.TokenSignatureConfig refreshTokenSignature) {
         return new JwtConfig(issuer, accessTokenSignature, refreshTokenSignature);
     }
 

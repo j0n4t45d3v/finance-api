@@ -35,17 +35,11 @@ public record JwtService(JwtConfig jwtConfig) {
             return expiration.isBefore(now);
         }
 
-        public Email getSubject() {
-            return new Email(this.claims.getSubject());
-        }
+        public Email getSubject() { return new Email(this.claims.getSubject()); }
 
-        public Date getExpiration() {
-            return this.claims.getExpiration();
-        }
+        public Date getExpiration() { return this.claims.getExpiration(); }
 
-        public String getType() {
-            return this.claims.get("type", String.class);
-        }
+        public String getType() { return this.claims.get("type", String.class); }
     }
 
     public Token generateToken(UserDetails subject) {
@@ -57,10 +51,20 @@ public record JwtService(JwtConfig jwtConfig) {
     }
 
     private Token buildToken(
-                             UserDetails subject, String type, JwtConfig.TokenSignatureConfig tokenSignatureConfig) {
+                             UserDetails subject,
+                             String type,
+                             JwtConfig.TokenSignatureConfig tokenSignatureConfig) {
 
         Instant exp = Instant.now().plusSeconds(tokenSignatureConfig.exp());
-        String token = Jwts.builder().id(UUID.randomUUID().toString()).issuer(this.jwtConfig.issuer()).issuedAt(new Date()).subject(subject.getUsername()).claim("type", type).expiration(new Date(exp.toEpochMilli())).signWith(this.getSecretKey(tokenSignatureConfig.secret())).compact();
+        String token = Jwts.builder()
+                           .id(UUID.randomUUID().toString())
+                           .issuer(this.jwtConfig.issuer())
+                           .issuedAt(new Date())
+                           .subject(subject.getUsername())
+                           .claim("type", type)
+                           .expiration(new Date(exp.toEpochMilli()))
+                           .signWith(this.getSecretKey(tokenSignatureConfig.secret()))
+                           .compact();
         return new Token(token, exp.getEpochSecond());
     }
 

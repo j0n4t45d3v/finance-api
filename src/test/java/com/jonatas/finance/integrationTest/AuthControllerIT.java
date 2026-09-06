@@ -59,24 +59,32 @@ class AuthControllerIT extends BaseIntegratioTest {
 
         @Test
         void shouldReturnCreatedWhenBodyIsValid() throws Exception {
-            mockMvc.perform(this.makeRegisterUserRequest("jonh@doe.test", "jonh123", "jonh123")).andExpect(status().isCreated()).andExpect(header().string("Location", "/v1/users/me"));
+            mockMvc.perform(this.makeRegisterUserRequest("jonh@doe.test", "jonh123", "jonh123"))
+                   .andExpect(status().isCreated())
+                   .andExpect(header().string("Location", "/v1/users/me"));
 
             assertEquals(2, userRepository.count());
         }
 
         @Test
         void shouldReturnBadRequestWhenPasswordsNotMatches() throws Exception {
-            mockMvc.perform(this.makeRegisterUserRequest("jonh@doe.test", "jonh123", "jonh12")).andExpect(status().isBadRequest()).andExpect(jsonPath(JSON_PATH_ERROR_TYPE).value(ERROR_NOT_MATCH_PASSWORD));
+            mockMvc.perform(this.makeRegisterUserRequest("jonh@doe.test", "jonh123", "jonh12"))
+                   .andExpect(status().isBadRequest())
+                   .andExpect(jsonPath(JSON_PATH_ERROR_TYPE).value(ERROR_NOT_MATCH_PASSWORD));
         }
 
         @Test
         void shouldReturnBadRequestWhenEmailAlreadyExists() throws Exception {
             createUser("conflict@email.test");
-            mockMvc.perform(this.makeRegisterUserRequest("conflict@email.test", "jonh123", "jonh123")).andExpect(status().isBadRequest()).andExpect(jsonPath(JSON_PATH_ERROR_TYPE).value(ERROR_FAIL_REGISTER));
+            mockMvc.perform(this.makeRegisterUserRequest("conflict@email.test", "jonh123", "jonh123"))
+                   .andExpect(status().isBadRequest())
+                   .andExpect(jsonPath(JSON_PATH_ERROR_TYPE).value(ERROR_FAIL_REGISTER));
         }
 
         private RequestBuilder makeRegisterUserRequest(
-                                                       String email, String password, String confirmPassword) {
+                                                       String email,
+                                                       String password,
+                                                       String confirmPassword) {
             var payload = this.registerPayload(email, password, confirmPassword);
             return post(REGISTER_ENDPOINT).contentType(MediaType.APPLICATION_JSON).content(payload);
         }
@@ -100,7 +108,11 @@ class AuthControllerIT extends BaseIntegratioTest {
         @Test
         void shouldReturnOKWhenBodyCredentialsIsValid() throws Exception {
             var user = createUser("john@doe.test");
-            var response = mockMvc.perform(makeLoginRequest(user.getEmailValue(), DEFAULT_PASSWORD)).andExpect(status().isOk()).andExpect(jsonPath(JSON_PATH_ACCESS_TOKEN).isNotEmpty()).andExpect(jsonPath(JSON_PATH_REFRESH_TOKEN).isNotEmpty()).andReturn();
+            var response = mockMvc.perform(makeLoginRequest(user.getEmailValue(), DEFAULT_PASSWORD))
+                                  .andExpect(status().isOk())
+                                  .andExpect(jsonPath(JSON_PATH_ACCESS_TOKEN).isNotEmpty())
+                                  .andExpect(jsonPath(JSON_PATH_REFRESH_TOKEN).isNotEmpty())
+                                  .andReturn();
 
             var content = response.getResponse().getContentAsString();
             assertAccessToken(content, user);
@@ -109,13 +121,17 @@ class AuthControllerIT extends BaseIntegratioTest {
 
         @Test
         void shouldReturnBadRequestWhenNotExistsUserWithEmailProvided() throws Exception {
-            mockMvc.perform(makeLoginRequest("john@doe.test", "john123")).andExpect(status().isBadRequest()).andExpect(jsonPath(JSON_PATH_ERROR_TYPE).value(ERROR_INVALID_CREDENTIALS));
+            mockMvc.perform(makeLoginRequest("john@doe.test", "john123"))
+                   .andExpect(status().isBadRequest())
+                   .andExpect(jsonPath(JSON_PATH_ERROR_TYPE).value(ERROR_INVALID_CREDENTIALS));
         }
 
         @Test
         void shouldReturnHttpCodeBadRequestWhenPasswordNotMatchsWithFoundInUser() throws Exception {
             var user = createUser("john@doe.test");
-            mockMvc.perform(makeLoginRequest(user.getEmailValue(), user.getPasswordValue() + "Teste")).andExpect(status().isBadRequest()).andExpect(jsonPath(JSON_PATH_ERROR_TYPE).value(ERROR_INVALID_CREDENTIALS));
+            mockMvc.perform(makeLoginRequest(user.getEmailValue(), user.getPasswordValue() + "Teste"))
+                   .andExpect(status().isBadRequest())
+                   .andExpect(jsonPath(JSON_PATH_ERROR_TYPE).value(ERROR_INVALID_CREDENTIALS));
         }
     }
 
@@ -130,12 +146,18 @@ class AuthControllerIT extends BaseIntegratioTest {
         void shouldReturnOKWhenRefreshTokenProviderIsValid() throws Exception {
             var user = createUser("john@doe.test");
 
-            var loginResponse = mockMvc.perform(makeLoginRequest(user.getEmailValue(), DEFAULT_PASSWORD)).andExpect(status().isOk()).andReturn();
+            var loginResponse = mockMvc.perform(makeLoginRequest(user.getEmailValue(), DEFAULT_PASSWORD))
+                                       .andExpect(status().isOk())
+                                       .andReturn();
 
             var json = loginResponse.getResponse().getContentAsString();
             var refreshToken = (String) JsonPath.read(json, JSON_PATH_REFRESH_TOKEN);
 
-            var response = mockMvc.perform(makeRefreshRequest(refreshToken)).andExpect(status().isOk()).andExpect(jsonPath(JSON_PATH_ACCESS_TOKEN).isNotEmpty()).andExpect(jsonPath(JSON_PATH_REFRESH_TOKEN).isNotEmpty()).andReturn();
+            var response = mockMvc.perform(makeRefreshRequest(refreshToken))
+                                  .andExpect(status().isOk())
+                                  .andExpect(jsonPath(JSON_PATH_ACCESS_TOKEN).isNotEmpty())
+                                  .andExpect(jsonPath(JSON_PATH_REFRESH_TOKEN).isNotEmpty())
+                                  .andReturn();
 
             var content = response.getResponse().getContentAsString();
             assertAccessToken(content, user);
@@ -144,21 +166,27 @@ class AuthControllerIT extends BaseIntegratioTest {
 
         @Test
         void shouldReturnBadRequestWhenRefreshTokenIsInvalid() throws Exception {
-            mockMvc.perform(makeRefreshRequest("invalid-token")).andExpect(status().isBadRequest()).andExpect(jsonPath(JSON_PATH_ERROR_TYPE).value(ERROR_INVALID_TOKEN));
+            mockMvc.perform(makeRefreshRequest("invalid-token"))
+                   .andExpect(status().isBadRequest())
+                   .andExpect(jsonPath(JSON_PATH_ERROR_TYPE).value(ERROR_INVALID_TOKEN));
         }
 
         @Test
         void shouldReturnBadRequestWhenSubjectIsInvalid() throws Exception {
             var user = createUser("john@doe.test");
 
-            var loginResponse = mockMvc.perform(makeLoginRequest(user.getEmailValue(), DEFAULT_PASSWORD)).andExpect(status().isOk()).andReturn();
+            var loginResponse = mockMvc.perform(makeLoginRequest(user.getEmailValue(), DEFAULT_PASSWORD))
+                                       .andExpect(status().isOk())
+                                       .andReturn();
 
             userRepository.delete(user);
 
             var json = loginResponse.getResponse().getContentAsString();
             var invalidSubjectToken = (String) JsonPath.read(json, JSON_PATH_REFRESH_TOKEN);
 
-            mockMvc.perform(makeRefreshRequest(invalidSubjectToken)).andExpect(status().isBadRequest()).andExpect(jsonPath(JSON_PATH_ERROR_TYPE).value(ERROR_INVALID_SUBJECT));
+            mockMvc.perform(makeRefreshRequest(invalidSubjectToken))
+                   .andExpect(status().isBadRequest())
+                   .andExpect(jsonPath(JSON_PATH_ERROR_TYPE).value(ERROR_INVALID_SUBJECT));
         }
 
         private RequestBuilder makeRefreshRequest(String refreshToken) {
@@ -197,7 +225,11 @@ class AuthControllerIT extends BaseIntegratioTest {
     }
 
     private void assertToken(
-                             String token, UserDetails userExpected, Long jwtExpirationTimeExpected, String json, String type) {
+                             String token,
+                             UserDetails userExpected,
+                             Long jwtExpirationTimeExpected,
+                             String json,
+                             String type) {
         var decodedToken = decodeTokenJWT(token);
 
         var subject = JsonPath.<String>read(decodedToken, "$.sub");

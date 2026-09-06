@@ -37,7 +37,8 @@ public class WalletController {
 
     @Schema(description = "Request pra cadastrar uma nova carteira")
     public record CreateWalletRequest(
-                                      @Schema(example = "Banco do Brasil (Agência:xxxxx-xx)") @NotNull String name,
+                                      @Schema(example = "Banco do Brasil (Agência:xxxxx-xx)") @NotNull
+                                      String name,
                                       Boolean mainWallet) {
     }
 
@@ -46,7 +47,10 @@ public class WalletController {
     @DefaultErrorResponses
     @ApiResponse(responseCode = "201", description = "Created", headers = @Header(name = "Location"))
     public ResponseEntity<?> create(
-                                    @RequestBody @Valid CreateWalletRequest request, @AuthenticationPrincipal User user) {
+                                    @RequestBody @Valid
+                                    CreateWalletRequest request,
+                                    @AuthenticationPrincipal
+                                    User user) {
         var result = this.walletService.create(request, user);
         if (result instanceof CreateWalletResult.AlreadyExistsWalletWithThisName) {
             var error = new Error<>("wallet_already_exists", "Already exists an wallet register with same name");
@@ -55,7 +59,8 @@ public class WalletController {
 
         if (result instanceof CreateWalletResult.AlreadyExistsMainWalletForUser) {
             var error = new Error<>(
-                    "main_wallet_already_exists", "Already exists an main wallet register for this user");
+                                    "main_wallet_already_exists",
+                                    "Already exists an main wallet register for this user");
             return ResponseEntity.badRequest().body(Response.ofError(error, Response.Status.BAD_REQUEST));
         }
 
@@ -65,7 +70,8 @@ public class WalletController {
     }
 
     public record EditWalletRequest(
-                                    @Schema(example = "Banco do Brasil (Agência:xxxxx-xx)") @NotNull String name,
+                                    @Schema(example = "Banco do Brasil (Agência:xxxxx-xx)") @NotNull
+                                    String name,
                                     Boolean mainWallet) {
     }
 
@@ -73,9 +79,17 @@ public class WalletController {
     @Operation(summary = "Editar a carteira")
     @DefaultErrorResponses
     @ApiResponse(
-            responseCode = "204", description = "No Content", headers = {@Header(name = "Location")}, content = {})
+                 responseCode = "204",
+                 description = "No Content",
+                 headers = {@Header(name = "Location")},
+                 content = {})
     public ResponseEntity<?> edit(
-                                  @PathVariable("id") Long id, @RequestBody EditWalletRequest request, @AuthenticationPrincipal User user) {
+                                  @PathVariable("id")
+                                  Long id,
+                                  @RequestBody
+                                  EditWalletRequest request,
+                                  @AuthenticationPrincipal
+                                  User user) {
         var result = this.walletService.update(id, request, user);
 
         if (result instanceof EditWalletResult.WalletNotFound) {
@@ -84,12 +98,14 @@ public class WalletController {
         }
 
         if (result instanceof EditWalletResult.AlreadyExistsWalletWithThisName) {
-            Error<String> error = new Error<>("wallet_already_exists", "Already exists an wallet register with same name");
+            Error<String> error = new Error<>("wallet_already_exists",
+                                              "Already exists an wallet register with same name");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Response.ofError(error, Response.Status.CONFLICT));
         }
         if (result instanceof EditWalletResult.AlreadyExistsMainWalletForUser) {
             Error<String> error = new Error<>(
-                    "main_wallet_already_exists", "Already exists an main wallet register for this user");
+                                              "main_wallet_already_exists",
+                                              "Already exists an main wallet register for this user");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Response.ofError(error, Response.Status.CONFLICT));
         }
 
@@ -98,16 +114,22 @@ public class WalletController {
 
     @Schema(description = "Carteira resposta")
     public record WalletResponse(
-                                 @Schema(example = "1") Long id,
-                                 @Schema(example = "Banco do Brasil (Agência:xxxxx-xx)") String name,
+                                 @Schema(example = "1")
+                                 Long id,
+                                 @Schema(example = "Banco do Brasil (Agência:xxxxx-xx)")
+                                 String name,
                                  boolean mainWallet) {
     }
 
     @GetMapping
     @Operation(summary = "Listar as carteiras")
     public ResponseEntity<Response<List<WalletResponse>, Void>> all(
-                                                                    @AuthenticationPrincipal User user) {
-        var wallets = this.walletService.findAll(user).stream().map(a -> new WalletResponse(a.getId(), a.getDescriptionValue(), a.isMain())).toList();
+                                                                    @AuthenticationPrincipal
+                                                                    User user) {
+        var wallets = this.walletService.findAll(user)
+                                        .stream()
+                                        .map(a -> new WalletResponse(a.getId(), a.getDescriptionValue(), a.isMain()))
+                                        .toList();
         return ResponseEntity.ok(Response.of(wallets));
     }
 }

@@ -11,7 +11,10 @@ public class PostgresSQLContainerConfig {
 
     @Bean
     @ServiceConnection
-    PostgreSQLContainer postgres(@Value("${testcontainers.postgres.image}") String pgImage) {
-        return new PostgreSQLContainer(pgImage).withDatabaseName("test-database").withUsername("test").withPassword("test");
+    PostgreSQLContainer postgres(@Value("${testcontainers.postgres.image}")
+    String pgImage) {
+        return new PostgreSQLContainer(pgImage).withDatabaseName("test-database")
+                                               .withUsername("test")
+                                               .withPassword("test");
     }
 }

@@ -38,9 +38,23 @@ public class SecurityConfig implements AccessDeniedHandler, AuthenticationEntryP
 
     @Bean
     public SecurityFilterChain configure(
-                                         HttpSecurity http, AuthenticationProvider authProvider, AuthenticationManager authManager) {
-        return http.cors(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable).securityMatcher("/v1/**").authorizeHttpRequests(
-                auth -> auth.requestMatchers(HttpMethod.POST, "/v1/auth/**").permitAll().anyRequest().authenticated()).sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).addFilterBefore(this.jwtFilter, UsernamePasswordAuthenticationFilter.class).exceptionHandling(ex -> ex.accessDeniedHandler(this).authenticationEntryPoint(this)).authenticationProvider(authProvider).authenticationManager(authManager).build();
+                                         HttpSecurity http,
+                                         AuthenticationProvider authProvider,
+                                         AuthenticationManager authManager) {
+        return http.cors(Customizer.withDefaults())
+                   .csrf(AbstractHttpConfigurer::disable)
+                   .securityMatcher("/v1/**")
+                   .authorizeHttpRequests(
+                                          auth -> auth.requestMatchers(HttpMethod.POST, "/v1/auth/**")
+                                                      .permitAll()
+                                                      .anyRequest()
+                                                      .authenticated())
+                   .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                   .addFilterBefore(this.jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                   .exceptionHandling(ex -> ex.accessDeniedHandler(this).authenticationEntryPoint(this))
+                   .authenticationProvider(authProvider)
+                   .authenticationManager(authManager)
+                   .build();
     }
 
     @Bean
@@ -62,35 +76,41 @@ public class SecurityConfig implements AccessDeniedHandler, AuthenticationEntryP
 
     @Override
     public void commence(
-                         HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+                         HttpServletRequest request,
+                         HttpServletResponse response,
+                         AuthenticationException authException) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
 
-        response.getOutputStream().write(
-                """
-                            {
-                              "status": 401,
-                              "error": "UNAUTHORIZED",
-                              "message": "Token inválido ou ausente",
-                              "path": "%s"
-                            }
-                        """.formatted(request.getRequestURI()).getBytes());
+        response.getOutputStream()
+                .write(
+                       """
+                                   {
+                                     "status": 401,
+                                     "error": "UNAUTHORIZED",
+                                     "message": "Token inválido ou ausente",
+                                     "path": "%s"
+                                   }
+                               """.formatted(request.getRequestURI()).getBytes());
     }
 
     @Override
     public void handle(
-                       HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+                       HttpServletRequest request,
+                       HttpServletResponse response,
+                       AccessDeniedException accessDeniedException) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType("application/json");
 
-        response.getOutputStream().write(
-                """
-                            {
-                              "status": 403,
-                              "error": "FORBIDDEN",
-                              "message": "Você não tem permissão para acessar este recurso",
-                              "path": "%s"
-                            }
-                        """.formatted(request.getRequestURI()).getBytes());
+        response.getOutputStream()
+                .write(
+                       """
+                                   {
+                                     "status": 403,
+                                     "error": "FORBIDDEN",
+                                     "message": "Você não tem permissão para acessar este recurso",
+                                     "path": "%s"
+                                   }
+                               """.formatted(request.getRequestURI()).getBytes());
     }
 }

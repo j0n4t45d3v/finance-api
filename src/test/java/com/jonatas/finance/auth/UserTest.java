@@ -27,18 +27,18 @@ class UserTest {
     @DisplayName("should throw exception when not provide a required field")
     void shouldThrowExceptionWhenARequiredFieldIsNull(String scenery, String email, String password) {
         var userFaker = Faker.user()
-            .withEmail(email)
-            .withPassword(password);
+                             .withEmail(email)
+                             .withPassword(password);
 
         assertThatNullPointerException()
-            .isThrownBy(userFaker::get)
-            .withMessageContaining("is required");
+                                        .isThrownBy(userFaker::get)
+                                        .withMessageContaining("is required");
     }
 
     static Stream<Arguments> providerNullRequiredField() {
         return Stream.of(
-            Arguments.of("E-mail is null", null, Faker.text(10)),
-            Arguments.of("Password is null", Faker.email(), null)
+                         Arguments.of("E-mail is null", null, Faker.text(10)),
+                         Arguments.of("Password is null", Faker.email(), null)
         );
     }
 }

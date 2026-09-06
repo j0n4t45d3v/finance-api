@@ -53,31 +53,17 @@ public class Wallet {
         return new Wallet(id);
     }
 
-    public Long getId() {
-        return this.id;
-    }
+    public Long getId() { return this.id; }
 
-    public String getDescriptionValue() {
-        return this.description.value();
-    }
+    public String getDescriptionValue() { return this.description.value(); }
 
-    public boolean isMain() {
-        return this.main;
-    }
+    public boolean isMain() { return this.main; }
 
-    public User getUser() {
-        return this.user;
-    }
+    public User getUser() { return this.user; }
 
-    public void setMain(boolean main) {
-        this.main = main;
-    }
+    public void setMain(boolean main) { this.main = main; }
 
-    public void setDescription(Description description) {
-        this.description = description;
-    }
+    public void setDescription(Description description) { this.description = description; }
 
-    public Description getDescription() {
-        return this.description;
-    }
+    public Description getDescription() { return this.description; }
 }

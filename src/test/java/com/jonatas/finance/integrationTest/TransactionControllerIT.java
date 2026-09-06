@@ -36,7 +36,11 @@ public class TransactionControllerIT extends BaseIntegratioTest {
         var payload = "{" + "\"description\": \"Compra teste\"," + "\"amount\": 10.00," + "\"datetime\": \"" + datetime + "\"," + "\"categoryId\": " + categoryId + "," + "\"walletId\": " + walletId + "}";
 
         mockMvc.perform(
-                post("/v1/transactions").contentType("application/json").content(payload).header("Authorization", "Bearer " + token)).andExpect(status().isCreated()).andExpect(header().string("Location", org.hamcrest.Matchers.containsString("/")));
+                        post("/v1/transactions").contentType("application/json")
+                                                .content(payload)
+                                                .header("Authorization", "Bearer " + token))
+               .andExpect(status().isCreated())
+               .andExpect(header().string("Location", org.hamcrest.Matchers.containsString("/")));
     }
 
     @Test
@@ -53,7 +57,10 @@ public class TransactionControllerIT extends BaseIntegratioTest {
         var payload = "{" + "\"description\": \"Compra pagina\"," + "\"amount\": 5.50," + "\"datetime\": \"" + datetime + "\"," + "\"categoryId\": " + categoryId + "," + "\"walletId\": " + walletId + "}";
 
         mockMvc.perform(
-                post("/v1/transactions").contentType("application/json").content(payload).header("Authorization", "Bearer " + token)).andExpect(status().isCreated());
+                        post("/v1/transactions").contentType("application/json")
+                                                .content(payload)
+                                                .header("Authorization", "Bearer " + token))
+               .andExpect(status().isCreated());
 
         mockMvc.perform(get("/v1/transactions").header("Authorization", "Bearer " + token)).andExpect(status().isOk());
     }

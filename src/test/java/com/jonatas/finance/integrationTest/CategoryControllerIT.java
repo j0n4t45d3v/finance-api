@@ -30,6 +30,11 @@ class CategoryControllerIT extends BaseIntegratioTest {
 
         Long categoryId = TestUtils.createCategory(mockMvc, token, name, type);
 
-        mockMvc.perform(get("/v1/categories").header("Authorization", "Bearer " + token)).andExpect(status().isOk()).andExpect(jsonPath("$.data[0].id").isNumber()).andExpect(jsonPath("$.data[0].id").value(categoryId)).andExpect(jsonPath("$.data[0].name").value(name)).andExpect(jsonPath("$.data[0].type").value(type));
+        mockMvc.perform(get("/v1/categories").header("Authorization", "Bearer " + token))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.data[0].id").isNumber())
+               .andExpect(jsonPath("$.data[0].id").value(categoryId))
+               .andExpect(jsonPath("$.data[0].name").value(name))
+               .andExpect(jsonPath("$.data[0].type").value(type));
     }
 }

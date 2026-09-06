@@ -26,6 +26,8 @@ class UserControllerIT extends BaseIntegratioTest {
 
         var token = TestUtils.loginAndGetAccessToken(mockMvc, email);
 
-        mockMvc.perform(get("/v1/users/me").header("Authorization", "Bearer " + token)).andExpect(status().isOk()).andExpect(jsonPath("$.data.email").value(email));
+        mockMvc.perform(get("/v1/users/me").header("Authorization", "Bearer " + token))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.data.email").value(email));
     }
 }

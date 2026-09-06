@@ -50,7 +50,8 @@ public class JWTHelper {
 
         assertEquals(this.subject, JsonPath.<String>read(decodedToken, "$.sub"));
         assertEquals(this.type, JsonPath.<String>read(decodedToken, "$.type"));
-        Assertions.assertThat(getExpirationTime(decodedToken)).isBetween(this.expirationTime - 1, this.expirationTime + 1);
+        Assertions.assertThat(getExpirationTime(decodedToken))
+                  .isBetween(this.expirationTime - 1, this.expirationTime + 1);
         assertEquals(this.issuer, JsonPath.<String>read(decodedToken, "$.iss"));
 
         if (additionalValidations != null) {

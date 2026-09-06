@@ -29,6 +29,11 @@ class WalletControllerIT extends BaseIntegratioTest {
 
         Long walletId = TestUtils.createWallet(mockMvc, token, name, true);
 
-        mockMvc.perform(get("/v1/wallets").header("Authorization", "Bearer " + token)).andExpect(status().isOk()).andExpect(jsonPath("$.data[0].id").isNumber()).andExpect(jsonPath("$.data[0].id").value(walletId)).andExpect(jsonPath("$.data[0].name").value(name)).andExpect(jsonPath("$.data[0].mainWallet").value(true));
+        mockMvc.perform(get("/v1/wallets").header("Authorization", "Bearer " + token))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.data[0].id").isNumber())
+               .andExpect(jsonPath("$.data[0].id").value(walletId))
+               .andExpect(jsonPath("$.data[0].name").value(name))
+               .andExpect(jsonPath("$.data[0].mainWallet").value(true));
     }
 }

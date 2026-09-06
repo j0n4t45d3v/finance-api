@@ -9,14 +9,23 @@ public interface DashboardService {
     SummaryIncomeVsExpense getSummaryIncomeVsExpense(DashboardFiltersRequest filters, User user);
 
     List<RankCategoryResponse> rankCategory(
-                                            Category.Type type, Integer topIncomes, DashboardFiltersRequest request, User user);
+                                            Category.Type type,
+                                            Integer topIncomes,
+                                            DashboardFiltersRequest request,
+                                            User user);
 
     List<RankTransactionResponse> rankTransactions(
-                                                   Integer topTransactions, DashboardFiltersRequest request, User user);
+                                                   Integer topTransactions,
+                                                   DashboardFiltersRequest request,
+                                                   User user);
 
     List<TransactionGroupByResponse> transactions(
-                                                  DashboardController.RankCategoryGroupBy rankCategoryGroupBy, DashboardFiltersRequest request, User user);
+                                                  DashboardController.RankCategoryGroupBy rankCategoryGroupBy,
+                                                  DashboardFiltersRequest request,
+                                                  User user);
 
     List<RankTransactionResponse> lastTransactions(
-                                                   Integer topTransactions, DashboardFiltersRequest request, User user);
+                                                   Integer topTransactions,
+                                                   DashboardFiltersRequest request,
+                                                   User user);
 }

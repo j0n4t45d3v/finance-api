@@ -37,8 +37,10 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
                   AND t.transactionAt.value BETWEEN :startDate AND :endDate
                   AND (:walletId is null or t.wallet.id = :walletId)
                 """)
-    SummaryIncomeVsExpense findSummaryIncomesVsExpenses(
-                                                        @Nonnull User user, @Nonnull LocalDateTime startDate, @Nonnull LocalDateTime endDate, Long walletId);
+    SummaryIncomeVsExpense findSummaryIncomesVsExpenses(@Nonnull User user,
+                                                        @Nonnull LocalDateTime startDate,
+                                                        @Nonnull LocalDateTime endDate,
+                                                        Long walletId);
 
     @Query(
         """
@@ -57,8 +59,12 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
                  group by c.name, c.type
                  order by sum(t.amount.value) desc
                 """)
-    List<RankCategoryResponse> findTopRankCategory(
-                                                   @Nonnull User user, @Nonnull LocalDateTime startDate, @Nonnull LocalDateTime endDate, Category.Type type, Long walletId, Pageable pageable);
+    List<RankCategoryResponse> findTopRankCategory(@Nonnull User user,
+                                                   @Nonnull LocalDateTime startDate,
+                                                   @Nonnull LocalDateTime endDate,
+                                                   Category.Type type,
+                                                   Long walletId,
+                                                   Pageable pageable);
 
     @Query(
         """
@@ -75,8 +81,11 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
                   and t.transactionAt.value between ?2 and ?3
                   and (?4 is null or t.wallet.id = ?4)
                 """)
-    List<RankTransactionResponse> findTopRankTransaction(
-                                                         @Nonnull User user, @Nonnull LocalDateTime startDate, @Nonnull LocalDateTime endDate, Long walletId, Pageable pageable);
+    List<RankTransactionResponse> findTopRankTransaction(@Nonnull User user,
+                                                         @Nonnull LocalDateTime startDate,
+                                                         @Nonnull LocalDateTime endDate,
+                                                         Long walletId,
+                                                         Pageable pageable);
 
     @Query(
         """
@@ -100,8 +109,10 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
                   and (?4 is null or t.wallet.id = ?4)
                 group by c.name.value
                 """)
-    List<TransactionGroupByResponse> findTransactionGroupByCategory(
-                                                                    @Nonnull User user, @Nonnull LocalDateTime startDate, @Nonnull LocalDateTime endDate, Long walletId);
+    List<TransactionGroupByResponse> findTransactionGroupByCategory(@Nonnull User user,
+                                                                    @Nonnull LocalDateTime startDate,
+                                                                    @Nonnull LocalDateTime endDate,
+                                                                    Long walletId);
 
     @Query(
         """
@@ -126,8 +137,10 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
                   and (?4 is null or t.wallet.id = ?4)
                 group by YEAR(t.transactionAt.value), MONTH(t.transactionAt.value)
                 """)
-    List<TransactionGroupByResponse> findTransactionGroupByMonth(
-                                                                 @Nonnull User user, @Nonnull LocalDateTime startDate, @Nonnull LocalDateTime endDate, Long walletId);
+    List<TransactionGroupByResponse> findTransactionGroupByMonth(@Nonnull User user,
+                                                                 @Nonnull LocalDateTime startDate,
+                                                                 @Nonnull LocalDateTime endDate,
+                                                                 Long walletId);
 
     @Query(
         """
@@ -151,6 +164,8 @@ public interface DashboardRepository extends JpaRepository<Transaction, Long> {
                   and (?4 is null or t.wallet.id = ?4)
                 group by cast(t.transactionAt.value as date)
                 """)
-    List<TransactionGroupByResponse> findTransactionGroupByDay(
-                                                               @Nonnull User user, @Nonnull LocalDateTime startDate, @Nonnull LocalDateTime endDate, Long walletId);
+    List<TransactionGroupByResponse> findTransactionGroupByDay(@Nonnull User user,
+                                                               @Nonnull LocalDateTime startDate,
+                                                               @Nonnull LocalDateTime endDate,
+                                                               Long walletId);
 }

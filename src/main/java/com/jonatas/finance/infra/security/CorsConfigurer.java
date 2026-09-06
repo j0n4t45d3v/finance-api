@@ -20,6 +20,10 @@ public class CorsConfigurer implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         log.info("Cors configuration:\n{}", this.corsConfig);
-        registry.addMapping(this.corsConfig.mapping()).allowedOrigins(this.corsConfig.allowedOrigins().toArray(String[]::new)).allowedMethods(this.corsConfig.allowedMethods().toArray(String[]::new)).allowedHeaders(this.corsConfig.allowedHeaders().toArray(String[]::new)).allowCredentials(this.corsConfig.allowCredentials());
+        registry.addMapping(this.corsConfig.mapping())
+                .allowedOrigins(this.corsConfig.allowedOrigins().toArray(String[]::new))
+                .allowedMethods(this.corsConfig.allowedMethods().toArray(String[]::new))
+                .allowedHeaders(this.corsConfig.allowedHeaders().toArray(String[]::new))
+                .allowCredentials(this.corsConfig.allowCredentials());
     }
 }
