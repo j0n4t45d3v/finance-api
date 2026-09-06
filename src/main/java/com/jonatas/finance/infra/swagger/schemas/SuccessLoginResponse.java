@@ -6,24 +6,24 @@ import java.time.LocalDateTime;
 @Schema(description = "Login response")
 public class SuccessLoginResponse {
 
-  @Schema(example = "2026-04-22T12:58:45.351604855")
-  public LocalDateTime timestamp;
+    @Schema(example = "2026-04-22T12:58:45.351604855")
+    public LocalDateTime timestamp;
 
-  @Schema(example = "200")
-  public int status;
+    @Schema(example = "200")
+    public int status;
 
-  public PairToken data;
+    public PairToken data;
 
-  public static class PairToken {
-    public TokenResponse access;
-    public TokenResponse refresh;
-  }
+    public static class PairToken {
+        public TokenResponse access;
+        public TokenResponse refresh;
+    }
 
-  public static class TokenResponse {
-    @Schema(example = "eyJhbGciOiJIUzM4NCJ9.eyJqdGkiOiJiYzYzMWUwZi1lMGQwL...")
-    public String token;
+    public static class TokenResponse {
+        @Schema(example = "eyJhbGciOiJIUzM4NCJ9.eyJqdGkiOiJiYzYzMWUwZi1lMGQwL...")
+        public String token;
 
-    @Schema(example = "1777250748")
-    public Long expiredAt;
-  }
+        @Schema(example = "1777250748")
+        public Long expiredAt;
+    }
 }

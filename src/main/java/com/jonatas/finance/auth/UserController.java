@@ -18,21 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/users")
 public class UserController {
 
-  @Schema(description = "Subject do token response")
-  public record UserDetailsResponse(
-      @Schema(example = "john@doe.example") String email,
-      List<? extends GrantedAuthority> authorities) {}
+    @Schema(description = "Subject do token response")
+    public record UserDetailsResponse(
+                                      @Schema(example = "john@doe.example") String email,
+                                      List<? extends GrantedAuthority> authorities) {
+    }
 
-  @Operation(operationId = "me", summary = "Dados do usuário logado do token")
-  @GetMapping(
-      value = "/me",
-      produces = {MediaType.APPLICATION_JSON_VALUE})
-  public ResponseEntity<Response<UserDetailsResponse, Void>> userDetails(
-      @AuthenticationPrincipal User userAuthenticated) {
-    UserDetailsResponse userDetailsResponse =
-        new UserDetailsResponse(
-            userAuthenticated.getEmailValue(),
-            userAuthenticated.getAuthorities().stream().toList());
-    return ResponseEntity.ok(Response.of(userDetailsResponse));
-  }
+    @Operation(operationId = "me", summary = "Dados do usuário logado do token")
+    @GetMapping(
+            value = "/me", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Response<UserDetailsResponse, Void>> userDetails(
+                                                                           @AuthenticationPrincipal User userAuthenticated) {
+        UserDetailsResponse userDetailsResponse = new UserDetailsResponse(
+                userAuthenticated.getEmailValue(), userAuthenticated.getAuthorities().stream().toList());
+        return ResponseEntity.ok(Response.of(userDetailsResponse));
+    }
 }

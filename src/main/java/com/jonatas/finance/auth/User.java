@@ -13,77 +13,78 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "tb_users")
 public class User implements UserDetails {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Embedded
-  @AttributeOverride(name = "value", column = @Column(name = "email"))
-  private Email email;
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "email"))
+    private Email email;
 
-  @Embedded
-  @AttributeOverride(name = "value", column = @Column(name = "password"))
-  private Password password;
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "password"))
+    private Password password;
 
-  protected User() {}
-
-  private User(Long id) {
-    this.id = id;
-  }
-
-  public User(Email email, Password password) {
-    this(null, email, password);
-  }
-
-  public User(Long id, Email email, Password password) {
-    if (password == null) {
-      throw new FieldRequiredException("password");
+    protected User() {
     }
 
-    if (email == null) {
-      throw new FieldRequiredException("email");
+    private User(Long id) {
+        this.id = id;
     }
-    this.id = id;
-    this.email = email;
-    this.password = password;
-  }
 
-  public static User reference(@Nonnull Long userId) {
-    return new User(userId);
-  }
+    public User(Email email, Password password) {
+        this(null, email, password);
+    }
 
-  public Long getId() {
-    return id;
-  }
+    public User(Long id, Email email, Password password) {
+        if (password == null) {
+            throw new FieldRequiredException("password");
+        }
 
-  public String getPasswordValue() {
-    return this.password.value();
-  }
+        if (email == null) {
+            throw new FieldRequiredException("email");
+        }
+        this.id = id;
+        this.email = email;
+        this.password = password;
+    }
 
-  public void setPassword(String password) {
-    this.password = new Password(password);
-  }
+    public static User reference(@Nonnull Long userId) {
+        return new User(userId);
+    }
 
-  public Email getEmail() {
-    return email;
-  }
+    public Long getId() {
+        return id;
+    }
 
-  public String getEmailValue() {
-    return this.email.value();
-  }
+    public String getPasswordValue() {
+        return this.password.value();
+    }
 
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    return Collections.emptyList();
-  }
+    public void setPassword(String password) {
+        this.password = new Password(password);
+    }
 
-  @Override
-  public @Nullable String getPassword() {
-    return this.getPasswordValue();
-  }
+    public Email getEmail() {
+        return email;
+    }
 
-  @Override
-  public String getUsername() {
-    return this.getEmailValue();
-  }
+    public String getEmailValue() {
+        return this.email.value();
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public @Nullable String getPassword() {
+        return this.getPasswordValue();
+    }
+
+    @Override
+    public String getUsername() {
+        return this.getEmailValue();
+    }
 }

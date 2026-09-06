@@ -22,215 +22,191 @@ import org.mockito.Mockito;
 
 class JwtServiceTest {
 
-  private static final String TOKEN_ISSUER = "fake@issuer.test";
-  private static final Long TOKEN_ACCESS_EXPIRATION = 3600000L;
-  private static final String TOKEN_ACCESS_SECRET =
-      "ZmFrZUFjY2Vzc1NlY3JldGZha2VBY2Nlc3NTZWNyZXRmYWtlQWNjZXNzU2VjcmV0";
-  private static final Long TOKEN_REFRESH_EXPIRATION = 86400000L;
-  private static final String TOKEN_REFRESH_SECRET =
-      "ZmFrZVJlZnJlc2hTZWNyZXRmYWtlUmVmcmVzaFNlY3JldGZha2VSZWZyZXNoU2VjcmV0";
+    private static final String TOKEN_ISSUER = "fake@issuer.test";
+    private static final Long TOKEN_ACCESS_EXPIRATION = 3600000L;
+    private static final String TOKEN_ACCESS_SECRET = "ZmFrZUFjY2Vzc1NlY3JldGZha2VBY2Nlc3NTZWNyZXRmYWtlQWNjZXNzU2VjcmV0";
+    private static final Long TOKEN_REFRESH_EXPIRATION = 86400000L;
+    private static final String TOKEN_REFRESH_SECRET = "ZmFrZVJlZnJlc2hTZWNyZXRmYWtlUmVmcmVzaFNlY3JldGZha2VSZWZyZXNoU2VjcmV0";
 
-  private static final JwtConfig.TokenSignatureConfig ACCESS_TOKEN_SIGNATURE =
-      tokenSignature(TOKEN_ACCESS_SECRET, TOKEN_ACCESS_EXPIRATION);
+    private static final JwtConfig.TokenSignatureConfig ACCESS_TOKEN_SIGNATURE = tokenSignature(TOKEN_ACCESS_SECRET, TOKEN_ACCESS_EXPIRATION);
 
-  private static final JwtConfig.TokenSignatureConfig REFRESH_TOKEN_SIGNATURE =
-      tokenSignature(TOKEN_REFRESH_SECRET, TOKEN_REFRESH_EXPIRATION);
+    private static final JwtConfig.TokenSignatureConfig REFRESH_TOKEN_SIGNATURE = tokenSignature(TOKEN_REFRESH_SECRET, TOKEN_REFRESH_EXPIRATION);
 
-  private static final JwtConfig JWT_CONFIG =
-      jwtConfig(TOKEN_ISSUER, ACCESS_TOKEN_SIGNATURE, REFRESH_TOKEN_SIGNATURE);
+    private static final JwtConfig JWT_CONFIG = jwtConfig(TOKEN_ISSUER, ACCESS_TOKEN_SIGNATURE, REFRESH_TOKEN_SIGNATURE);
 
-  private static JwtService jwtService;
+    private static JwtService jwtService;
 
-  @BeforeAll
-  static void setUp() {
-    jwtService = new JwtService(JWT_CONFIG);
-  }
-
-  private User mockSubject() {
-    return new User(new Email("testuser@mock.test"), new Password("password"));
-  }
-
-  @Nested
-  class GenerateToken {
-
-    @Test
-    void shouldGenerateAccessToken() {
-      var subject = mockSubject();
-      var token = jwtService.generateToken(subject);
-
-      JWTHelper.assertThat()
-          .withIssuer(TOKEN_ISSUER)
-          .withSubject(subject.getUsername())
-          .withType("access")
-          .withExpirationTime(TOKEN_ACCESS_EXPIRATION)
-          .validate(
-              token.value(),
-              payload -> {
-                assertEquals(
-                    token.expiredAt(), JsonPath.<Number>read(payload, "$.exp").longValue());
-              });
+    @BeforeAll
+    static void setUp() {
+        jwtService = new JwtService(JWT_CONFIG);
     }
 
-    @Test
-    void shouldGenerateRefreshToken() {
-      var subject = mockSubject();
-      var token = jwtService.generateRefreshToken(subject);
-
-      JWTHelper.assertThat()
-          .withIssuer(TOKEN_ISSUER)
-          .withSubject(subject.getUsername())
-          .withType("refresh")
-          .withExpirationTime(TOKEN_REFRESH_EXPIRATION)
-          .validate(
-              token.value(),
-              payload -> {
-                assertEquals(
-                    token.expiredAt(), JsonPath.<Number>read(payload, "$.exp").longValue());
-              });
-    }
-  }
-
-  @Nested
-  class ParseToken {
-
-    @Test
-    void shouldParseAccessToken() {
-      var subject = mockSubject();
-      var token = jwtService.generateToken(subject);
-      var parsedSubject = jwtService.tryParseAccessToken(token.value());
-
-      var tokenParsed = parsedSubject.orElseThrow();
-      assertTrue(tokenParsed.isValid());
-      assertEquals(subject.getUsername(), tokenParsed.getSubject().value());
-      assertEquals("access", tokenParsed.getType());
+    private User mockSubject() {
+        return new User(new Email("testuser@mock.test"), new Password("password"));
     }
 
-    @Test
-    void shouldParseRefreshToken() {
-      var subject = mockSubject();
-      var token = jwtService.generateRefreshToken(subject);
-      var parsedSubject = jwtService.tryParseRefreshToken(token.value());
+    @Nested
+    class GenerateToken {
 
-      var tokenParsed = parsedSubject.orElseThrow();
-      assertEquals(subject.getUsername(), tokenParsed.getSubject().value());
-      assertEquals("refresh", tokenParsed.getType());
+        @Test
+        void shouldGenerateAccessToken() {
+            var subject = mockSubject();
+            var token = jwtService.generateToken(subject);
+
+            JWTHelper.assertThat().withIssuer(TOKEN_ISSUER).withSubject(subject.getUsername()).withType("access").withExpirationTime(TOKEN_ACCESS_EXPIRATION).validate(
+                    token.value(), payload -> {
+                        assertEquals(
+                                token.expiredAt(), JsonPath.<Number>read(payload, "$.exp").longValue());
+                    });
+        }
+
+        @Test
+        void shouldGenerateRefreshToken() {
+            var subject = mockSubject();
+            var token = jwtService.generateRefreshToken(subject);
+
+            JWTHelper.assertThat().withIssuer(TOKEN_ISSUER).withSubject(subject.getUsername()).withType("refresh").withExpirationTime(TOKEN_REFRESH_EXPIRATION).validate(
+                    token.value(), payload -> {
+                        assertEquals(
+                                token.expiredAt(), JsonPath.<Number>read(payload, "$.exp").longValue());
+                    });
+        }
     }
 
-    @Test
-    void shouldNotParseExpiredToken() {
-      var expiredToken = generateTokenExpired();
-      var parsedSubject = jwtService.tryParseAccessToken(expiredToken);
-      assertTrue(parsedSubject.isEmpty());
+    @Nested
+    class ParseToken {
+
+        @Test
+        void shouldParseAccessToken() {
+            var subject = mockSubject();
+            var token = jwtService.generateToken(subject);
+            var parsedSubject = jwtService.tryParseAccessToken(token.value());
+
+            var tokenParsed = parsedSubject.orElseThrow();
+            assertTrue(tokenParsed.isValid());
+            assertEquals(subject.getUsername(), tokenParsed.getSubject().value());
+            assertEquals("access", tokenParsed.getType());
+        }
+
+        @Test
+        void shouldParseRefreshToken() {
+            var subject = mockSubject();
+            var token = jwtService.generateRefreshToken(subject);
+            var parsedSubject = jwtService.tryParseRefreshToken(token.value());
+
+            var tokenParsed = parsedSubject.orElseThrow();
+            assertEquals(subject.getUsername(), tokenParsed.getSubject().value());
+            assertEquals("refresh", tokenParsed.getType());
+        }
+
+        @Test
+        void shouldNotParseExpiredToken() {
+            var expiredToken = generateTokenExpired();
+            var parsedSubject = jwtService.tryParseAccessToken(expiredToken);
+            assertTrue(parsedSubject.isEmpty());
+        }
+
+        @Test
+        void shouldNotParseInvalidToken() {
+            var parsedSubject = jwtService.tryParseAccessToken("invalid");
+            assertTrue(parsedSubject.isEmpty());
+        }
+
+        @Test
+        void shouldNotParseWhenSignatureIsInvalid() {
+            var subject = mockSubject();
+            var token = jwtService.generateToken(subject);
+
+            var invalidToken = token.value() + "invalid";
+            var parsedSubject = jwtService.tryParseAccessToken(invalidToken);
+            assertTrue(parsedSubject.isEmpty());
+        }
+
+        private String generateTokenExpired() {
+            var subject = mockSubject();
+            var jwtServiceWithCustomExpiration = this.buildJwtServiceExpired();
+            return jwtServiceWithCustomExpiration.generateToken(subject).value();
+        }
+
+        private JwtService buildJwtServiceExpired() {
+            return new JwtService(
+                    jwtConfig(
+                            TOKEN_ISSUER, tokenSignature(TOKEN_ACCESS_SECRET, -1L), tokenSignature(TOKEN_REFRESH_SECRET, TOKEN_REFRESH_EXPIRATION)));
+        }
     }
 
-    @Test
-    void shouldNotParseInvalidToken() {
-      var parsedSubject = jwtService.tryParseAccessToken("invalid");
-      assertTrue(parsedSubject.isEmpty());
+    @Nested
+    class TokenParsedTest {
+
+        class MockClaimsBuilder {
+            private Claims mockClaims = Mockito.mock(Claims.class);
+
+            private String subject = "subject@test.mock";
+            private String type = "access";
+            private Date expiration = new Date(System.currentTimeMillis() + 3600000);
+
+            public MockClaimsBuilder withSubject(String subject) {
+                this.subject = subject;
+                return this;
+            }
+
+            public MockClaimsBuilder withType(String type) {
+                this.type = type;
+                return this;
+            }
+
+            public MockClaimsBuilder withExpiration(Date expiration) {
+                this.expiration = expiration;
+                return this;
+            }
+
+            public Claims build() {
+                when(mockClaims.getSubject()).thenReturn(subject);
+                when(mockClaims.get("type", String.class)).thenReturn(type);
+                when(mockClaims.getExpiration()).thenReturn(expiration);
+                return mockClaims;
+            }
+        }
+
+        @Test
+        void shouldBeValidWhenTokenIsValid() {
+            var mockClaims = new MockClaimsBuilder().build();
+            var parsedToken = new JwtService.TokenParsed(mockClaims, "access");
+            assertTrue(parsedToken.isValid());
+            assertFalse(parsedToken.isExpired());
+        }
+
+        @Test
+        void shouldNotBeValidWhenTokenIsExpired() {
+            var mockClaims = new MockClaimsBuilder().withExpiration(new Date(System.currentTimeMillis() - 1000)).build();
+            var parsedToken = new JwtService.TokenParsed(mockClaims, "access");
+            assertFalse(parsedToken.isValid());
+            assertTrue(parsedToken.isExpired());
+        }
+
+        @Test
+        void shouldNotBeValidWhenTypeIsInvalid() {
+            var mockClaims = new MockClaimsBuilder().withType("invalid").build();
+            var parsedToken = new JwtService.TokenParsed(mockClaims, "access");
+            assertFalse(parsedToken.isValid());
+        }
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        @ValueSource(strings = {"   ", " "})
+        void shouldNotBeValidWithoutSubject(String subject) {
+            var mockClaims = new MockClaimsBuilder().withSubject(subject).build();
+            var parsedToken = new JwtService.TokenParsed(mockClaims, "access");
+            assertFalse(parsedToken.isValid());
+        }
     }
 
-    @Test
-    void shouldNotParseWhenSignatureIsInvalid() {
-      var subject = mockSubject();
-      var token = jwtService.generateToken(subject);
-
-      var invalidToken = token.value() + "invalid";
-      var parsedSubject = jwtService.tryParseAccessToken(invalidToken);
-      assertTrue(parsedSubject.isEmpty());
+    private static JwtConfig jwtConfig(
+                                       String issuer, JwtConfig.TokenSignatureConfig accessTokenSignature, JwtConfig.TokenSignatureConfig refreshTokenSignature) {
+        return new JwtConfig(issuer, accessTokenSignature, refreshTokenSignature);
     }
 
-    private String generateTokenExpired() {
-      var subject = mockSubject();
-      var jwtServiceWithCustomExpiration = this.buildJwtServiceExpired();
-      return jwtServiceWithCustomExpiration.generateToken(subject).value();
+    private static JwtConfig.TokenSignatureConfig tokenSignature(String secret, long expirationTime) {
+        return new JwtConfig.TokenSignatureConfig(secret, expirationTime);
     }
-
-    private JwtService buildJwtServiceExpired() {
-      return new JwtService(
-          jwtConfig(
-              TOKEN_ISSUER,
-              tokenSignature(TOKEN_ACCESS_SECRET, -1L),
-              tokenSignature(TOKEN_REFRESH_SECRET, TOKEN_REFRESH_EXPIRATION)));
-    }
-  }
-
-  @Nested
-  class TokenParsedTest {
-
-    class MockClaimsBuilder {
-      private Claims mockClaims = Mockito.mock(Claims.class);
-
-      private String subject = "subject@test.mock";
-      private String type = "access";
-      private Date expiration = new Date(System.currentTimeMillis() + 3600000);
-
-      public MockClaimsBuilder withSubject(String subject) {
-        this.subject = subject;
-        return this;
-      }
-
-      public MockClaimsBuilder withType(String type) {
-        this.type = type;
-        return this;
-      }
-
-      public MockClaimsBuilder withExpiration(Date expiration) {
-        this.expiration = expiration;
-        return this;
-      }
-
-      public Claims build() {
-        when(mockClaims.getSubject()).thenReturn(subject);
-        when(mockClaims.get("type", String.class)).thenReturn(type);
-        when(mockClaims.getExpiration()).thenReturn(expiration);
-        return mockClaims;
-      }
-    }
-
-    @Test
-    void shouldBeValidWhenTokenIsValid() {
-      var mockClaims = new MockClaimsBuilder().build();
-      var parsedToken = new JwtService.TokenParsed(mockClaims, "access");
-      assertTrue(parsedToken.isValid());
-      assertFalse(parsedToken.isExpired());
-    }
-
-    @Test
-    void shouldNotBeValidWhenTokenIsExpired() {
-      var mockClaims =
-          new MockClaimsBuilder()
-              .withExpiration(new Date(System.currentTimeMillis() - 1000))
-              .build();
-      var parsedToken = new JwtService.TokenParsed(mockClaims, "access");
-      assertFalse(parsedToken.isValid());
-      assertTrue(parsedToken.isExpired());
-    }
-
-    @Test
-    void shouldNotBeValidWhenTypeIsInvalid() {
-      var mockClaims = new MockClaimsBuilder().withType("invalid").build();
-      var parsedToken = new JwtService.TokenParsed(mockClaims, "access");
-      assertFalse(parsedToken.isValid());
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"   ", " "})
-    void shouldNotBeValidWithoutSubject(String subject) {
-      var mockClaims = new MockClaimsBuilder().withSubject(subject).build();
-      var parsedToken = new JwtService.TokenParsed(mockClaims, "access");
-      assertFalse(parsedToken.isValid());
-    }
-  }
-
-  private static JwtConfig jwtConfig(
-      String issuer,
-      JwtConfig.TokenSignatureConfig accessTokenSignature,
-      JwtConfig.TokenSignatureConfig refreshTokenSignature) {
-    return new JwtConfig(issuer, accessTokenSignature, refreshTokenSignature);
-  }
-
-  private static JwtConfig.TokenSignatureConfig tokenSignature(String secret, long expirationTime) {
-    return new JwtConfig.TokenSignatureConfig(secret, expirationTime);
-  }
 }

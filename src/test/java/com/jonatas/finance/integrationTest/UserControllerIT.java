@@ -13,20 +13,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class UserControllerIT extends BaseIntegratioTest {
 
-  @Autowired private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-  @Autowired private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-  @Test
-  void shouldReturnUserDetailsWhenAuthenticated() throws Exception {
-    var email = "user@controller.test";
-    TestUtils.createUser(userRepository, passwordEncoder, email);
+    @Test
+    void shouldReturnUserDetailsWhenAuthenticated() throws Exception {
+        var email = "user@controller.test";
+        TestUtils.createUser(userRepository, passwordEncoder, email);
 
-    var token = TestUtils.loginAndGetAccessToken(mockMvc, email);
+        var token = TestUtils.loginAndGetAccessToken(mockMvc, email);
 
-    mockMvc
-        .perform(get("/v1/users/me").header("Authorization", "Bearer " + token))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.data.email").value(email));
-  }
+        mockMvc.perform(get("/v1/users/me").header("Authorization", "Bearer " + token)).andExpect(status().isOk()).andExpect(jsonPath("$.data.email").value(email));
+    }
 }

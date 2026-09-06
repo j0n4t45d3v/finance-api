@@ -7,18 +7,18 @@ import java.time.LocalDateTime;
 @Schema(description = "Error domain violation")
 public class DomainViolationResponse {
 
-  public LocalDateTime timestamp;
+    public LocalDateTime timestamp;
 
-  @Schema(example = "422")
-  public Response.Status status;
+    @Schema(example = "422")
+    public Response.Status status;
 
-  public ErrorData data;
+    public ErrorData data;
 
-  public static class ErrorData {
-    @Schema(example = "domain_violation")
-    public String type;
+    public static class ErrorData {
+        @Schema(example = "domain_violation")
+        public String type;
 
-    @Schema(example = "Invalid e-mail")
-    public String message;
-  }
+        @Schema(example = "Invalid e-mail")
+        public String message;
+    }
 }

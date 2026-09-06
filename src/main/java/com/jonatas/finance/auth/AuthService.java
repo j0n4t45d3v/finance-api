@@ -6,9 +6,9 @@ import com.jonatas.finance.auth.AuthController.RegisterUserRequest;
 
 public interface AuthService {
 
-  LoginResult login(Email email, String password);
+    LoginResult login(Email email, String password);
 
-  RefreshTokenResult refresh(RefreshTokenRequest request);
+    RefreshTokenResult refresh(RefreshTokenRequest request);
 
-  RegisterResult register(RegisterUserRequest request);
+    RegisterResult register(RegisterUserRequest request);
 }

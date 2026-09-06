@@ -13,27 +13,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class CategoryControllerIT extends BaseIntegratioTest {
 
-  @Autowired private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-  @Autowired private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-  @Test
-  void shouldCreateAndListCategories() throws Exception {
-    var email = "cat@controller.test";
-    TestUtils.createUser(userRepository, passwordEncoder, email);
-    var token = TestUtils.loginAndGetAccessToken(mockMvc, email);
+    @Test
+    void shouldCreateAndListCategories() throws Exception {
+        var email = "cat@controller.test";
+        TestUtils.createUser(userRepository, passwordEncoder, email);
+        var token = TestUtils.loginAndGetAccessToken(mockMvc, email);
 
-    var name = "Alimentacao Test";
-    var type = "EXPENSE";
+        var name = "Alimentacao Test";
+        var type = "EXPENSE";
 
-    Long categoryId = TestUtils.createCategory(mockMvc, token, name, type);
+        Long categoryId = TestUtils.createCategory(mockMvc, token, name, type);
 
-    mockMvc
-        .perform(get("/v1/categories").header("Authorization", "Bearer " + token))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.data[0].id").isNumber())
-        .andExpect(jsonPath("$.data[0].id").value(categoryId))
-        .andExpect(jsonPath("$.data[0].name").value(name))
-        .andExpect(jsonPath("$.data[0].type").value(type));
-  }
+        mockMvc.perform(get("/v1/categories").header("Authorization", "Bearer " + token)).andExpect(status().isOk()).andExpect(jsonPath("$.data[0].id").isNumber()).andExpect(jsonPath("$.data[0].id").value(categoryId)).andExpect(jsonPath("$.data[0].name").value(name)).andExpect(jsonPath("$.data[0].type").value(type));
+    }
 }

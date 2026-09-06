@@ -272,7 +272,9 @@
 
                 <configuration>
                     <java>
-                        <googleJavaFormat/>
+                        <eclipse>
+                          <file>${project.basedir}/resource/formatter.xml</file>
+                        </eclipse>
                     </java>
                 </configuration>
 

@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface CategoryService {
 
-  List<Category> findAllByUser(User user);
+    List<Category> findAllByUser(User user);
 }

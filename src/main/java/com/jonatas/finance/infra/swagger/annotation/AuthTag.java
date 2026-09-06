@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Tag(name = "Autorização e Autenticação")
-public @interface AuthTag {}
+public @interface AuthTag {
+}

@@ -15,5 +15,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Import(PostgresSQLContainerConfig.class)
 public abstract class BaseIntegratioTest {
 
-  @Autowired protected MockMvc mockMvc;
+    @Autowired
+    protected MockMvc mockMvc;
 }

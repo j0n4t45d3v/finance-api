@@ -9,22 +9,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CorsConfigurer implements WebMvcConfigurer {
 
-  private static final Logger log = LoggerFactory.getLogger(CorsConfigurer.class);
+    private static final Logger log = LoggerFactory.getLogger(CorsConfigurer.class);
 
-  private final CorsConfig corsConfig;
+    private final CorsConfig corsConfig;
 
-  public CorsConfigurer(CorsConfig corsConfig) {
-    this.corsConfig = corsConfig;
-  }
+    public CorsConfigurer(CorsConfig corsConfig) {
+        this.corsConfig = corsConfig;
+    }
 
-  @Override
-  public void addCorsMappings(CorsRegistry registry) {
-    log.info("Cors configuration:\n{}", this.corsConfig);
-    registry
-        .addMapping(this.corsConfig.mapping())
-        .allowedOrigins(this.corsConfig.allowedOrigins().toArray(String[]::new))
-        .allowedMethods(this.corsConfig.allowedMethods().toArray(String[]::new))
-        .allowedHeaders(this.corsConfig.allowedHeaders().toArray(String[]::new))
-        .allowCredentials(this.corsConfig.allowCredentials());
-  }
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        log.info("Cors configuration:\n{}", this.corsConfig);
+        registry.addMapping(this.corsConfig.mapping()).allowedOrigins(this.corsConfig.allowedOrigins().toArray(String[]::new)).allowedMethods(this.corsConfig.allowedMethods().toArray(String[]::new)).allowedHeaders(this.corsConfig.allowedHeaders().toArray(String[]::new)).allowCredentials(this.corsConfig.allowCredentials());
+    }
 }

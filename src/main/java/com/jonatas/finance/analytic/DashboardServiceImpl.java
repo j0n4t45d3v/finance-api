@@ -11,64 +11,57 @@ import org.springframework.stereotype.Service;
 @Service
 public class DashboardServiceImpl implements DashboardService {
 
-  private final DashboardRepository dashboardRepository;
+    private final DashboardRepository dashboardRepository;
 
-  public DashboardServiceImpl(DashboardRepository dashboardRepository) {
-    this.dashboardRepository = dashboardRepository;
-  }
+    public DashboardServiceImpl(DashboardRepository dashboardRepository) {
+        this.dashboardRepository = dashboardRepository;
+    }
 
-  @Override
-  public SummaryIncomeVsExpense getSummaryIncomeVsExpense(
-      DashboardFiltersRequest filters, User user) {
-    return this.dashboardRepository.findSummaryIncomesVsExpenses(
-        user, filters.getStartTimestamp(), filters.getEndTimestamp(), filters.walletId());
-  }
+    @Override
+    public SummaryIncomeVsExpense getSummaryIncomeVsExpense(
+                                                            DashboardFiltersRequest filters, User user) {
+        return this.dashboardRepository.findSummaryIncomesVsExpenses(
+                user, filters.getStartTimestamp(), filters.getEndTimestamp(), filters.walletId());
+    }
 
-  @Override
-  public List<RankCategoryResponse> rankCategory(
-      Category.Type type, Integer top, DashboardFiltersRequest request, User user) {
-    Pageable limit = PageRequest.of(0, top);
-    return this.dashboardRepository.findTopRankCategory(
-        user,
-        request.getStartTimestamp(),
-        request.getEndTimestamp(),
-        type,
-        request.walletId(),
-        limit);
-  }
+    @Override
+    public List<RankCategoryResponse> rankCategory(
+                                                   Category.Type type, Integer top, DashboardFiltersRequest request, User user) {
+        Pageable limit = PageRequest.of(0, top);
+        return this.dashboardRepository.findTopRankCategory(
+                user, request.getStartTimestamp(), request.getEndTimestamp(), type, request.walletId(), limit);
+    }
 
-  @Override
-  public List<RankTransactionResponse> rankTransactions(
-      Integer topTransactions, DashboardFiltersRequest request, User user) {
-    Pageable limit = PageRequest.of(0, topTransactions, Sort.by(Sort.Direction.DESC, "amount"));
-    return this.dashboardRepository.findTopRankTransaction(
-        user, request.getStartTimestamp(), request.getEndTimestamp(), request.walletId(), limit);
-  }
+    @Override
+    public List<RankTransactionResponse> rankTransactions(
+                                                          Integer topTransactions, DashboardFiltersRequest request, User user) {
+        Pageable limit = PageRequest.of(0, topTransactions, Sort.by(Sort.Direction.DESC, "amount"));
+        return this.dashboardRepository.findTopRankTransaction(
+                user, request.getStartTimestamp(), request.getEndTimestamp(), request.walletId(), limit);
+    }
 
-  @Override
-  public List<TransactionGroupByResponse> transactions(
-      DashboardController.RankCategoryGroupBy rankCategoryGroupBy,
-      DashboardFiltersRequest request,
-      User user) {
-    return switch (rankCategoryGroupBy) {
-      case DAY ->
-          this.dashboardRepository.findTransactionGroupByDay(
-              user, request.getStartTimestamp(), request.getEndTimestamp(), request.walletId());
+    @Override
+    public List<TransactionGroupByResponse> transactions(
+                                                         DashboardController.RankCategoryGroupBy rankCategoryGroupBy, DashboardFiltersRequest request, User user) {
+        return switch (rankCategoryGroupBy) {
+            case DAY ->
+                this.dashboardRepository.findTransactionGroupByDay(
+                        user, request.getStartTimestamp(), request.getEndTimestamp(), request.walletId());
 
-      case MONTH ->
-          this.dashboardRepository.findTransactionGroupByMonth(
-              user, request.getStartTimestamp(), request.getEndTimestamp(), request.walletId());
-      default ->
-          this.dashboardRepository.findTransactionGroupByCategory(
-              user, request.getStartTimestamp(), request.getEndTimestamp(), request.walletId());
-    };
-  }
+            case MONTH ->
+                this.dashboardRepository.findTransactionGroupByMonth(
+                        user, request.getStartTimestamp(), request.getEndTimestamp(), request.walletId());
+            default ->
+                this.dashboardRepository.findTransactionGroupByCategory(
+                        user, request.getStartTimestamp(), request.getEndTimestamp(), request.walletId());
+        };
+    }
 
-  @Override
-  public List<RankTransactionResponse> lastTransactions(
-      Integer top, DashboardFiltersRequest request, User user) {
-    Pageable limit = PageRequest.of(0, top, Sort.by(Sort.Direction.DESC, "transactionAt"));
-    return this.dashboardRepository.findTopRankTransaction(
-        user, request.getStartTimestamp(), request.getEndTimestamp(), request.walletId(), limit);
-  }
+    @Override
+    public List<RankTransactionResponse> lastTransactions(
+                                                          Integer top, DashboardFiltersRequest request, User user) {
+        Pageable limit = PageRequest.of(0, top, Sort.by(Sort.Direction.DESC, "transactionAt"));
+        return this.dashboardRepository.findTopRankTransaction(
+                user, request.getStartTimestamp(), request.getEndTimestamp(), request.walletId(), limit);
+    }
 }

@@ -14,132 +14,128 @@ import java.util.Objects;
 @Table(name = "tb_transactions")
 public class Transaction {
 
-  public record Description(String value) {
-    public static final int MAX_LENGTH = 100;
+    public record Description(String value) {
+        public static final int MAX_LENGTH = 100;
 
-    public Description {
-      if (value == null || value.isBlank()) {
-        value = "<without description>";
-      }
-      if (value.length() > MAX_LENGTH) {
-        throw new DomainException("value provide exceed maximum length: " + MAX_LENGTH);
-      }
+        public Description {
+            if (value == null || value.isBlank()) {
+                value = "<without description>";
+            }
+            if (value.length() > MAX_LENGTH) {
+                throw new DomainException("value provide exceed maximum length: " + MAX_LENGTH);
+            }
+        }
+
+        public static Description of(String value) {
+            return new Description(value);
+        }
+
+        public static Description empty() {
+            return new Description(null);
+        }
     }
 
-    public static Description of(String value) {
-      return new Description(value);
+    public record Amount(@Nonnull BigDecimal value) {
+        public Amount {
+            if (value.doubleValue() <= 0) {
+                throw new DomainException("amount can not be less that zero");
+            }
+            value = value.setScale(2, RoundingMode.HALF_UP);
+        }
+
+        public static Amount of(BigDecimal value) {
+            return new Amount(value);
+        }
     }
 
-    public static Description empty() {
-      return new Description(null);
-    }
-  }
-
-  public record Amount(@Nonnull BigDecimal value) {
-    public Amount {
-      if (value.doubleValue() <= 0) {
-        throw new DomainException("amount can not be less that zero");
-      }
-      value = value.setScale(2, RoundingMode.HALF_UP);
+    public record Timestamp(@Nonnull LocalDateTime value) {
+        public static Timestamp now() {
+            return new Timestamp(LocalDateTime.now(ZoneId.of("UTC")));
+        }
     }
 
-    public static Amount of(BigDecimal value) {
-      return new Amount(value);
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "description"))
+    private Description description;
+
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "amount"))
+    private Amount amount;
+
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "transaction_at"))
+    private Timestamp transactionAt;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "wallet_id")
+    private Wallet wallet;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    protected Transaction() {
     }
-  }
 
-  public record Timestamp(@Nonnull LocalDateTime value) {
-    public static Timestamp now() {
-      return new Timestamp(LocalDateTime.now(ZoneId.of("UTC")));
+    public Transaction(
+                       Description description, Amount amount, Timestamp transactionAt, Wallet wallet, User user, Category category) {
+        this.description = Objects.requireNonNullElse(description, Description.empty());
+        this.amount = Objects.requireNonNull(amount, "amount is required");
+        this.user = Objects.requireNonNull(user, "user is required");
+        this.transactionAt = Objects.requireNonNull(transactionAt, "transactionAt is required");
+        this.wallet = Objects.requireNonNull(wallet, "wallet is required");
+        this.category = Objects.requireNonNull(category, "category is required");
     }
-  }
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    public Long getId() {
+        return id;
+    }
 
-  @Embedded
-  @AttributeOverride(name = "value", column = @Column(name = "description"))
-  private Description description;
+    public String getDescriptionValue() {
+        return description.value();
+    }
 
-  @Embedded
-  @AttributeOverride(name = "value", column = @Column(name = "amount"))
-  private Amount amount;
+    public Amount getAmount() {
+        return amount;
+    }
 
-  @Embedded
-  @AttributeOverride(name = "value", column = @Column(name = "transaction_at"))
-  private Timestamp transactionAt;
+    public BigDecimal getAmountValue() {
+        return amount.value();
+    }
 
-  @ManyToOne
-  @JoinColumn(name = "user_id")
-  private User user;
+    public Timestamp getTransactionAt() {
+        return transactionAt;
+    }
 
-  @ManyToOne
-  @JoinColumn(name = "wallet_id")
-  private Wallet wallet;
+    public LocalDateTime getTransactionAtValue() {
+        return this.transactionAt.value();
+    }
 
-  @ManyToOne
-  @JoinColumn(name = "category_id")
-  private Category category;
+    public Wallet getWallet() {
+        return wallet;
+    }
 
-  protected Transaction() {}
+    public User getUser() {
+        return user;
+    }
 
-  public Transaction(
-      Description description,
-      Amount amount,
-      Timestamp transactionAt,
-      Wallet wallet,
-      User user,
-      Category category) {
-    this.description = Objects.requireNonNullElse(description, Description.empty());
-    this.amount = Objects.requireNonNull(amount, "amount is required");
-    this.user = Objects.requireNonNull(user, "user is required");
-    this.transactionAt = Objects.requireNonNull(transactionAt, "transactionAt is required");
-    this.wallet = Objects.requireNonNull(wallet, "wallet is required");
-    this.category = Objects.requireNonNull(category, "category is required");
-  }
+    public Category getCategory() {
+        return category;
+    }
 
-  public Long getId() {
-    return id;
-  }
+    public Category.Type getType() {
+        return this.category.getType();
+    }
 
-  public String getDescriptionValue() {
-    return description.value();
-  }
-
-  public Amount getAmount() {
-    return amount;
-  }
-
-  public BigDecimal getAmountValue() {
-    return amount.value();
-  }
-
-  public Timestamp getTransactionAt() {
-    return transactionAt;
-  }
-
-  public LocalDateTime getTransactionAtValue() {
-    return this.transactionAt.value();
-  }
-
-  public Wallet getWallet() {
-    return wallet;
-  }
-
-  public User getUser() {
-    return user;
-  }
-
-  public Category getCategory() {
-    return category;
-  }
-
-  public Category.Type getType() {
-    return this.category.getType();
-  }
-
-  public Long getWalletId() {
-    return this.wallet.getId();
-  }
+    public Long getWalletId() {
+        return this.wallet.getId();
+    }
 }

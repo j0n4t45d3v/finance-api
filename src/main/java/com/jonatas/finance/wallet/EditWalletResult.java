@@ -1,16 +1,20 @@
 package com.jonatas.finance.wallet;
 
 public sealed interface EditWalletResult
-    permits EditWalletResult.Success,
+        permits EditWalletResult.Success,
         EditWalletResult.AlreadyExistsMainWalletForUser,
         EditWalletResult.AlreadyExistsWalletWithThisName,
         EditWalletResult.WalletNotFound {
 
-  record Success() implements EditWalletResult {}
+    record Success() implements EditWalletResult {
+    }
 
-  record AlreadyExistsMainWalletForUser() implements EditWalletResult {}
+    record AlreadyExistsMainWalletForUser() implements EditWalletResult {
+    }
 
-  record AlreadyExistsWalletWithThisName() implements EditWalletResult {}
+    record AlreadyExistsWalletWithThisName() implements EditWalletResult {
+    }
 
-  record WalletNotFound() implements EditWalletResult {}
+    record WalletNotFound() implements EditWalletResult {
+    }
 }

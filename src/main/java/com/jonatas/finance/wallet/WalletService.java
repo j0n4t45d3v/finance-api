@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface WalletService {
 
-  CreateWalletResult create(CreateWalletRequest request, User user);
+    CreateWalletResult create(CreateWalletRequest request, User user);
 
-  EditWalletResult update(Long id, EditWalletRequest request, User user);
+    EditWalletResult update(Long id, EditWalletRequest request, User user);
 
-  List<Wallet> findAll(User user);
+    List<Wallet> findAll(User user);
 }

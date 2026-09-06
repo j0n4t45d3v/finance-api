@@ -14,20 +14,20 @@ import org.springframework.util.AntPathMatcher;
 @Configuration
 public class AppConfig {
 
-  @Bean
-  public AntPathMatcher antPathMatcher() {
-    return new AntPathMatcher();
-  }
+    @Bean
+    public AntPathMatcher antPathMatcher() {
+        return new AntPathMatcher();
+    }
 
-  @Bean
-  public ObjectMapper objectMapper() {
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.setEnumNamingStrategy(EnumNamingStrategies.SNAKE_CASE);
-    JavaTimeModule module = new JavaTimeModule();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(formatter));
-    module.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(formatter));
-    objectMapper.registerModule(module);
-    return objectMapper;
-  }
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setEnumNamingStrategy(EnumNamingStrategies.SNAKE_CASE);
+        JavaTimeModule module = new JavaTimeModule();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(formatter));
+        module.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(formatter));
+        objectMapper.registerModule(module);
+        return objectMapper;
+    }
 }

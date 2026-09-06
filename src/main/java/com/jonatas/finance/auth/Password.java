@@ -1,3 +1,4 @@
 package com.jonatas.finance.auth;
 
-public record Password(String value) {}
+public record Password(String value) {
+}

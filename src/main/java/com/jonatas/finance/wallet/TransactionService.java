@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface TransactionService {
 
-  CreateTransactionResult create(CreateTransactionRequest request, User user);
+    CreateTransactionResult create(CreateTransactionRequest request, User user);
 
-  Page<Transaction> getPage(User user, Pageable pageable);
+    Page<Transaction> getPage(User user, Pageable pageable);
 }

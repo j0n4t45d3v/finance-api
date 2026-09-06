@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Tag(name = "Transações")
-public @interface TransactionTag {}
+public @interface TransactionTag {
+}

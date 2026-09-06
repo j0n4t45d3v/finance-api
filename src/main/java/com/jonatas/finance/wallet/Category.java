@@ -21,83 +21,83 @@ import java.util.Objects;
 @Table(name = "tb_categories")
 public class Category {
 
-  public record Name(String value) {
-    public Name {
-      if (value == null || value.isBlank()) {
-        throw new DomainException("Category name cannot be empty");
-      }
-      if (value.length() > 50) {
-        throw new DomainException("Category name cannot be greater to 50");
-      }
+    public record Name(String value) {
+        public Name {
+            if (value == null || value.isBlank()) {
+                throw new DomainException("Category name cannot be empty");
+            }
+            if (value.length() > 50) {
+                throw new DomainException("Category name cannot be greater to 50");
+            }
+        }
+
+        public static Name of(String value) {
+            return new Name(value);
+        }
     }
 
-    public static Name of(String value) {
-      return new Name(value);
+    public enum Type {
+        EXPENSE, INCOME;
     }
-  }
 
-  public enum Type {
-    EXPENSE,
-    INCOME;
-  }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "name"))
+    private Name name;
 
-  @Embedded
-  @AttributeOverride(name = "value", column = @Column(name = "name"))
-  private Name name;
+    @Enumerated(EnumType.STRING)
+    private Type type;
 
-  @Enumerated(EnumType.STRING)
-  private Type type;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-  @ManyToOne
-  @JoinColumn(name = "user_id")
-  private User user;
+    protected Category() {
+    }
 
-  protected Category() {}
+    private Category(Long id) {
+        this.id = id;
+    }
 
-  private Category(Long id) {
-    this.id = id;
-  }
+    public Category(User user) {
+        this.user = user;
+    }
 
-  public Category(User user) {
-    this.user = user;
-  }
+    public Category(@Nonnull Name name, @Nonnull Type type, @Nonnull User user) {
+        this(null, name, type, user);
+    }
 
-  public Category(@Nonnull Name name, @Nonnull Type type, @Nonnull User user) {
-    this(null, name, type, user);
-  }
+    public Category(Long id, @Nonnull Name name, @Nonnull Type type, @Nonnull User user) {
+        this.id = id;
+        this.name = Objects.requireNonNull(name, "name is required");
+        this.type = Objects.requireNonNull(type, "type is required");
+        this.user = Objects.requireNonNull(user, "user is required");
+    }
 
-  public Category(Long id, @Nonnull Name name, @Nonnull Type type, @Nonnull User user) {
-    this.id = id;
-    this.name = Objects.requireNonNull(name, "name is required");
-    this.type = Objects.requireNonNull(type, "type is required");
-    this.user = Objects.requireNonNull(user, "user is required");
-  }
+    public static Category reference(Long id) {
+        return new Category(id);
+    }
 
-  public static Category reference(Long id) {
-    return new Category(id);
-  }
+    public Long getId() {
+        return id;
+    }
 
-  public Long getId() {
-    return id;
-  }
+    public Name getName() {
+        return name;
+    }
 
-  public Name getName() {
-    return name;
-  }
+    public Type getType() {
+        return type;
+    }
 
-  public Type getType() {
-    return type;
-  }
+    public User getUser() {
+        return this.user;
+    }
 
-  public User getUser() {
-    return this.user;
-  }
-
-  public String getNameValue() {
-    return this.name.value();
-  }
+    public String getNameValue() {
+        return this.name.value();
+    }
 }

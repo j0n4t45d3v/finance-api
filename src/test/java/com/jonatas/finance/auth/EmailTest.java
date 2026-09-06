@@ -9,29 +9,29 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class EmailTest {
 
-  @ParameterizedTest(name = "valid e-mail = {0}")
-  @DisplayName("should create a valid e-mail")
-  @ValueSource(strings = {"foo.bar@gmail.com", "foo.bar@gmail.com.br", "foo.bar@gmail.com.br.br"})
-  void shouldCreateAValidEMail(String email) {
-    assertEquals(email, new Email(email).value());
-  }
+    @ParameterizedTest(name = "valid e-mail = {0}")
+    @DisplayName("should create a valid e-mail")
+    @ValueSource(strings = {"foo.bar@gmail.com", "foo.bar@gmail.com.br", "foo.bar@gmail.com.br.br"})
+    void shouldCreateAValidEMail(String email) {
+        assertEquals(email, new Email(email).value());
+    }
 
-  @Test
-  @DisplayName("should throw EmailInvalidException when creating with empty e-mail")
-  void shouldThrowEmailInvalidExceptionWhenCreatingEmptyEMail() {
-    assertThrows(EmailInvalidException.class, () -> new Email(""));
-  }
+    @Test
+    @DisplayName("should throw EmailInvalidException when creating with empty e-mail")
+    void shouldThrowEmailInvalidExceptionWhenCreatingEmptyEMail() {
+        assertThrows(EmailInvalidException.class, () -> new Email(""));
+    }
 
-  @Test
-  @DisplayName("should throw EmailInvalidException when creating with null e-mail")
-  void shouldThrowEmailInvalidExceptionWhenCreatingWithNullEMail() {
-    assertThrows(EmailInvalidException.class, () -> new Email(null));
-  }
+    @Test
+    @DisplayName("should throw EmailInvalidException when creating with null e-mail")
+    void shouldThrowEmailInvalidExceptionWhenCreatingWithNullEMail() {
+        assertThrows(EmailInvalidException.class, () -> new Email(null));
+    }
 
-  @ParameterizedTest(name = "invalid e-mail = {0}")
-  @ValueSource(strings = {"foo.bar@gmail.", "foo.bar@gmailcom", "foo.bargmail.com", "@gmail.com"})
-  @DisplayName("should throw EmailInvalidException when creating e-mail with invalid pattern")
-  void shouldThrowEmailInvalidExceptionWhenCreatingEMailWithInvalidPattern(String invalidEmail) {
-    assertThrows(EmailInvalidException.class, () -> new Email(invalidEmail));
-  }
+    @ParameterizedTest(name = "invalid e-mail = {0}")
+    @ValueSource(strings = {"foo.bar@gmail.", "foo.bar@gmailcom", "foo.bargmail.com", "@gmail.com"})
+    @DisplayName("should throw EmailInvalidException when creating e-mail with invalid pattern")
+    void shouldThrowEmailInvalidExceptionWhenCreatingEMailWithInvalidPattern(String invalidEmail) {
+        assertThrows(EmailInvalidException.class, () -> new Email(invalidEmail));
+    }
 }
