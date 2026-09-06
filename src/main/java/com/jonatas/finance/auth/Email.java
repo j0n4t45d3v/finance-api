@@ -1,5 +1,6 @@
 package com.jonatas.finance.auth;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public record Email(String value) {
@@ -13,5 +14,9 @@ public record Email(String value) {
         if (!EMAIL_PATTERN.matcher(value).matches()) {
             throw new EmailInvalidException("Invalid e-mail");
         }
+    }
+
+    public static Email of(String value) {
+        return Objects.nonNull(value) ? new Email(value) : null;
     }
 }

@@ -3,6 +3,7 @@ package com.jonatas.finance.faker;
 import com.jonatas.finance.auth.Email;
 import com.jonatas.finance.auth.Password;
 import com.jonatas.finance.auth.User;
+
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class UserFaker extends Faker<User> {
@@ -11,7 +12,7 @@ public final class UserFaker extends Faker<User> {
     private String email;
     private String password;
 
-    protected UserFaker() {
+    UserFaker() {
         this.id = ThreadLocalRandom.current().nextLong();
         this.email = "john@doe.com";
         this.password = "secretPassword123@";
@@ -34,6 +35,6 @@ public final class UserFaker extends Faker<User> {
 
     @Override
     public User get() {
-        return new User(id, new Email(email), new Password(password));
+        return new User(id, Email.of(email), Password.of(password));
     }
 }
