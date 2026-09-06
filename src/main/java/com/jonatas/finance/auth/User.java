@@ -5,6 +5,8 @@ import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
+
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,16 +39,9 @@ public class User implements UserDetails {
     }
 
     public User(Long id, Email email, Password password) {
-        if (password == null) {
-            throw new FieldRequiredException("password");
-        }
-
-        if (email == null) {
-            throw new FieldRequiredException("email");
-        }
         this.id = id;
-        this.email = email;
-        this.password = password;
+        this.email = Objects.requireNonNull(email,"email is required");
+        this.password = Objects.requireNonNull(password,"password is required");
     }
 
     public static User reference(@Nonnull Long userId) {
