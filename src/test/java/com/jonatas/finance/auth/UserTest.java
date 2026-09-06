@@ -1,11 +1,16 @@
 package com.jonatas.finance.auth;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import com.jonatas.finance.common.exception.FieldRequiredException;
+import com.jonatas.finance.faker.Faker;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UserTest {
 
@@ -17,15 +22,23 @@ class UserTest {
         assertEquals("john@doe.com", user.getEmailValue());
     }
 
-    @Test
-    @DisplayName("should throw FieldRequiredException when creating user without e-mail")
-    void shouldThrowFieldRequiredExceptionInCreateUserWhenEmailIsNull() {
-        assertThrows(FieldRequiredException.class, () -> new User(null, new Password("John Doe")));
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("providerNullRequiredField")
+    @DisplayName("should throw exception when not provide a required field")
+    void shouldThrowExceptionWhenARequiredFieldIsNull(String scenery, String email, String password) {
+        var userFaker = Faker.user()
+            .withEmail(email)
+            .withPassword(password);
+
+        assertThatNullPointerException()
+            .isThrownBy(userFaker::get)
+            .withMessageContaining("is required");
     }
 
-    @Test
-    @DisplayName("should throw FieldRequiredException when creating user without password")
-    void shouldThrowFieldRequiredExceptionWhenCreatingUserWithoutPassword() {
-        assertThrows(FieldRequiredException.class, () -> new User(new Email("john@doe.com"), null));
+    static Stream<Arguments> providerNullRequiredField() {
+        return Stream.of(
+            Arguments.of("E-mail is null", null, Faker.text(10)),
+            Arguments.of("Password is null", Faker.email(), null)
+        );
     }
 }
