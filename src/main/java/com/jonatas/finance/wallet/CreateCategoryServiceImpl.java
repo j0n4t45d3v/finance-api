@@ -16,11 +16,11 @@ public class CreateCategoryServiceImpl implements CreateService<Category> {
     @Override
     public Category execute(Category category) {
         this.categoryRepository
-            .findByNameAndUser(category.getName(), category.getUser())
-            .ifPresent(
-                (_c) -> {
-                    throw new DomainException("Category already exists");
-                });
+                               .findByNameAndUser(category.getName(), category.getUser())
+                               .ifPresent(
+                                          (_c) -> {
+                                              throw new DomainException("Category already exists");
+                                          });
         return this.categoryRepository.save(category);
     }
 }

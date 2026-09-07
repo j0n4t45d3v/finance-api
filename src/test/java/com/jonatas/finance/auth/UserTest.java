@@ -38,7 +38,6 @@ class UserTest {
     static Stream<Arguments> providerNullRequiredField() {
         return Stream.of(
                          Arguments.of("E-mail is null", null, Faker.text(10)),
-                         Arguments.of("Password is null", Faker.email(), null)
-        );
+                         Arguments.of("Password is null", Faker.email(), null));
     }
 }

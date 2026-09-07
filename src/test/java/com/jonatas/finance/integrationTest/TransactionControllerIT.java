@@ -33,7 +33,8 @@ public class TransactionControllerIT extends BaseIntegratioTest {
 
         var datetime = LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
 
-        var payload = "{" + "\"description\": \"Compra teste\"," + "\"amount\": 10.00," + "\"datetime\": \"" + datetime + "\"," + "\"categoryId\": " + categoryId + "," + "\"walletId\": " + walletId + "}";
+        var payload = "{" + "\"description\": \"Compra teste\"," + "\"amount\": 10.00," + "\"datetime\": \"" + datetime + "\"," + "\"categoryId\": "
+                + categoryId + "," + "\"walletId\": " + walletId + "}";
 
         mockMvc.perform(
                         post("/v1/transactions").contentType("application/json")
@@ -54,7 +55,8 @@ public class TransactionControllerIT extends BaseIntegratioTest {
 
         var datetime = LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
 
-        var payload = "{" + "\"description\": \"Compra pagina\"," + "\"amount\": 5.50," + "\"datetime\": \"" + datetime + "\"," + "\"categoryId\": " + categoryId + "," + "\"walletId\": " + walletId + "}";
+        var payload = "{" + "\"description\": \"Compra pagina\"," + "\"amount\": 5.50," + "\"datetime\": \"" + datetime + "\"," + "\"categoryId\": "
+                + categoryId + "," + "\"walletId\": " + walletId + "}";
 
         mockMvc.perform(
                         post("/v1/transactions").contentType("application/json")

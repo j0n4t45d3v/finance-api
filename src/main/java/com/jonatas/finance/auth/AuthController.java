@@ -35,18 +35,14 @@ public class AuthController {
     @Schema(description = "Request de login")
     public record LoginRequest(
                                @Schema(example = "john@doe.example") String email,
-                               @Schema(example = "1234") String password) {
-    }
+                               @Schema(example = "1234") String password) {}
 
-    public record LoginResponse(Token access, Token refresh) {
-    }
+    public record LoginResponse(Token access, Token refresh) {}
 
     @Operation(summary = "Login do usuario")
     @PostMapping("/login")
     @DefaultErrorResponses
-    @ApiResponse(
-            responseCode = "200", description = "OK", content = @Content(
-                    schema = @Schema(implementation = SuccessLoginResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = SuccessLoginResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE))
     public ResponseEntity<Response<?, ?>> login(@RequestBody LoginRequest loginRequest) {
         var loginResult = this.authService.login(new Email(loginRequest.email()), loginRequest.password());
         if (loginResult instanceof LoginResult.InvalidCredentials) {
@@ -59,16 +55,12 @@ public class AuthController {
     }
 
     @Schema(description = "Refresh token")
-    public record RefreshTokenRequest(
-                                      @Schema(example = "eyJhbGciOiJIUzM4NCJ9.eyJqdGkiOiJiYzYzMWUwZi1lMGQwL...") String refreshToken) {
-    }
+    public record RefreshTokenRequest(@Schema(example = "eyJhbGciOiJIUzM4NCJ9.eyJqdGkiOiJiYzYzMWUwZi1lMGQwL...") String refreshToken) {}
 
     @Operation(summary = "Atualiza Token")
     @PostMapping("/refresh")
     @DefaultErrorResponses
-    @ApiResponse(
-            responseCode = "200", description = "OK", content = @Content(
-                    schema = @Schema(implementation = SuccessLoginResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = SuccessLoginResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE))
     public ResponseEntity<Response<?, ?>> refreshToken(@RequestBody RefreshTokenRequest request) {
         var result = this.authService.refresh(request);
         if (result instanceof RefreshTokenResult.InvalidRefreshToken) {
@@ -88,15 +80,13 @@ public class AuthController {
     public record RegisterUserRequest(
                                       @Schema(example = "john@doe.example") String email,
                                       @Schema(example = "1234") String password,
-                                      @Schema(example = "1234") String confirmPassword) {
-    }
+                                      @Schema(example = "1234") String confirmPassword) {}
 
     @Hidden
     @Operation(summary = "Cadastra novo usuário")
     @PostMapping("/register")
     @DefaultErrorResponses
-    @ApiResponse(
-            responseCode = "201", description = "Created", headers = {@Header(name = "Location")}, content = {})
+    @ApiResponse(responseCode = "201", description = "Created", headers = { @Header(name = "Location") }, content = {})
     public ResponseEntity<?> register(@RequestBody RegisterUserRequest request) {
         var registerResult = this.authService.register(request);
 

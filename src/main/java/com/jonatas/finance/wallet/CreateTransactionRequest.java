@@ -7,10 +7,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Schema(description = "Requisição para criar uma transação financeira")
-public record CreateTransactionRequest(
-                                       @Schema(example = "Compra de frutas") String description,
+public record CreateTransactionRequest(@Schema(example = "Compra de frutas") String description,
                                        @Schema(example = "200.50") @NotNull @DecimalMin("0.1") BigDecimal amount,
                                        @NotNull LocalDateTime datetime,
                                        @Schema(example = "1") @NotNull Long categoryId,
-                                       @Schema(example = "1") @NotNull Long walletId) {
-}
+                                       @Schema(example = "1") @NotNull Long walletId) {}

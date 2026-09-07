@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 import java.util.Objects;
 
 @Entity
@@ -55,8 +56,7 @@ public class Category {
     @JoinColumn(name = "user_id")
     private User user;
 
-    protected Category() {
-    }
+    protected Category() {}
 
     private Category(Long id) {
         this.id = id;
@@ -66,17 +66,13 @@ public class Category {
         this.user = user;
     }
 
-    public Category(@Nonnull
-    Name name, @Nonnull
-    Type type, @Nonnull
-    User user) {
+    public Category(@Nonnull Name name,
+                    @Nonnull Type type,
+                    @Nonnull User user) {
         this(null, name, type, user);
     }
 
-    public Category(Long id, @Nonnull
-    Name name, @Nonnull
-    Type type, @Nonnull
-    User user) {
+    public Category(Long id, @Nonnull Name name, @Nonnull Type type, @Nonnull User user) {
         this.id = id;
         this.name = Objects.requireNonNull(name, "name is required");
         this.type = Objects.requireNonNull(type, "type is required");
@@ -87,13 +83,23 @@ public class Category {
         return new Category(id);
     }
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public Name getName() { return name; }
+    public Name getName() {
+        return name;
+    }
 
-    public Type getType() { return type; }
+    public Type getType() {
+        return type;
+    }
 
-    public User getUser() { return this.user; }
+    public User getUser() {
+        return this.user;
+    }
 
-    public String getNameValue() { return this.name.value(); }
+    public String getNameValue() {
+        return this.name.value();
+    }
 }
