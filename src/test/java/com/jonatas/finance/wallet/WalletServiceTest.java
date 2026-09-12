@@ -25,13 +25,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith({MockitoExtension.class})
-public class WalletServiceImplTest {
+public class WalletServiceTest {
 
     @Mock
     private WalletRepository walletRepository;
 
     @InjectMocks
-    private WalletServiceImpl walletService;
+    private WalletService walletService;
 
     @Nested
     class Create {
