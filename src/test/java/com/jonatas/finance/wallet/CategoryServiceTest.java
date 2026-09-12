@@ -1,6 +1,6 @@
 package com.jonatas.finance.wallet;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import java.util.Optional;
@@ -12,7 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.jonatas.finance.common.exception.DomainException;
+import com.jonatas.finance.common.Result;
 import com.jonatas.finance.faker.Faker;
 
 @ExtendWith({ MockitoExtension.class })
@@ -22,7 +22,7 @@ class CategoryServiceTest {
     private CategoryRepository categoryRepository;
 
     @InjectMocks
-    private CreateCategoryServiceImpl categoryService;
+    private CategoryService categoryService;
 
     @Nested
     class Create {
@@ -34,14 +34,13 @@ class CategoryServiceTest {
             when(categoryRepository.findByNameAndUser(category.getName(),
                                                       category.getUser())).thenReturn(Optional.empty());
             when(categoryRepository.save(category)).thenReturn(category);
-
-            assertThatNoException().isThrownBy(() -> {
-                var result = categoryService.execute(category);
-                assertThat(result)
-                                  .isNotNull()
-                                  .extracting(Category::getId)
-                                  .isEqualTo(category.getId());
-            });
+            var result = categoryService.create(category);
+            assertThat(result)
+                              .isNotNull()
+                              .satisfies(r -> assertThat(r.isFailure()).isFalse())
+                              .extracting(Result::get)
+                              .isNotNull()
+                              .isEqualTo(category);
 
             verify(categoryRepository, times(1)).findByNameAndUser(category.getName(), category.getUser());
             verify(categoryRepository, times(1)).save(category);
@@ -53,10 +52,10 @@ class CategoryServiceTest {
 
             when(categoryRepository.findByNameAndUser(category.getName(),
                                                       category.getUser())).thenReturn(Optional.of(category));
+            var result = categoryService.create(category);
 
-            assertThatExceptionOfType(DomainException.class)
-                                                            .isThrownBy(() -> categoryService.execute(category))
-                                                            .withMessage("Category already exists");
+            assertThat(result.isFailure()).isTrue();
+            assertThat(result.getError()).isEqualTo(CategoryErrorCode.ALREADY_EXISTS_CATEGORY_WITH_NAME);
 
             verify(categoryRepository, times(1)).findByNameAndUser(category.getName(), category.getUser());
             verify(categoryRepository, never()).save(category);
