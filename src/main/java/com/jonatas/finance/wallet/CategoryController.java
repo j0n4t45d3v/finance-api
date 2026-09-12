@@ -1,12 +1,21 @@
 package com.jonatas.finance.wallet;
 
+import java.net.URI;
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import com.jonatas.finance.auth.User;
-import com.jonatas.finance.common.CreateService;
 import com.jonatas.finance.common.dto.Response;
 import com.jonatas.finance.infra.swagger.annotation.CategoryTag;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
 import com.jonatas.finance.wallet.Category.Name;
 import com.jonatas.finance.wallet.Category.Type;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,29 +24,15 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.net.URI;
-import java.util.List;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @CategoryTag
 @RestController
 @RequestMapping("/v1/categories")
 public class CategoryController {
 
-    private final CreateService<Category> createService;
     private final CategoryService categoryService;
 
-    public CategoryController(
-                              CreateService<Category> createService,
-                              CategoryService categoryService) {
-        this.createService = createService;
+    public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
@@ -55,10 +50,16 @@ public class CategoryController {
     @Operation(operationId = "create", summary = "Cadastrar categoria")
     @DefaultErrorResponses
     @ApiResponse(responseCode = "201", description = "Created", headers = { @Header(name = "Location") })
-    public ResponseEntity<Void> create(
-                                       @RequestBody @Valid CreateCategoryRequest request,
-                                       @AuthenticationPrincipal User user) {
-        Category categoryCreated = this.createService.execute(request.toEntity(user));
+    public ResponseEntity<?> create(@RequestBody @Valid CreateCategoryRequest request,
+                                    @AuthenticationPrincipal User user) {
+        var result = this.categoryService.create(request.toEntity(user));
+        if (result.isFailure()) {
+            var errorCode = result.getError();
+            return ResponseEntity
+                                 .status(HttpStatus.CONFLICT)
+                                 .body(Response.ofError(errorCode.message(), Response.Status.CONFLICT));
+        }
+        var categoryCreated = result.get();
         URI location = UriComponentsBuilder.fromPath("/categories/{id}")
                                            .buildAndExpand(categoryCreated.getId())
                                            .toUri();
@@ -66,10 +67,14 @@ public class CategoryController {
     }
 
     @Schema(description = "Categoria")
-    public record CategoryResponse(
-                                   @Schema(example = "1") Long id,
+    public record CategoryResponse(@Schema(example = "1") Long id,
                                    @Schema(example = "Alimentação") String name,
-                                   @Schema(example = "EXPENSE") String type) {}
+                                   @Schema(example = "EXPENSE") String type) {
+
+        public static CategoryResponse of(Category category) {
+            return new CategoryResponse(category.getId(), category.getNameValue(), category.getType().name());
+        }
+    }
 
     @GetMapping
     @Operation(operationId = "allCategories", summary = "Lista categorias")
@@ -77,9 +82,7 @@ public class CategoryController {
                                                                       @AuthenticationPrincipal User userAuthenticated) {
         List<CategoryResponse> categories = this.categoryService.findAllByUser(userAuthenticated)
                                                                 .stream()
-                                                                .map(c -> new CategoryResponse(c.getId(),
-                                                                                               c.getNameValue(),
-                                                                                               c.getType().name()))
+                                                                .map(CategoryResponse::of)
                                                                 .toList();
         return ResponseEntity.ok(Response.of(categories));
     }

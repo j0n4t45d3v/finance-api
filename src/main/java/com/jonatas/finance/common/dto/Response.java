@@ -18,7 +18,13 @@ public record Response<TData, TError>(
     }
 
     public enum Status {
-        OK(200), NOT_FOUND(404), UNPROCESSABLE_ENTITY(422), BAD_REQUEST(400), CREATED(201), CONFLICT(409);
+        OK(200),
+        NOT_FOUND(404),
+        UNPROCESSABLE_ENTITY(422),
+        BAD_REQUEST(400),
+        CREATED(201),
+        CONFLICT(409),
+        INTERNAL_SERVER_ERROR(500);
 
         private final int value;
 
