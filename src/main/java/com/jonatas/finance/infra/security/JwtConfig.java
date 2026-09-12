@@ -5,8 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("security.jwt")
 public record JwtConfig(String issuer, TokenSignatureConfig access, TokenSignatureConfig refresh) {
 
-    public record TokenSignatureConfig(String secret, Long exp) {
-    }
+    public record TokenSignatureConfig(String secret, Long exp) {}
 
     public String accessSecret() {
         return secret(access);

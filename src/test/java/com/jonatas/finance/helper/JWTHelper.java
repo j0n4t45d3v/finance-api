@@ -40,8 +40,7 @@ public class JWTHelper {
     }
 
     public void validate(String token) {
-        validate(token, payload -> {
-        });
+        validate(token, payload -> {});
     }
 
     public void validate(String token, Consumer<String> additionalValidations) {

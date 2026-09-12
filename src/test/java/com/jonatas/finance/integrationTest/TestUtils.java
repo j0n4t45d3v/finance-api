@@ -17,8 +17,7 @@ public final class TestUtils {
 
     public static final String DEFAULT_PASSWORD = "secret";
 
-    private TestUtils() {
-    }
+    private TestUtils() {}
 
     public static User createUser(
                                   UserRepository userRepository,

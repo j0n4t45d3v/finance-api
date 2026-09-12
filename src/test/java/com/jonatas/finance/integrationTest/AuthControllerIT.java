@@ -91,12 +91,12 @@ class AuthControllerIT extends BaseIntegratioTest {
 
         private String registerPayload(String email, String password, String confirmPassword) {
             return """
-                    {
-                        "email": "%s",
-                        "password": "%s",
-                        "confirmPassword": "%s"
-                    }
-                    """.formatted(email, password, confirmPassword);
+                   {
+                       "email": "%s",
+                       "password": "%s",
+                       "confirmPassword": "%s"
+                   }
+                   """.formatted(email, password, confirmPassword);
         }
     }
 
@@ -191,10 +191,10 @@ class AuthControllerIT extends BaseIntegratioTest {
 
         private RequestBuilder makeRefreshRequest(String refreshToken) {
             var payload = """
-                    {
-                        "refreshToken": "%s"
-                    }
-                    """.formatted(refreshToken);
+                          {
+                              "refreshToken": "%s"
+                          }
+                          """.formatted(refreshToken);
 
             return post(REFRESH_ENDPOINT).contentType(MediaType.APPLICATION_JSON).content(payload);
         }
@@ -202,11 +202,11 @@ class AuthControllerIT extends BaseIntegratioTest {
 
     private RequestBuilder makeLoginRequest(String email, String password) {
         var payload = """
-                {
-                    "email": "%s",
-                    "password": "%s"
-                }
-                """.formatted(email, password);
+                      {
+                          "email": "%s",
+                          "password": "%s"
+                      }
+                      """.formatted(email, password);
         return post(LOGIN_ENDPOINT).contentType(MediaType.APPLICATION_JSON).content(payload);
     }
 

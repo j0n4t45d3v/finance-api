@@ -6,15 +6,11 @@ public sealed interface CreateTransactionResult
         CreateTransactionResult.WalletNotFound,
         CreateTransactionResult.TransactionCannotBeIsInTheFuture {
 
-    record Success(Transaction transaction) implements CreateTransactionResult {
-    }
+    record Success(Transaction transaction) implements CreateTransactionResult {}
 
-    record CategoryNotFound() implements CreateTransactionResult {
-    }
+    record CategoryNotFound() implements CreateTransactionResult {}
 
-    record WalletNotFound() implements CreateTransactionResult {
-    }
+    record WalletNotFound() implements CreateTransactionResult {}
 
-    record TransactionCannotBeIsInTheFuture() implements CreateTransactionResult {
-    }
+    record TransactionCannotBeIsInTheFuture() implements CreateTransactionResult {}
 }

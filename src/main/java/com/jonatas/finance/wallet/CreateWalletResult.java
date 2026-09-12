@@ -5,12 +5,9 @@ public sealed interface CreateWalletResult
         CreateWalletResult.AlreadyExistsWalletWithThisName,
         CreateWalletResult.AlreadyExistsMainWalletForUser {
 
-    record Success(Wallet wallet) implements CreateWalletResult {
-    }
+    record Success(Wallet wallet) implements CreateWalletResult {}
 
-    record AlreadyExistsWalletWithThisName() implements CreateWalletResult {
-    }
+    record AlreadyExistsWalletWithThisName() implements CreateWalletResult {}
 
-    record AlreadyExistsMainWalletForUser() implements CreateWalletResult {
-    }
+    record AlreadyExistsMainWalletForUser() implements CreateWalletResult {}
 }

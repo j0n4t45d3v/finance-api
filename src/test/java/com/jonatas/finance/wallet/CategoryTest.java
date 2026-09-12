@@ -21,7 +21,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 class CategoryTest {
     @ParameterizedTest
-    @EnumSource(names = {"EXPENSE", "INCOME"})
+    @EnumSource(names = { "EXPENSE", "INCOME" })
     void shouldCreateACategory(Type type) {
         var categoryFaker = Faker.category().withType(type);
         assertThatNoException().isThrownBy(categoryFaker::get);

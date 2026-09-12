@@ -43,12 +43,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-                                    @Nonnull
-                                    HttpServletRequest request,
-                                    @Nonnull
-                                    HttpServletResponse response,
-                                    @Nonnull
-                                    FilterChain filterChain) throws ServletException, IOException {
+                                    @Nonnull HttpServletRequest request,
+                                    @Nonnull HttpServletResponse response,
+                                    @Nonnull FilterChain filterChain)
+            throws ServletException, IOException {
 
         if (this.antPathMatcher.match("/api/v1/auth/**", request.getRequestURI())) {
             filterChain.doFilter(request, response);

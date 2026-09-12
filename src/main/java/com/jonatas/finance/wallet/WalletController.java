@@ -37,20 +37,16 @@ public class WalletController {
 
     @Schema(description = "Request pra cadastrar uma nova carteira")
     public record CreateWalletRequest(
-                                      @Schema(example = "Banco do Brasil (Agência:xxxxx-xx)") @NotNull
-                                      String name,
-                                      Boolean mainWallet) {
-    }
+                                      @Schema(example = "Banco do Brasil (Agência:xxxxx-xx)") @NotNull String name,
+                                      Boolean mainWallet) {}
 
     @PostMapping
     @Operation(summary = "Cadastrar uma carteira")
     @DefaultErrorResponses
     @ApiResponse(responseCode = "201", description = "Created", headers = @Header(name = "Location"))
     public ResponseEntity<?> create(
-                                    @RequestBody @Valid
-                                    CreateWalletRequest request,
-                                    @AuthenticationPrincipal
-                                    User user) {
+                                    @RequestBody @Valid CreateWalletRequest request,
+                                    @AuthenticationPrincipal User user) {
         var result = this.walletService.create(request, user);
         if (result instanceof CreateWalletResult.AlreadyExistsWalletWithThisName) {
             var error = new Error<>("wallet_already_exists", "Already exists an wallet register with same name");
@@ -70,26 +66,17 @@ public class WalletController {
     }
 
     public record EditWalletRequest(
-                                    @Schema(example = "Banco do Brasil (Agência:xxxxx-xx)") @NotNull
-                                    String name,
-                                    Boolean mainWallet) {
-    }
+                                    @Schema(example = "Banco do Brasil (Agência:xxxxx-xx)") @NotNull String name,
+                                    Boolean mainWallet) {}
 
     @PutMapping("/{id}")
     @Operation(summary = "Editar a carteira")
     @DefaultErrorResponses
-    @ApiResponse(
-                 responseCode = "204",
-                 description = "No Content",
-                 headers = {@Header(name = "Location")},
-                 content = {})
+    @ApiResponse(responseCode = "204", description = "No Content", headers = { @Header(name = "Location") }, content = {})
     public ResponseEntity<?> edit(
-                                  @PathVariable("id")
-                                  Long id,
-                                  @RequestBody
-                                  EditWalletRequest request,
-                                  @AuthenticationPrincipal
-                                  User user) {
+                                  @PathVariable("id") Long id,
+                                  @RequestBody EditWalletRequest request,
+                                  @AuthenticationPrincipal User user) {
         var result = this.walletService.update(id, request, user);
 
         if (result instanceof EditWalletResult.WalletNotFound) {
@@ -114,18 +101,14 @@ public class WalletController {
 
     @Schema(description = "Carteira resposta")
     public record WalletResponse(
-                                 @Schema(example = "1")
-                                 Long id,
-                                 @Schema(example = "Banco do Brasil (Agência:xxxxx-xx)")
-                                 String name,
-                                 boolean mainWallet) {
-    }
+                                 @Schema(example = "1") Long id,
+                                 @Schema(example = "Banco do Brasil (Agência:xxxxx-xx)") String name,
+                                 boolean mainWallet) {}
 
     @GetMapping
     @Operation(summary = "Listar as carteiras")
     public ResponseEntity<Response<List<WalletResponse>, Void>> all(
-                                                                    @AuthenticationPrincipal
-                                                                    User user) {
+                                                                    @AuthenticationPrincipal User user) {
         var wallets = this.walletService.findAll(user)
                                         .stream()
                                         .map(a -> new WalletResponse(a.getId(), a.getDescriptionValue(), a.isMain()))

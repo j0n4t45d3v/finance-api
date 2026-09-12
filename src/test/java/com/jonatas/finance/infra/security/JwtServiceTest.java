@@ -214,7 +214,7 @@ class JwtServiceTest {
 
         @ParameterizedTest
         @NullAndEmptySource
-        @ValueSource(strings = {"   ", " "})
+        @ValueSource(strings = { "   ", " " })
         void shouldNotBeValidWithoutSubject(String subject) {
             var mockClaims = new MockClaimsBuilder().withSubject(subject).build();
             var parsedToken = new JwtService.TokenParsed(mockClaims, "access");

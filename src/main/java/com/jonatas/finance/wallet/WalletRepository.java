@@ -16,32 +16,28 @@ public interface WalletRepository extends JpaRepository<Wallet, Long> {
                                                User user,
                                                Long walletId);
 
-    @Query(
-        """
-                    select case
-                               when count(a) > 0 then true
-                               else false
-                           end
-                    from Wallet a
-                    where a.user = :user
-                      and a.main = true
-                """)
-    boolean existsMainWalletForUser(@Param("user")
-    User user);
+    @Query("""
+               select case
+                          when count(a) > 0 then true
+                          else false
+                      end
+               from Wallet a
+               where a.user = :user
+                 and a.main = true
+           """)
+    boolean existsMainWalletForUser(@Param("user") User user);
 
-    @Query(
-        """
-                    select case
-                               when count(a) > 0 then true
-                               else false
-                           end
-                    from Wallet a
-                    where a.user = :user
-                      and a.main = true
-                      and a.id <> :walletId
-                """)
-    boolean existsMainWalletForUser(@Param("user")
-    User user, Long walletId);
+    @Query("""
+               select case
+                          when count(a) > 0 then true
+                          else false
+                      end
+               from Wallet a
+               where a.user = :user
+                 and a.main = true
+                 and a.id <> :walletId
+           """)
+    boolean existsMainWalletForUser(@Param("user") User user, Long walletId);
 
     List<Wallet> findAllByUser(User user);
 

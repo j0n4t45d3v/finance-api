@@ -6,15 +6,11 @@ public sealed interface EditWalletResult
         EditWalletResult.AlreadyExistsWalletWithThisName,
         EditWalletResult.WalletNotFound {
 
-    record Success() implements EditWalletResult {
-    }
+    record Success() implements EditWalletResult {}
 
-    record AlreadyExistsMainWalletForUser() implements EditWalletResult {
-    }
+    record AlreadyExistsMainWalletForUser() implements EditWalletResult {}
 
-    record AlreadyExistsWalletWithThisName() implements EditWalletResult {
-    }
+    record AlreadyExistsWalletWithThisName() implements EditWalletResult {}
 
-    record WalletNotFound() implements EditWalletResult {
-    }
+    record WalletNotFound() implements EditWalletResult {}
 }

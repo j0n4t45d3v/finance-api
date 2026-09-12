@@ -35,11 +35,17 @@ public record JwtService(JwtConfig jwtConfig) {
             return expiration.isBefore(now);
         }
 
-        public Email getSubject() { return new Email(this.claims.getSubject()); }
+        public Email getSubject() {
+            return new Email(this.claims.getSubject());
+        }
 
-        public Date getExpiration() { return this.claims.getExpiration(); }
+        public Date getExpiration() {
+            return this.claims.getExpiration();
+        }
 
-        public String getType() { return this.claims.get("type", String.class); }
+        public String getType() {
+            return this.claims.get("type", String.class);
+        }
     }
 
     public Token generateToken(UserDetails subject) {

@@ -31,9 +31,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @TransactionTag
 @RestController
-@RequestMapping(
-                value = "/v1/transactions",
-                produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(value = "/v1/transactions", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class TransactionController {
 
     private final TransactionService transactionService;
@@ -45,15 +43,10 @@ public class TransactionController {
     @PostMapping
     @DefaultErrorResponses
     @Operation(summary = "Adiciona uma transação financeira")
-    @ApiResponse(
-                 responseCode = "201",
-                 description = "Created",
-                 headers = {@Header(name = "Location")})
+    @ApiResponse(responseCode = "201", description = "Created", headers = { @Header(name = "Location") })
     public ResponseEntity<?> add(
-                                 @RequestBody @Valid
-                                 CreateTransactionRequest request,
-                                 @AuthenticationPrincipal
-                                 User user) {
+                                 @RequestBody @Valid CreateTransactionRequest request,
+                                 @AuthenticationPrincipal User user) {
         var result = this.transactionService.create(request, user);
         if (result instanceof CreateTransactionResult.CategoryNotFound) {
             Error<String> error = new Error<>("category_not_found", "Category not found");
@@ -77,16 +70,11 @@ public class TransactionController {
 
     @Schema(description = "Transação financeira")
     public record TransactionResponse(
-                                      @Schema(example = "1")
-                                      Long id,
-                                      @Schema(example = "10.00") @JsonFormat(shape = JsonFormat.Shape.STRING)
-                                      BigDecimal amount,
-                                      @JsonProperty("transaction_at") @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-                                      LocalDateTime transactionAt,
-                                      @Schema(example = "EXPENSE")
-                                      String type,
-                                      @Schema(example = "1")
-                                      Long walletId) {
+                                      @Schema(example = "1") Long id,
+                                      @Schema(example = "10.00") @JsonFormat(shape = JsonFormat.Shape.STRING) BigDecimal amount,
+                                      @JsonProperty("transaction_at") @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime transactionAt,
+                                      @Schema(example = "EXPENSE") String type,
+                                      @Schema(example = "1") Long walletId) {
 
         public TransactionResponse {
             amount = amount.setScale(2, RoundingMode.HALF_UP);
@@ -96,10 +84,8 @@ public class TransactionController {
     @GetMapping
     @Operation(summary = "Lista transações financeiras paginado")
     public ResponseEntity<PageResponse<TransactionResponse>> getPage(
-                                                                     @ParameterObject
-                                                                     Pageable pageable,
-                                                                     @AuthenticationPrincipal
-                                                                     User user) {
+                                                                     @ParameterObject Pageable pageable,
+                                                                     @AuthenticationPrincipal User user) {
         var page = this.transactionService.getPage(user, pageable)
                                           .map(
                                                t -> new TransactionResponse(

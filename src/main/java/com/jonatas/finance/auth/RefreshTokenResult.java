@@ -7,12 +7,9 @@ public sealed interface RefreshTokenResult
         RefreshTokenResult.InvalidRefreshToken,
         RefreshTokenResult.InvalidSubject {
 
-    record Success(Token access, Token refresh) implements RefreshTokenResult {
-    }
+    record Success(Token access, Token refresh) implements RefreshTokenResult {}
 
-    record InvalidRefreshToken() implements RefreshTokenResult {
-    }
+    record InvalidRefreshToken() implements RefreshTokenResult {}
 
-    record InvalidSubject() implements RefreshTokenResult {
-    }
+    record InvalidSubject() implements RefreshTokenResult {}
 }

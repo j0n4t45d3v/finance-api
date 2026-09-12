@@ -11,22 +11,12 @@ import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@OpenAPIDefinition(
-                   tags = {@Tag(
-                                name = "Autorização e Autenticação",
-                                description = "rotas de login, cadastro e renovação de token"), @Tag(name = "Usuário",
-                                                                                                     description = "Dados do usuario"), @Tag(
-                                                                                                                                             name = "Conta do Banco",
-                                                                                                                                             description = "cadastro das contas de banco onde as transações foram feitas"), @Tag(name = "Categoria",
-                                                                                                                                                                                                                                 description = "Categoria das transações financeiras"), @Tag(name = "Transações",
-                                                                                                                                                                                                                                                                                             description = "Transações financeiras"), @Tag(
-                                                                                                                                                                                                                                                                                                                                           name = "Dashboard",
-                                                                                                                                                                                                                                                                                                                                           description = """
-                                                                                                                                                                                                                                                                                                                                                   rotas para alimentar dashboard, com visão das ultimas transações feitas,
-                                                                                                                                                                                                                                                                                                                                                   rank de categorias, rank de transações, resumo do período com total de entrada
-                                                                                                                                                                                                                                                                                                                                                   e saida mais saldo calculado
-                                                                                                                                                                                                                                                                                                                                                   """)
-                   })
+@OpenAPIDefinition(tags = { @Tag(name = "Autorização e Autenticação", description = "rotas de login, cadastro e renovação de token"), @Tag(name = "Usuário", description = "Dados do usuario"), @Tag(name = "Conta do Banco", description = "cadastro das contas de banco onde as transações foram feitas"), @Tag(name = "Categoria", description = "Categoria das transações financeiras"), @Tag(name = "Transações", description = "Transações financeiras"), @Tag(name = "Dashboard", description = """
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       rotas para alimentar dashboard, com visão das ultimas transações feitas,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       rank de categorias, rank de transações, resumo do período com total de entrada
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       e saida mais saldo calculado
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       """)
+})
 @Configuration
 public class OpenApiConfig {
 
@@ -43,18 +33,18 @@ public class OpenApiConfig {
         return new Info().title(properties.getName())
                          .description(
                                       """
-                                                  REST Api para gerenciamento financeiro pessoal com autenticação JWT, cadastro e consulta de transações, categorias, contas bancárias e dashboards
+                                          REST Api para gerenciamento financeiro pessoal com autenticação JWT, cadastro e consulta de transações, categorias, contas bancárias e dashboards
 
-                                                  Usuário de demonstração para testes:
-                                                  - Email: john@doe.example
-                                                  - Senha: 1234
+                                          Usuário de demonstração para testes:
+                                          - Email: john@doe.example
+                                          - Senha: 1234
 
-                                                  Fluxo para usabilidade:
-                                                  1. Criar conta de usuario
-                                                  2. Fazer login
-                                                  3. usar o token de acesso gerado pela rota de login para acessar as rotas privadas
-                                                  4. Caso o token de acesso fique expirado fazer a renovação na rota de refresh token
-                                              """)
+                                          Fluxo para usabilidade:
+                                          1. Criar conta de usuario
+                                          2. Fazer login
+                                          3. usar o token de acesso gerado pela rota de login para acessar as rotas privadas
+                                          4. Caso o token de acesso fique expirado fazer a renovação na rota de refresh token
+                                      """)
                          .version(properties.getVersion());
     }
 

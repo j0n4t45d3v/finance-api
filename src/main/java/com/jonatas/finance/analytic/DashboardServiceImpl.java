@@ -64,25 +64,22 @@ public class DashboardServiceImpl implements DashboardService {
                                                          DashboardFiltersRequest request,
                                                          User user) {
         return switch (rankCategoryGroupBy) {
-            case DAY ->
-                this.dashboardRepository.findTransactionGroupByDay(
-                                                                   user,
-                                                                   request.getStartTimestamp(),
-                                                                   request.getEndTimestamp(),
-                                                                   request.walletId());
+            case DAY -> this.dashboardRepository.findTransactionGroupByDay(
+                                                                           user,
+                                                                           request.getStartTimestamp(),
+                                                                           request.getEndTimestamp(),
+                                                                           request.walletId());
 
-            case MONTH ->
-                this.dashboardRepository.findTransactionGroupByMonth(
-                                                                     user,
-                                                                     request.getStartTimestamp(),
-                                                                     request.getEndTimestamp(),
-                                                                     request.walletId());
-            default ->
-                this.dashboardRepository.findTransactionGroupByCategory(
-                                                                        user,
-                                                                        request.getStartTimestamp(),
-                                                                        request.getEndTimestamp(),
-                                                                        request.walletId());
+            case MONTH -> this.dashboardRepository.findTransactionGroupByMonth(
+                                                                               user,
+                                                                               request.getStartTimestamp(),
+                                                                               request.getEndTimestamp(),
+                                                                               request.walletId());
+            default -> this.dashboardRepository.findTransactionGroupByCategory(
+                                                                               user,
+                                                                               request.getStartTimestamp(),
+                                                                               request.getEndTimestamp(),
+                                                                               request.walletId());
         };
     }
 

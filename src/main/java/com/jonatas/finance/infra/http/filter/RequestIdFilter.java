@@ -22,12 +22,10 @@ public class RequestIdFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-                                    @Nonnull
-                                    HttpServletRequest request,
-                                    @Nonnull
-                                    HttpServletResponse response,
-                                    @Nonnull
-                                    FilterChain filterChain) throws ServletException, IOException {
+                                    @Nonnull HttpServletRequest request,
+                                    @Nonnull HttpServletResponse response,
+                                    @Nonnull FilterChain filterChain)
+            throws ServletException, IOException {
         try {
             String requestId = Optional.ofNullable(request.getHeader(X_HEADER_REQUEST_ID))
                                        .orElse(this.shortUUIDWithBase62(UUID.randomUUID()));

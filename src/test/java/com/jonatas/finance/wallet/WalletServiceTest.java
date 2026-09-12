@@ -24,7 +24,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith({MockitoExtension.class})
+@ExtendWith({ MockitoExtension.class })
 public class WalletServiceTest {
 
     @Mock
@@ -37,7 +37,7 @@ public class WalletServiceTest {
     class Create {
 
         @ParameterizedTest
-        @ValueSource(booleans = {false, true})
+        @ValueSource(booleans = { false, true })
         void shouldCreateAWallet(boolean mainWallet) {
             var user = Faker.user().get();
 
@@ -96,7 +96,7 @@ public class WalletServiceTest {
     @Nested
     class Edit {
         @ParameterizedTest
-        @ValueSource(booleans = {true, false})
+        @ValueSource(booleans = { true, false })
         void shouldEditAWallet(boolean mainWallet) {
             var wallet = Faker.wallet().isMainWallet().get();
 
