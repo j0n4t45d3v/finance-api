@@ -3,7 +3,7 @@ package com.jonatas.finance.faker;
 import com.jonatas.finance.auth.User;
 import com.jonatas.finance.wallet.Category;
 
-public class CategoryFaker extends Faker<Category> {
+public final class CategoryFaker extends Faker<Category> {
 
     private Long id;
     private String name;
