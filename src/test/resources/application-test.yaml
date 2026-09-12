@@ -28,3 +28,7 @@ security:
 testcontainers:
   postgres: 
     image: postgres:17-alpine
+
+app:
+  version: "@project.version@"
+  name: "@project.name@"
