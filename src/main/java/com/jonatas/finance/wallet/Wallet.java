@@ -81,12 +81,11 @@ public class Wallet {
         return this.user;
     }
 
-    public void setMain(boolean main) {
-        this.main = main;
-    }
-
-    public void setDescription(Description description) {
-        this.description = description;
+    public Wallet change(Wallet wallet) {
+        return new Wallet(this.id,
+                          wallet.description,
+                          this.user,
+                          wallet.main);
     }
 
     public Description getDescription() {

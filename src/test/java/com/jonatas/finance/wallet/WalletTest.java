@@ -1,10 +1,15 @@
 package com.jonatas.finance.wallet;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.jonatas.finance.auth.User;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import com.jonatas.finance.auth.User;
+import com.jonatas.finance.faker.Faker;
+
 
 class WalletTest {
 
@@ -46,5 +51,24 @@ class WalletTest {
         assertThrows(
                      IllegalArgumentException.class,
                      () -> new Wallet(new Wallet.Description(""), User.reference(1L), true));
+    }
+
+    @Nested
+    class Change {
+        @Test
+        void shouldChangeOnlyTheFieldsDescriptionAndMainInWallet() {
+            Wallet walletToEdit = Faker.wallet().get();
+            Wallet wallet = Faker.wallet().get();
+            Wallet updatedWallet = wallet.change(walletToEdit);
+
+            assertThat(updatedWallet).isNotNull();
+            assertThat(updatedWallet.getId()).isEqualTo(wallet.getId());
+            assertThat(updatedWallet.getUser()).isEqualTo(wallet.getUser());
+
+            assertThat(updatedWallet.getDescription()).isEqualTo(walletToEdit.getDescription());
+            assertThat(updatedWallet.isMain()).isEqualTo(walletToEdit.isMain());
+
+        }
+
     }
 }

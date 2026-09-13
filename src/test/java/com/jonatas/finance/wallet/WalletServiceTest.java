@@ -121,10 +121,12 @@ public class WalletServiceTest {
             var result = walletService.update(wallet.getId(), makeRequest(mainWallet), wallet.getUser());
 
             assertThat(result.isFailure()).isFalse();
-            assertThat(result.get()).isNull();
-            assertThat(wallet.getDescription()).isNotEqualTo(oldDescription);
+            assertThat(result.get()).isNotNull()
+                                    .extracting(Wallet::getDescription)
+                                    .isNotNull()
+                                    .isNotEqualTo(oldDescription);
 
-            verify(walletRepository, times(1)).save(wallet);
+            verify(walletRepository, times(1)).save(result.get());
         }
 
         @Test
