@@ -34,12 +34,15 @@ public final class WalletFaker extends Faker<Wallet> {
     }
 
     public WalletFaker isMainWallet() {
-        this.main = true;
-        return this;
+        return this.withMain(true);
     }
 
     public WalletFaker isNotMainWallet() {
-        this.main = false;
+        return this.withMain(false);
+    }
+
+    public WalletFaker withMain(boolean isMain) {
+        this.main = isMain;
         return this;
     }
 

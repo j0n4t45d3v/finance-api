@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,33 +37,32 @@ public class WalletController {
     }
 
     @Schema(description = "Request pra cadastrar uma nova carteira")
-    public record CreateWalletRequest(
-                                      @Schema(example = "Banco do Brasil (Agência:xxxxx-xx)") @NotNull String name,
-                                      Boolean mainWallet) {}
+    public record CreateWalletRequest(@Schema(example = "Banco do Brasil (Agência:xxxxx-xx)") @NotNull String name, Boolean mainWallet) {}
 
     @PostMapping
     @Operation(summary = "Cadastrar uma carteira")
     @DefaultErrorResponses
     @ApiResponse(responseCode = "201", description = "Created", headers = @Header(name = "Location"))
-    public ResponseEntity<?> create(
-                                    @RequestBody @Valid CreateWalletRequest request,
+    public ResponseEntity<?> create(@RequestBody @Valid CreateWalletRequest request,
                                     @AuthenticationPrincipal User user) {
         var result = this.walletService.create(request, user);
-        if (result instanceof CreateWalletResult.AlreadyExistsWalletWithThisName) {
-            var error = new Error<>("wallet_already_exists", "Already exists an wallet register with same name");
-            return ResponseEntity.badRequest().body(Response.ofError(error, Response.Status.BAD_REQUEST));
+        if (result.isFailure()) {
+            var resultError = result.getError();
+            var error = new Error<>(resultError.code(), resultError.message());
+            var status = switch (resultError) {
+                case WalletErrorCode.WALLET_WITH_THIS_NAME_ALREADY_EXISTS, WalletErrorCode.MAIN_WALLET_ALREADY_EXISTS -> Response.Status.CONFLICT;
+                case WalletErrorCode.WALLET_NOT_FOUND -> Response.Status.NOT_FOUND;
+                default -> Response.Status.UNPROCESSABLE_ENTITY;
+            };
+            return ResponseEntity.status(status.getValue()).body(Response.ofError(error, status));
         }
 
-        if (result instanceof CreateWalletResult.AlreadyExistsMainWalletForUser) {
-            var error = new Error<>(
-                                    "main_wallet_already_exists",
-                                    "Already exists an main wallet register for this user");
-            return ResponseEntity.badRequest().body(Response.ofError(error, Response.Status.BAD_REQUEST));
-        }
-
-        var value = (CreateWalletResult.Success) result;
-        var location = UriComponentsBuilder.fromPath("/{id}").buildAndExpand(value.wallet().getId()).toUri();
-        return ResponseEntity.created(location).build();
+        var walletCreated = result.get();
+        var location = UriComponentsBuilder.fromPath("/{id}")
+                                           .buildAndExpand(walletCreated.getId())
+                                           .toUri();
+        return ResponseEntity.created(location)
+                             .build();
     }
 
     public record EditWalletRequest(

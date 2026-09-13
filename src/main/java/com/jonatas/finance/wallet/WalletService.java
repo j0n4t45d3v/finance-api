@@ -1,6 +1,7 @@
 package com.jonatas.finance.wallet;
 
 import com.jonatas.finance.auth.User;
+import com.jonatas.finance.common.Result;
 import com.jonatas.finance.wallet.Wallet.Description;
 import com.jonatas.finance.wallet.WalletController.CreateWalletRequest;
 import com.jonatas.finance.wallet.WalletController.EditWalletRequest;
@@ -17,18 +18,18 @@ public class WalletService {
         this.walletRepository = walletRepository;
     }
 
-    public CreateWalletResult create(CreateWalletRequest request, User user) {
+    public Result<Wallet> create(CreateWalletRequest request, User user) {
         Description walletName = new Description(request.name());
         if (this.alreadyExistsUserWalletWithName(user, walletName)) {
-            return new CreateWalletResult.AlreadyExistsWalletWithThisName();
+            return Result.failure(WalletErrorCode.WALLET_WITH_THIS_NAME_ALREADY_EXISTS);
         }
 
         if (request.mainWallet() && this.alreadyExistsMainWalletForThisUser(user)) {
-            return new CreateWalletResult.AlreadyExistsMainWalletForUser();
+            return Result.failure(WalletErrorCode.MAIN_WALLET_ALREADY_EXISTS);
         }
 
         Wallet walletCreated = this.walletRepository.save(new Wallet(walletName, user, request.mainWallet()));
-        return new CreateWalletResult.Success(walletCreated);
+        return Result.success(walletCreated);
     }
 
     private boolean alreadyExistsUserWalletWithName(User user, Description walletName) {

@@ -1,20 +1,11 @@
 package com.jonatas.finance.wallet;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
-import com.jonatas.finance.faker.Faker;
-import com.jonatas.finance.wallet.Wallet.Description;
-import com.jonatas.finance.wallet.WalletController.CreateWalletRequest;
-import com.jonatas.finance.wallet.WalletController.EditWalletRequest;
 import java.util.Optional;
+
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +14,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.jonatas.finance.faker.Faker;
+import com.jonatas.finance.wallet.Wallet.Description;
+import com.jonatas.finance.wallet.WalletController.CreateWalletRequest;
+import com.jonatas.finance.wallet.WalletController.EditWalletRequest;
 
 @ExtendWith({ MockitoExtension.class })
 public class WalletServiceTest {
@@ -39,25 +35,30 @@ public class WalletServiceTest {
         @ParameterizedTest
         @ValueSource(booleans = { false, true })
         void shouldCreateAWallet(boolean mainWallet) {
-            var user = Faker.user().get();
+
+            var request = makeRequest(mainWallet);
+            var wallet = Faker.wallet()
+                              .withDescription(request.name())
+                              .withMain(mainWallet)
+                              .get();
+            var user = wallet.getUser();
 
             if (mainWallet) {
-                when(walletRepository.existsMainWalletForUser(user)).thenReturn(!mainWallet);
+                when(walletRepository.existsMainWalletForUser(user)).thenReturn(false);
             }
 
-            when(walletRepository.existsByDescriptionAndUser(any(Wallet.Description.class), eq(user))).thenReturn(
-                                                                                                                  false);
+            when(walletRepository.existsByDescriptionAndUser(eq(wallet.getDescription()),
+                                                             eq(user))).thenReturn(false);
 
-            when(walletRepository.save(any(Wallet.class))).thenReturn(mock(Wallet.class));
+            when(walletRepository.save(any(Wallet.class))).thenReturn(wallet);
 
-            var result = walletService.create(makeRequest(mainWallet), user);
+            var result = walletService.create(request, user);
 
-            assertThat(result).isNotNull()
-                              .isInstanceOfSatisfying(
-                                                      CreateWalletResult.Success.class,
-                                                      s -> {
-                                                          assertThat(s.wallet()).isNotNull();
-                                                      });
+            assertThat(result.isFailure()).isFalse();
+            assertThat(result.get()).isNotNull()
+                                    .isNotNull()
+                                    .isInstanceOf(Wallet.class)
+                                    .isEqualTo(wallet);
 
             verify(walletRepository, times(1)).save(any(Wallet.class));
         }
@@ -70,7 +71,9 @@ public class WalletServiceTest {
 
             var result = walletService.create(makeRequest(true), user);
 
-            assertThat(result).isNotNull().isInstanceOf(CreateWalletResult.AlreadyExistsMainWalletForUser.class);
+            assertThat(result.isFailure()).isTrue();
+            assertThat(result.getError()).isNotNull()
+                                         .isEqualTo(WalletErrorCode.MAIN_WALLET_ALREADY_EXISTS);
 
             verify(walletRepository, never()).save(any(Wallet.class));
         }
@@ -83,7 +86,9 @@ public class WalletServiceTest {
 
             var result = walletService.create(makeRequest(false), user);
 
-            assertThat(result).isNotNull().isInstanceOf(CreateWalletResult.AlreadyExistsWalletWithThisName.class);
+            assertThat(result.isFailure()).isTrue();
+            assertThat(result.getError()).isNotNull()
+                                         .isEqualTo(WalletErrorCode.WALLET_WITH_THIS_NAME_ALREADY_EXISTS);
 
             verify(walletRepository, never()).save(any(Wallet.class));
         }

@@ -15,6 +15,19 @@ public class Wallet {
                 throw new IllegalArgumentException("description cannot be blank");
             }
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof Description(String value1))) {
+                return false;
+            }
+            return Objects.equals(value, value1);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(value);
+        }
     }
 
     @Id
