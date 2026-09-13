@@ -14,6 +14,11 @@ public class Result<T> {
         return new Result<>(value, null);
     }
 
+    public static Result<Void> successVoid() {
+        return new Result<>(null, null);
+    }
+
+
     public static <T> Result<T> failure(ErrorCode error) {
         return new Result<>(null, error);
     }

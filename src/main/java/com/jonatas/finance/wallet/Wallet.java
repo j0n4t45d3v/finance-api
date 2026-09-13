@@ -92,4 +92,20 @@ public class Wallet {
     public Description getDescription() {
         return this.description;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Wallet wallet)) {
+            return false;
+        }
+        return main == wallet.main
+                && Objects.equals(id, wallet.id)
+                && Objects.equals(description, wallet.description)
+                && Objects.equals(user, wallet.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, description, main, user);
+    }
 }

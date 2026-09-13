@@ -65,35 +65,26 @@ public class WalletController {
                              .build();
     }
 
-    public record EditWalletRequest(
-                                    @Schema(example = "Banco do Brasil (Agência:xxxxx-xx)") @NotNull String name,
+    public record EditWalletRequest(@Schema(example = "Banco do Brasil (Agência:xxxxx-xx)") @NotNull String name,
                                     Boolean mainWallet) {}
 
     @PutMapping("/{id}")
     @Operation(summary = "Editar a carteira")
     @DefaultErrorResponses
     @ApiResponse(responseCode = "204", description = "No Content", headers = { @Header(name = "Location") }, content = {})
-    public ResponseEntity<?> edit(
-                                  @PathVariable("id") Long id,
+    public ResponseEntity<?> edit(@PathVariable("id") Long id,
                                   @RequestBody EditWalletRequest request,
                                   @AuthenticationPrincipal User user) {
         var result = this.walletService.update(id, request, user);
-
-        if (result instanceof EditWalletResult.WalletNotFound) {
-            Error<String> error = new Error<>("wallet_not_found", "Wallet not found");
-            return ResponseEntity.status(404).body(Response.ofError(error, Response.Status.NOT_FOUND));
-        }
-
-        if (result instanceof EditWalletResult.AlreadyExistsWalletWithThisName) {
-            Error<String> error = new Error<>("wallet_already_exists",
-                                              "Already exists an wallet register with same name");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(Response.ofError(error, Response.Status.CONFLICT));
-        }
-        if (result instanceof EditWalletResult.AlreadyExistsMainWalletForUser) {
-            Error<String> error = new Error<>(
-                                              "main_wallet_already_exists",
-                                              "Already exists an main wallet register for this user");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(Response.ofError(error, Response.Status.CONFLICT));
+        if (result.isFailure()) {
+            var resultError = result.getError();
+            var error = new Error<>(resultError.code(), resultError.message());
+            var status = switch (resultError) {
+                case WalletErrorCode.WALLET_WITH_THIS_NAME_ALREADY_EXISTS, WalletErrorCode.MAIN_WALLET_ALREADY_EXISTS -> Response.Status.CONFLICT;
+                case WalletErrorCode.WALLET_NOT_FOUND -> Response.Status.NOT_FOUND;
+                default -> Response.Status.UNPROCESSABLE_ENTITY;
+            };
+            return ResponseEntity.status(status.getValue()).body(Response.ofError(error, status));
         }
 
         return ResponseEntity.noContent().build();

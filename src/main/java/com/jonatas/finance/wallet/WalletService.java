@@ -40,26 +40,26 @@ public class WalletService {
         return this.walletRepository.existsMainWalletForUser(user);
     }
 
-    public EditWalletResult update(Long id, EditWalletRequest request, User user) {
+    public Result<Void> update(Long id, EditWalletRequest request, User user) {
         Optional<Wallet> walletFound = this.walletRepository.findByIdAndUser(id, user);
         if (walletFound.isEmpty()) {
-            return new EditWalletResult.WalletNotFound();
+            return Result.failure(WalletErrorCode.WALLET_NOT_FOUND);
         }
 
         if (request.mainWallet() && this.walletRepository.existsMainWalletForUser(user, id)) {
-            return new EditWalletResult.AlreadyExistsMainWalletForUser();
+            return Result.failure(WalletErrorCode.MAIN_WALLET_ALREADY_EXISTS);
         }
 
         Description walletName = new Description(request.name());
         if (this.walletRepository.existsByDescriptionAndUserNotAndId(walletName, user, id)) {
-            return new EditWalletResult.AlreadyExistsWalletWithThisName();
+            return Result.failure(WalletErrorCode.WALLET_WITH_THIS_NAME_ALREADY_EXISTS);
         }
 
         Wallet wallet = walletFound.get();
         wallet.setMain(request.mainWallet());
         wallet.setDescription(walletName);
         this.walletRepository.save(wallet);
-        return new EditWalletResult.Success();
+        return Result.successVoid();
     }
 
     public List<Wallet> findAll(User user) {

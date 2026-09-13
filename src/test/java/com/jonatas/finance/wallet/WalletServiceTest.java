@@ -104,31 +104,41 @@ public class WalletServiceTest {
         @ValueSource(booleans = { true, false })
         void shouldEditAWallet(boolean mainWallet) {
             var wallet = Faker.wallet().isMainWallet().get();
+            var oldDescription = wallet.getDescription();
 
-            when(walletRepository.findByIdAndUser(wallet.getId(), wallet.getUser())).thenReturn(Optional.of(wallet));
+            when(walletRepository.findByIdAndUser(wallet.getId(),
+                                                  wallet.getUser())).thenReturn(Optional.of(wallet));
             if (mainWallet) {
-                when(walletRepository.existsMainWalletForUser(wallet.getUser(), wallet.getId())).thenReturn(false);
+                when(walletRepository.existsMainWalletForUser(wallet.getUser(),
+                                                              wallet.getId())).thenReturn(false);
             }
-            when(walletRepository.existsByDescriptionAndUserNotAndId(
-                                                                     any(Description.class),
+            when(walletRepository.existsByDescriptionAndUserNotAndId(any(Wallet.Description.class),
                                                                      eq(wallet.getUser()),
                                                                      eq(wallet.getId()))).thenReturn(false);
 
+            when(walletRepository.save(any(Wallet.class))).thenReturn(wallet);
+
             var result = walletService.update(wallet.getId(), makeRequest(mainWallet), wallet.getUser());
 
-            assertThat(result).isNotNull().isInstanceOf(EditWalletResult.Success.class);
+            assertThat(result.isFailure()).isFalse();
+            assertThat(result.get()).isNull();
+            assertThat(wallet.getDescription()).isNotEqualTo(oldDescription);
+
             verify(walletRepository, times(1)).save(wallet);
         }
 
         @Test
         void notShouldAllowEditWhenNotExistTheWallet() {
             var user = Faker.user().get();
+            var id = Faker.numberLong();
 
-            when(walletRepository.findByIdAndUser(anyLong(), eq(user))).thenReturn(Optional.empty());
+            when(walletRepository.findByIdAndUser(eq(id), eq(user))).thenReturn(Optional.empty());
 
-            var result = walletService.update(1L, makeRequest(true), user);
+            var result = walletService.update(id, makeRequest(true), user);
 
-            assertThat(result).isNotNull().isInstanceOf(EditWalletResult.WalletNotFound.class);
+            assertThat(result.isFailure()).isTrue();
+            assertThat(result.getError()).isNotNull()
+                                         .isEqualTo(WalletErrorCode.WALLET_NOT_FOUND);
 
             verify(walletRepository, never()).save(any(Wallet.class));
         }
@@ -142,7 +152,9 @@ public class WalletServiceTest {
 
             var result = walletService.update(wallet.getId(), makeRequest(true), wallet.getUser());
 
-            assertThat(result).isNotNull().isInstanceOf(EditWalletResult.AlreadyExistsMainWalletForUser.class);
+            assertThat(result.isFailure()).isTrue();
+            assertThat(result.getError()).isNotNull()
+                                         .isEqualTo(WalletErrorCode.MAIN_WALLET_ALREADY_EXISTS);
 
             verify(walletRepository, never()).save(any(Wallet.class));
         }
@@ -151,16 +163,19 @@ public class WalletServiceTest {
         void notShouldAllowEditWhenUserAlreadyHasOtherWalletWithSameDescription() {
             var wallet = Faker.wallet().isNotMainWallet().get();
 
-            when(walletRepository.findByIdAndUser(wallet.getId(), wallet.getUser())).thenReturn(Optional.of(wallet));
-            when(walletRepository.existsMainWalletForUser(wallet.getUser(), wallet.getId())).thenReturn(false);
-            when(walletRepository.existsByDescriptionAndUserNotAndId(
-                                                                     any(Description.class),
+            when(walletRepository.findByIdAndUser(wallet.getId(),
+                                                  wallet.getUser())).thenReturn(Optional.of(wallet));
+            when(walletRepository.existsMainWalletForUser(wallet.getUser(),
+                                                          wallet.getId())).thenReturn(false);
+            when(walletRepository.existsByDescriptionAndUserNotAndId(any(Description.class),
                                                                      eq(wallet.getUser()),
                                                                      eq(wallet.getId()))).thenReturn(true);
 
             var result = walletService.update(wallet.getId(), makeRequest(true), wallet.getUser());
 
-            assertThat(result).isNotNull().isInstanceOf(EditWalletResult.AlreadyExistsWalletWithThisName.class);
+            assertThat(result.isFailure()).isTrue();
+            assertThat(result.getError()).isNotNull()
+                                         .isEqualTo(WalletErrorCode.WALLET_WITH_THIS_NAME_ALREADY_EXISTS);
 
             verify(walletRepository, never()).save(any(Wallet.class));
         }
