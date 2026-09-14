@@ -3,25 +3,22 @@ package com.jonatas.finance.wallet;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-import com.jonatas.finance.auth.User;
-import com.jonatas.finance.infra.provider.ClockProvider;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
-import org.junit.jupiter.api.DisplayName;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.jonatas.finance.auth.User;
+import com.jonatas.finance.infra.provider.ClockProvider;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionServiceImplTest {
@@ -42,7 +39,6 @@ class TransactionServiceImplTest {
     private TransactionServiceImpl transactionService;
 
     @Test
-    @DisplayName("should create a transaction")
     void shouldCreateATransaction() {
         CreateTransactionRequest request = this.getCreateTransactionRequest();
         User userMock = mock(User.class);
@@ -63,8 +59,7 @@ class TransactionServiceImplTest {
     }
 
     @Test
-    @DisplayName("should not allowed create transaction when user category not exists")
-    void shouldNotAllowedCreateTransactionWhenUserCategoryNotExists() {
+    void shouldNotAllowCreateTransactionWhenUserCategoryDoesNotExists() {
         CreateTransactionRequest request = this.getCreateTransactionRequest();
         User userMock = mock(User.class);
 
@@ -80,8 +75,7 @@ class TransactionServiceImplTest {
     }
 
     @Test
-    @DisplayName("should not allowed create transaction when user wallet not exists")
-    void shouldNotAllowedCreateTransactionWhenUserWalletNotExists() {
+    void shouldNotAllowCreateTransactionWhenUserWalletDoesNotExists() {
         CreateTransactionRequest request = this.getCreateTransactionRequest();
         User userMock = mock(User.class);
         Category categoryMock = mock(Category.class);
@@ -99,8 +93,7 @@ class TransactionServiceImplTest {
     }
 
     @Test
-    @DisplayName("should not allowed create transaction when transactionAt is in the future")
-    void shouldNotAllowedCreateTransactionWhenTransactionAtIsInTheFuture() {
+    void shouldNotAllowCreateTransactionWhenTransactionAtIsInTheFuture() {
         CreateTransactionRequest request = this.getCreateTransactionRequestInFuture();
         User userMock = mock(User.class);
         Category categoryMock = mock(Category.class);
