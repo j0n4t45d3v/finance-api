@@ -61,14 +61,14 @@ class WalletControllerIT extends BaseIntegratioTest {
 
         String editedName = "WalletEdited";
         mockMvc.perform(put("/v1/wallets/{id}", walletId)
-                                               .header("Authorization", "Bearer " + token)
-                                               .contentType(MediaType.APPLICATION_JSON)
-                                               .content("""
-                                                        {
-                                                            "name": "%s",
-                                                            "mainWallet": false
-                                                        }
-                                                        """.formatted(editedName)))
+                                                         .header("Authorization", "Bearer " + token)
+                                                         .contentType(MediaType.APPLICATION_JSON)
+                                                         .content("""
+                                                                  {
+                                                                      "name": "%s",
+                                                                      "mainWallet": false
+                                                                  }
+                                                                  """.formatted(editedName)))
                .andExpect(status().isNoContent());
 
         Wallet walletEdited = entityManager.find(Wallet.class, walletId);

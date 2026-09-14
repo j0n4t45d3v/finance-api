@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import com.jonatas.finance.auth.User;
 import com.jonatas.finance.faker.Faker;
 
-
 class WalletTest {
 
     @Test
