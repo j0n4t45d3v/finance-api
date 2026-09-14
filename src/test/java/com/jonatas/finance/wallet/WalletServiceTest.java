@@ -79,7 +79,7 @@ public class WalletServiceTest {
         }
 
         @Test
-        void shouldNotAllowCreateMainWalletWhenUserAlreadyHasAWalletWithSameName() {
+        void shouldNotAllowCreateWalletWhenUserAlreadyHasAWalletWithSameName() {
             var user = Faker.user().get();
 
             when(walletRepository.existsByDescriptionAndUser(any(Description.class), eq(user))).thenReturn(true);
@@ -130,7 +130,7 @@ public class WalletServiceTest {
         }
 
         @Test
-        void notShouldAllowEditWhenNotExistTheWallet() {
+        void shouldNotAllowEditWhenWalletDoesNotExist() {
             var user = Faker.user().get();
             var id = Faker.numberLong();
 
@@ -146,7 +146,7 @@ public class WalletServiceTest {
         }
 
         @Test
-        void notShouldAllowChangeToMainWalletWhenAlreadyExistOtherMainWallet() {
+        void shouldNotAllowChangeToMainWalletWhenAlreadyExistOtherMainWallet() {
             var wallet = Faker.wallet().isNotMainWallet().get();
 
             when(walletRepository.findByIdAndUser(wallet.getId(), wallet.getUser())).thenReturn(Optional.of(wallet));
@@ -162,7 +162,7 @@ public class WalletServiceTest {
         }
 
         @Test
-        void notShouldAllowEditWhenUserAlreadyHasOtherWalletWithSameDescription() {
+        void shouldNotAllowEditWhenUserAlreadyHasOtherWalletWithSameDescription() {
             var wallet = Faker.wallet().isNotMainWallet().get();
 
             when(walletRepository.findByIdAndUser(wallet.getId(),
