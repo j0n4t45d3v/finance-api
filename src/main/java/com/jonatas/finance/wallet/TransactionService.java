@@ -1,7 +1,7 @@
 package com.jonatas.finance.wallet;
 
 import com.jonatas.finance.auth.User;
-import com.jonatas.finance.infra.provider.ClockProvider;
+import com.jonatas.finance.adapter.time.ClockProvider;
 import com.jonatas.finance.wallet.Transaction.Amount;
 import com.jonatas.finance.wallet.Transaction.Description;
 import com.jonatas.finance.wallet.Transaction.Timestamp;

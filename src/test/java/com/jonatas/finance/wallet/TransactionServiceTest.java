@@ -17,7 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.jonatas.finance.infra.provider.ClockProvider;
+import com.jonatas.finance.adapter.time.ClockProvider;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionServiceTest {
