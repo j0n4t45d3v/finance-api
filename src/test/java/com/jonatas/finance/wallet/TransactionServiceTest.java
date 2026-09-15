@@ -2,7 +2,6 @@ package com.jonatas.finance.wallet;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
@@ -18,11 +17,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.jonatas.finance.auth.User;
 import com.jonatas.finance.infra.provider.ClockProvider;
 
 @ExtendWith(MockitoExtension.class)
-class TransactionServiceImplTest {
+class TransactionServiceTest {
 
     @Mock
     private WalletRepository walletRepository;
@@ -37,7 +35,7 @@ class TransactionServiceImplTest {
     private ClockProvider clockProvider;
 
     @InjectMocks
-    private TransactionServiceImpl transactionService;
+    private TransactionService transactionService;
 
     @Test
     void shouldCreateATransaction() {
