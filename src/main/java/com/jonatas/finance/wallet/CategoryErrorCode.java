@@ -3,7 +3,8 @@ package com.jonatas.finance.wallet;
 import com.jonatas.finance.common.ErrorCode;
 
 public enum CategoryErrorCode implements ErrorCode {
-    ALREADY_EXISTS_CATEGORY_WITH_NAME("Already exists category with same name");
+    ALREADY_EXISTS_CATEGORY_WITH_NAME("Already exists category with same name"),
+    CATEGORY_NOT_FOUND("Category not found");
 
     private final String message;
 

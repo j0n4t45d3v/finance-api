@@ -1,6 +1,7 @@
 package com.jonatas.finance.wallet;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -10,14 +11,15 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
 
-import com.jonatas.finance.faker.Faker;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.jonatas.finance.adapter.time.ClockProvider;
+import com.jonatas.finance.faker.Faker;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionServiceTest {
@@ -55,9 +57,27 @@ class TransactionServiceTest {
 
         var result = this.transactionService.create(request, user);
 
-        assertInstanceOf(CreateTransactionResult.Success.class, result);
+        assertThat(result.isFailure()).isFalse();
 
-        verify(this.transactionRepository, times(1)).save(any(Transaction.class));
+        var transactionCaptor = ArgumentCaptor.forClass(Transaction.class);
+        verify(this.transactionRepository, times(1)).save(transactionCaptor.capture());
+
+        var saved = transactionCaptor.getValue();
+        var expectedTransaction = Faker.transaction()
+                                       .withDescription(request.description())
+                                       .withAmount(request.amount())
+                                       .withTransactionAt(request.datetime())
+                                       .withWallet(wallet)
+                                       .withCategory(category)
+                                       .withUser(user)
+                                       .get();
+
+        assertThat(saved.getAmount()).isEqualTo(expectedTransaction.getAmount());
+        assertThat(saved.getDescription()).isEqualTo(expectedTransaction.getDescription());
+        assertThat(saved.getTransactionAt()).isEqualTo(expectedTransaction.getTransactionAt());
+        assertThat(saved.getCategory()).isEqualTo(expectedTransaction.getCategory());
+        assertThat(saved.getWallet()).isEqualTo(expectedTransaction.getWallet());
+        assertThat(saved.getUser()).isEqualTo(expectedTransaction.getUser());
     }
 
     @Test
@@ -75,8 +95,8 @@ class TransactionServiceTest {
 
         var result = this.transactionService.create(request, user);
 
-        assertInstanceOf(CreateTransactionResult.CategoryNotFound.class, result);
-
+        assertThat(result.isFailure()).isTrue();
+        assertThatNoException().isThrownBy(() -> assertThat(result.getError()).isEqualTo(CategoryErrorCode.CATEGORY_NOT_FOUND));
         verify(this.transactionRepository, never()).save(any(Transaction.class));
     }
 
@@ -97,7 +117,8 @@ class TransactionServiceTest {
 
         var result = this.transactionService.create(request, user);
 
-        assertInstanceOf(CreateTransactionResult.WalletNotFound.class, result);
+        assertThat(result.isFailure()).isTrue();
+        assertThatNoException().isThrownBy(() -> assertThat(result.getError()).isEqualTo(WalletErrorCode.WALLET_NOT_FOUND));
 
         verify(this.transactionRepository, never()).save(any(Transaction.class));
     }
@@ -120,7 +141,8 @@ class TransactionServiceTest {
 
         var result = this.transactionService.create(request, user);
 
-        assertInstanceOf(CreateTransactionResult.TransactionCannotBeIsInTheFuture.class, result);
+        assertThat(result.isFailure()).isTrue();
+        assertThatNoException().isThrownBy(() -> assertThat(result.getError()).isEqualTo(TransactionErrorCode.TRANSACTION_CANNOT_BE_CREATED_IN_THE_FUTURE));
 
         verify(this.transactionRepository, never()).save(any(Transaction.class));
     }

@@ -2,6 +2,7 @@ package com.jonatas.finance.wallet;
 
 import com.jonatas.finance.auth.User;
 import com.jonatas.finance.adapter.time.ClockProvider;
+import com.jonatas.finance.common.Result;
 import com.jonatas.finance.wallet.Transaction.Amount;
 import com.jonatas.finance.wallet.Transaction.Description;
 import com.jonatas.finance.wallet.Transaction.Timestamp;
@@ -30,19 +31,19 @@ public class TransactionService {
     }
 
     @Transactional
-    public CreateTransactionResult create(CreateTransactionRequest request, User user) {
+    public Result<Transaction> create(CreateTransactionRequest request, User user) {
         Optional<Category> category = this.categoryRepository.findByIdAndUser(request.categoryId(), user);
         if (category.isEmpty()) {
-            return new CreateTransactionResult.CategoryNotFound();
+            return Result.failure(CategoryErrorCode.CATEGORY_NOT_FOUND);
         }
 
         Optional<Wallet> wallet = this.walletRepository.findByIdAndUser(request.walletId(), user);
         if (wallet.isEmpty()) {
-            return new CreateTransactionResult.WalletNotFound();
+            return Result.failure(WalletErrorCode.WALLET_NOT_FOUND);
         }
 
         if (request.datetime().isAfter(this.clockProvider.now())) {
-            return new CreateTransactionResult.TransactionCannotBeIsInTheFuture();
+            return Result.failure(TransactionErrorCode.TRANSACTION_CANNOT_BE_CREATED_IN_THE_FUTURE);
         }
 
         Transaction transaction = new Transaction(new Description(request.description()),
@@ -53,7 +54,7 @@ public class TransactionService {
                                                   category.get());
 
         Transaction created = this.transactionRepository.save(transaction);
-        return new CreateTransactionResult.Success(created);
+        return Result.success(created);
     }
 
     public Page<Transaction> getPage(User user, Pageable pageable) {

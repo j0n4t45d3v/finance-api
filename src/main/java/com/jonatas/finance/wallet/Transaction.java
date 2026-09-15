@@ -84,13 +84,23 @@ public class Transaction {
 
     protected Transaction() {}
 
-    public Transaction(
+    public Transaction(Description description,
+                       Amount amount,
+                       Timestamp transactionAt,
+                       Wallet wallet,
+                       User user,
+                       Category category) {
+        this(null, description, amount, transactionAt, wallet, user, category);
+    }
+
+    public Transaction(Long id,
                        Description description,
                        Amount amount,
                        Timestamp transactionAt,
                        Wallet wallet,
                        User user,
                        Category category) {
+        this.id = id;
         this.description = Objects.requireNonNullElse(description, Description.empty());
         this.amount = Objects.requireNonNull(amount, "amount is required");
         this.user = Objects.requireNonNull(user, "user is required");
@@ -103,6 +113,9 @@ public class Transaction {
         return id;
     }
 
+    public Description getDescription() {
+        return description;
+    }
     public String getDescriptionValue() {
         return description.value();
     }

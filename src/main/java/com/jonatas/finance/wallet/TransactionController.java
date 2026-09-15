@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jonatas.finance.auth.User;
 import com.jonatas.finance.common.dto.PageResponse;
 import com.jonatas.finance.common.dto.Response;
-import com.jonatas.finance.infra.error.Error;
 import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
 import com.jonatas.finance.infra.swagger.annotation.TransactionTag;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +17,6 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -48,22 +46,16 @@ public class TransactionController {
                                  @RequestBody @Valid CreateTransactionRequest request,
                                  @AuthenticationPrincipal User user) {
         var result = this.transactionService.create(request, user);
-        if (result instanceof CreateTransactionResult.CategoryNotFound) {
-            Error<String> error = new Error<>("category_not_found", "Category not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Response.ofError(error, Response.Status.NOT_FOUND));
+        if (result.isFailure()) {
+            var error = result.getError();
+            var status = switch (error) {
+                case WalletErrorCode.WALLET_NOT_FOUND, CategoryErrorCode.CATEGORY_NOT_FOUND -> Response.Status.NOT_FOUND;
+                default -> Response.Status.UNPROCESSABLE_ENTITY;
+            };
+            return ResponseEntity.status(status.getValue()).body(Response.ofError(error, status));
         }
 
-        if (result instanceof CreateTransactionResult.WalletNotFound) {
-            Error<String> error = new Error<>("wallet_not_found", "Wallet not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Response.ofError(error, Response.Status.NOT_FOUND));
-        }
-        if (result instanceof CreateTransactionResult.TransactionCannotBeIsInTheFuture) {
-            Error<String> error = new Error<>("cannot_be_in_future", "Transaction cannot be in the future");
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT)
-                                 .body(Response.ofError(error, Response.Status.UNPROCESSABLE_ENTITY));
-        }
-
-        var transaction = ((CreateTransactionResult.Success) result).transaction();
+        var transaction = result.get();
         var location = UriComponentsBuilder.fromPath("/{id}").buildAndExpand(transaction.getId()).toUri();
         return ResponseEntity.created(location).build();
     }

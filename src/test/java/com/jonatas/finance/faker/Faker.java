@@ -1,5 +1,6 @@
 package com.jonatas.finance.faker;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
@@ -16,6 +17,10 @@ public abstract class Faker<R> {
 
     public static CategoryFaker category() {
         return new CategoryFaker();
+    }
+
+    public static TransactionFaker transaction() {
+        return new TransactionFaker();
     }
 
     public static String email() {
@@ -44,6 +49,10 @@ public abstract class Faker<R> {
 
     public static double numberDouble() {
         return numberDouble(Double.MIN_VALUE, Double.MAX_VALUE);
+    }
+
+    public static BigDecimal numberBigDecimal(double min, double max) {
+        return BigDecimal.valueOf(numberDouble(min, max));
     }
 
     public static double numberDouble(double min, double max) {
