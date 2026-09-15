@@ -10,7 +10,7 @@ public final class CategoryFaker extends Faker<Category> {
     private Category.Type type;
     private User user;
 
-    public CategoryFaker() {
+    CategoryFaker() {
         this.id = numberLong();
         this.name = text(50);
         this.type = Category.Type.EXPENSE;

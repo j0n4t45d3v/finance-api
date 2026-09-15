@@ -11,7 +11,7 @@ public final class WalletFaker extends Faker<Wallet> {
     private boolean main;
     private User user;
 
-    protected WalletFaker() {
+    WalletFaker() {
         this.id = ThreadLocalRandom.current().nextLong();
         this.description = "Test Wallet";
         this.main = false;
