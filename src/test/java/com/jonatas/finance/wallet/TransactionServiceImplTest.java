@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
 
+import com.jonatas.finance.faker.Faker;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -40,93 +41,107 @@ class TransactionServiceImplTest {
 
     @Test
     void shouldCreateATransaction() {
-        CreateTransactionRequest request = this.getCreateTransactionRequest();
-        User userMock = mock(User.class);
-        Category categoryMock = mock(Category.class);
-        Wallet walletMock = mock(Wallet.class);
+        var wallet = Faker.wallet().get();
+        var user = wallet.getUser();
+        var category = Faker.category()
+                            .withUser(user)
+                            .get();
 
-        when(this.categoryRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.of(categoryMock));
-        when(this.walletRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.of(walletMock));
+        var request = this.getCreateTransactionRequest(wallet, category);
+
+        when(this.categoryRepository.findByIdAndUser(eq(category.getId()),
+                                                     eq(user))).thenReturn(Optional.of(category));
+        when(this.walletRepository.findByIdAndUser(eq(wallet.getId()),
+                                                   eq(user))).thenReturn(Optional.of(wallet));
         when(this.clockProvider.now()).thenReturn(LocalDateTime.now());
 
-        CreateTransactionResult result = this.transactionService.create(request, userMock);
+        var result = this.transactionService.create(request, user);
 
         assertInstanceOf(CreateTransactionResult.Success.class, result);
 
-        verify(this.categoryRepository, times(1)).findByIdAndUser(anyLong(), any(User.class));
-        verify(this.walletRepository, times(1)).findByIdAndUser(anyLong(), any(User.class));
         verify(this.transactionRepository, times(1)).save(any(Transaction.class));
     }
 
     @Test
     void shouldNotAllowCreateTransactionWhenUserCategoryDoesNotExists() {
-        CreateTransactionRequest request = this.getCreateTransactionRequest();
-        User userMock = mock(User.class);
+        var wallet = Faker.wallet().get();
+        var user = wallet.getUser();
+        var category = Faker.category()
+                            .withUser(user)
+                            .get();
 
-        when(this.categoryRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.empty());
+        var request = this.getCreateTransactionRequest(wallet, category);
 
-        CreateTransactionResult result = this.transactionService.create(request, userMock);
+        when(this.categoryRepository.findByIdAndUser(eq(category.getId()),
+                                                     eq(user))).thenReturn(Optional.empty());
+
+        var result = this.transactionService.create(request, user);
 
         assertInstanceOf(CreateTransactionResult.CategoryNotFound.class, result);
 
-        verify(this.categoryRepository, times(1)).findByIdAndUser(anyLong(), any(User.class));
-        verify(this.walletRepository, never()).findByIdAndUser(anyLong(), any(User.class));
         verify(this.transactionRepository, never()).save(any(Transaction.class));
     }
 
     @Test
     void shouldNotAllowCreateTransactionWhenUserWalletDoesNotExists() {
-        CreateTransactionRequest request = this.getCreateTransactionRequest();
-        User userMock = mock(User.class);
-        Category categoryMock = mock(Category.class);
+        var wallet = Faker.wallet().get();
+        var user = wallet.getUser();
+        var category = Faker.category()
+                            .withUser(user)
+                            .get();
 
-        when(this.categoryRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.of(categoryMock));
-        when(this.walletRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.empty());
+        var request = this.getCreateTransactionRequest(wallet, category);
 
-        CreateTransactionResult result = this.transactionService.create(request, userMock);
+        when(this.categoryRepository.findByIdAndUser(eq(category.getId()),
+                                                     eq(user))).thenReturn(Optional.of(category));
+        when(this.walletRepository.findByIdAndUser(eq(wallet.getId()),
+                                                   eq(user))).thenReturn(Optional.empty());
+
+        var result = this.transactionService.create(request, user);
 
         assertInstanceOf(CreateTransactionResult.WalletNotFound.class, result);
 
-        verify(this.categoryRepository, times(1)).findByIdAndUser(anyLong(), any(User.class));
-        verify(this.walletRepository, times(1)).findByIdAndUser(anyLong(), any(User.class));
         verify(this.transactionRepository, never()).save(any(Transaction.class));
     }
 
     @Test
     void shouldNotAllowCreateTransactionWhenTransactionAtIsInTheFuture() {
-        CreateTransactionRequest request = this.getCreateTransactionRequestInFuture();
-        User userMock = mock(User.class);
-        Category categoryMock = mock(Category.class);
-        Wallet walletMock = mock(Wallet.class);
+        var wallet = Faker.wallet().get();
+        var user = wallet.getUser();
+        var category = Faker.category()
+                            .withUser(user)
+                            .get();
 
-        when(this.categoryRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.of(categoryMock));
-        when(this.walletRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.of(walletMock));
+        var request = this.getCreateTransactionRequestInFuture(wallet, category);
+
+        when(this.categoryRepository.findByIdAndUser(eq(category.getId()),
+                                                     eq(user))).thenReturn(Optional.of(category));
+        when(this.walletRepository.findByIdAndUser(eq(wallet.getId()),
+                                                   eq(user))).thenReturn(Optional.of(wallet));
         when(this.clockProvider.now()).thenReturn(LocalDateTime.now());
 
-        CreateTransactionResult result = this.transactionService.create(request, userMock);
+        var result = this.transactionService.create(request, user);
 
         assertInstanceOf(CreateTransactionResult.TransactionCannotBeIsInTheFuture.class, result);
 
-        verify(this.categoryRepository, times(1)).findByIdAndUser(anyLong(), any(User.class));
-        verify(this.walletRepository, times(1)).findByIdAndUser(anyLong(), any(User.class));
         verify(this.transactionRepository, never()).save(any(Transaction.class));
     }
 
-    private CreateTransactionRequest getCreateTransactionRequest() {
-        return new CreateTransactionRequest(
-                                            "test transaction",
-                                            BigDecimal.ONE,
-                                            LocalDateTime.of(LocalDate.of(1999, 12, 1), LocalTime.of(15, 12)),
-                                            1L,
-                                            1L);
+    private CreateTransactionRequest getCreateTransactionRequest(Wallet wallet, Category category) {
+        return new CreateTransactionRequest(Faker.text(100),
+                                            BigDecimal.valueOf(Faker.numberDouble(1, 1000)),
+                                            LocalDateTime.of(LocalDate.of(1999, 12, 1),
+                                                             LocalTime.of(15, 12)),
+                                            category.getId(),
+                                            wallet.getId());
     }
 
-    private CreateTransactionRequest getCreateTransactionRequestInFuture() {
-        return new CreateTransactionRequest(
-                                            "test transaction",
+    private CreateTransactionRequest getCreateTransactionRequestInFuture(Wallet wallet, Category category) {
+        return new CreateTransactionRequest(Faker.text(100),
                                             BigDecimal.ONE,
-                                            LocalDateTime.of(LocalDate.of(9999, 12, 31), LocalTime.of(23, 59)),
-                                            1L,
-                                            1L);
+                                            LocalDateTime.of(LocalDate.of(9999, 12, 31),
+                                                             LocalTime.of(23, 59)),
+                                            category.getId(),
+                                            wallet.getId());
     }
 }
