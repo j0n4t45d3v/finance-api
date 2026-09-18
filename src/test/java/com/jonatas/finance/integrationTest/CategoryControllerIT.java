@@ -1,40 +1,58 @@
 package com.jonatas.finance.integrationTest;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.jonatas.finance.auth.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.jonatas.finance.faker.Faker;
+import com.jonatas.finance.wallet.CategoryErrorCode;
 
 @Transactional
 class CategoryControllerIT extends BaseIntegratioTest {
 
-    @Autowired
-    private UserRepository userRepository;
+    private static final String BASE_URI = "/v1/categories";
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private String accessToken;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        this.accessToken = registerAndLogin();
+    }
 
     @Test
     void shouldCreateAndListCategories() throws Exception {
-        var email = "cat@controller.test";
-        TestUtils.createUser(userRepository, passwordEncoder, email);
-        var token = TestUtils.loginAndGetAccessToken(mockMvc, email);
+        var name = Faker.text(20);
+        var type = Faker.options("EXPENSE", "INCOME");
 
-        var name = "Alimentacao Test";
-        var type = "EXPENSE";
+        Long categoryId = TestUtils.createCategory(mockMvc, this.accessToken, name, type);
 
-        Long categoryId = TestUtils.createCategory(mockMvc, token, name, type);
-
-        mockMvc.perform(get("/v1/categories").header("Authorization", "Bearer " + token))
-               .andExpect(status().isOk())
-               .andExpect(jsonPath("$.data[0].id").isNumber())
-               .andExpect(jsonPath("$.data[0].id").value(categoryId))
-               .andExpect(jsonPath("$.data[0].name").value(name))
-               .andExpect(jsonPath("$.data[0].type").value(type));
+        apiClient().get(BASE_URI, this.accessToken)
+                   .isOk()
+                   .jsonPathStatus(200)
+                   .jsonPathEquals("$.data[0].id", categoryId)
+                   .jsonPathEquals("$.data[0].name", name)
+                   .jsonPathEquals("$.data[0].type", type);
     }
+
+    @Test
+    void shouldFailAndReturn409WhenHasDuplicateCategory() throws Exception {
+        var name = Faker.text(20);
+        var type = Faker.options("EXPENSE", "INCOME");
+
+        TestUtils.createCategory(mockMvc, this.accessToken, name, type);
+
+        String payload = """
+                         {
+                            "name": "%s",
+                            "type": "%s"
+                         }
+                         """.formatted(name, type);
+
+        apiClient().post(BASE_URI, payload, this.accessToken)
+                   .isConflict()
+                   .jsonPathStatus(409)
+                   .hasErrorCode(CategoryErrorCode.ALREADY_EXISTS_CATEGORY_WITH_NAME);
+
+    }
+
 }

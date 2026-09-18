@@ -27,6 +27,11 @@ public abstract class Faker<R> {
         return text(10) + "@example.com";
     }
 
+    public static String options(String... options) {
+        int index = numberInt(0, options.length);
+        return options[index % options.length];
+    }
+
     public static String text(int length) {
         var builder = new StringBuilder();
         for (int i = 0; i < length; i++) {
