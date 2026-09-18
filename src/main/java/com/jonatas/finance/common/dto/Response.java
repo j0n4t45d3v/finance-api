@@ -2,11 +2,12 @@ package com.jonatas.finance.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.jonatas.finance.common.ErrorCode;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-public record Response<TData, TError>(
-                                      LocalDateTime timestamp,
+public record Response<TData, TError>(LocalDateTime timestamp,
                                       Status status,
                                       @JsonInclude(JsonInclude.Include.NON_NULL) TData data,
                                       @JsonInclude(JsonInclude.Include.NON_NULL) TError error) {
@@ -42,6 +43,10 @@ public record Response<TData, TError>(
         return new Response<>(null, status, null, error);
     }
 
+    public static <T> Response<T, DomainError> ofError(ErrorCode error, Status status) {
+        return new Response<>(null, status, null, new DomainError(error.code(), error.message()));
+    }
+
     public static <TData> Response<TData, Void> of(TData data) {
         return Response.of(data, Status.OK);
     }
@@ -49,4 +54,6 @@ public record Response<TData, TError>(
     public static <TData> Response<TData, Void> of(TData data, Status status) {
         return new Response<>(null, status, data, null);
     }
+
+    public record DomainError(String code, String message) {}
 }
