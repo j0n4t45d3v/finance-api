@@ -18,7 +18,6 @@ public class Result<T> {
         return new Result<>(null, null);
     }
 
-
     public static <T> Result<T> failure(ErrorCode error) {
         return new Result<>(null, error);
     }

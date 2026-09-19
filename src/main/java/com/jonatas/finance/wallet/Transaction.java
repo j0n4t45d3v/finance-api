@@ -116,6 +116,7 @@ public class Transaction {
     public Description getDescription() {
         return description;
     }
+
     public String getDescriptionValue() {
         return description.value();
     }
