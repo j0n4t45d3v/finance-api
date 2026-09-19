@@ -1,14 +1,13 @@
 package com.jonatas.finance.wallet;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,46 +23,35 @@ import com.jonatas.finance.wallet.Transaction.Timestamp;
 
 class TransactionTest {
 
-    @Test
-    @DisplayName("should create a valid transaction")
-    void shouldCreateAValidTransaction() {
-        Timestamp now = Timestamp.now();
-        Transaction transaction = new Transaction(
-                                                  new Description("test transaction"),
-                                                  new Amount(BigDecimal.ONE),
-                                                  now,
-                                                  Wallet.reference(1L),
-                                                  User.reference(1L),
-                                                  Category.reference(1L));
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("providerValidTransactions")
+    void shouldCreateAValidTransaction(String scenery, String description, BigDecimal amount, LocalDateTime transactionAt) {
+        var transaction = Faker.transaction()
+                               .withDescription(description)
+                               .withAmount(amount)
+                               .withTransactionAt(transactionAt)
+                               .get();
 
-        assertEquals("test transaction", transaction.getDescriptionValue());
-        assertEquals(BigDecimal.ONE.setScale(2, RoundingMode.HALF_UP), transaction.getAmountValue());
-        assertEquals(now, transaction.getTransactionAt());
-        assertNotNull(transaction.getWallet());
-        assertNotNull(transaction.getUser());
-        assertNotNull(transaction.getCategory());
+        assertThat(transaction.getDescription()).isNotNull();
+        assertThat(transaction.getDescriptionValue()).isEqualTo(Optional.ofNullable(description).orElse("<without description>"));
+        assertThat(transaction.getAmount()).isNotNull();
+        assertThat(transaction.getAmountValue()).isEqualTo(amount.setScale(2, RoundingMode.HALF_UP));
+        assertThat(transaction.getTransactionAt()).isNotNull()
+                                                  .extracting(Timestamp::value)
+                                                  .isEqualTo(transactionAt);
+        assertThat(transaction.getWallet()).isNotNull();
+        assertThat(transaction.getUser()).isNotNull();
+        assertThat(transaction.getCategory()).isNotNull();
     }
 
-    @Test
-    @DisplayName("should create transaction without description")
-    void shouldCreateTransactionWithoutDescription() {
-        Timestamp now = Timestamp.now();
-        Transaction transaction = new Transaction(null,
-                                                  new Amount(BigDecimal.ONE),
-                                                  now,
-                                                  Wallet.reference(1L),
-                                                  User.reference(1L),
-                                                  Category.reference(1L));
-
-        assertEquals("<without description>", transaction.getDescriptionValue());
-        assertEquals(BigDecimal.ONE.setScale(2), transaction.getAmountValue());
-        assertEquals(now, transaction.getTransactionAt());
-        assertNotNull(transaction.getWallet());
-        assertNotNull(transaction.getUser());
-        assertNotNull(transaction.getCategory());
+    static Stream<Arguments> providerValidTransactions() {
+        return Stream.of(Arguments.of("valid transaction with description", "test transaction", BigDecimal.ONE, LocalDateTime.now()),
+                         Arguments.of("valid transaction without description", null, BigDecimal.TEN, LocalDateTime.now().minusDays(1)),
+                         Arguments.of("valid transaction with large amount", "large amount transaction", new BigDecimal("999999999.99"),
+                                      LocalDateTime.now().minusMonths(1)));
     }
 
-    @ParameterizedTest(name="{0}")
+    @ParameterizedTest(name = "{0}")
     @MethodSource("providerNullRequiredFields")
     void shouldNotAllowCreateTransactionWhenRequiredFieldIsNull(String scenery,
                                                                 String description,
@@ -91,16 +79,13 @@ class TransactionTest {
         var now = LocalDateTime.now();
         var wallet = Faker.wallet().get();
         var category = Faker.category().get();
-        return Stream.of(
-                Arguments.of("amount is null", description, null, now, wallet, wallet.getUser(), category),
-                Arguments.of("transactionAt is null", description, BigDecimal.ONE, null, wallet, wallet.getUser(), category),
-                Arguments.of("wallet is null", description, BigDecimal.ONE, now, null, wallet.getUser(), category),
-                Arguments.of("user is null", description, BigDecimal.ONE, now, wallet, null, category),
-                Arguments.of("category is null", description, BigDecimal.ONE, now, wallet, wallet.getUser(), null)
-        );
+        return Stream.of(Arguments.of("amount is null", description, null, now, wallet, wallet.getUser(), category),
+                         Arguments.of("transactionAt is null", description, BigDecimal.ONE, null, wallet, wallet.getUser(), category),
+                         Arguments.of("wallet is null", description, BigDecimal.ONE, now, null, wallet.getUser(), category),
+                         Arguments.of("user is null", description, BigDecimal.ONE, now, wallet, null, category),
+                         Arguments.of("category is null", description, BigDecimal.ONE, now, wallet, wallet.getUser(), null));
 
     }
-
 
     @Nested
     class DescriptionTest {
