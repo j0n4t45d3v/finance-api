@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-class UserControllerIT extends BaseIntegratioTest {
+class UserControllerIT extends BaseIntegrationTest {
 
     @Autowired
     private UserRepository userRepository;

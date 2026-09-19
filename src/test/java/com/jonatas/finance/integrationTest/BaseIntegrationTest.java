@@ -34,7 +34,7 @@ import com.jonatas.finance.faker.Faker;
 @AutoConfigureMockMvc
 @SpringBootTest
 @Import(PostgresSQLContainerConfig.class)
-public abstract class BaseIntegratioTest {
+public abstract class BaseIntegrationTest {
 
     @Autowired
     protected MockMvc mockMvc;

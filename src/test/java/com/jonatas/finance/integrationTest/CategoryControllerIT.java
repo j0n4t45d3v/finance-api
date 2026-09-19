@@ -8,7 +8,7 @@ import com.jonatas.finance.faker.Faker;
 import com.jonatas.finance.wallet.CategoryErrorCode;
 
 @Transactional
-class CategoryControllerIT extends BaseIntegratioTest {
+class CategoryControllerIT extends BaseIntegrationTest {
 
     private static final String BASE_URI = "/v1/categories";
 

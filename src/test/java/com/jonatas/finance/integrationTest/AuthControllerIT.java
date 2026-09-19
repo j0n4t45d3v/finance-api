@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-class AuthControllerIT extends BaseIntegratioTest {
+class AuthControllerIT extends BaseIntegrationTest {
 
     @Autowired
     private UserRepository userRepository;
