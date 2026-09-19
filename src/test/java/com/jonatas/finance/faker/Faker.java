@@ -1,6 +1,7 @@
 package com.jonatas.finance.faker;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
@@ -40,6 +41,10 @@ public abstract class Faker<R> {
         return builder.toString();
     }
 
+    public static Instant instant() {
+        return Instant.ofEpochMilli(numberLong(0, Instant.now().toEpochMilli()));
+    }
+
     public static int numberInt() {
         return numberInt(Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
@@ -49,7 +54,11 @@ public abstract class Faker<R> {
     }
 
     public static long numberLong() {
-        return ThreadLocalRandom.current().nextLong(1, Long.MAX_VALUE);
+        return numberLong(1, Long.MAX_VALUE);
+    }
+
+    public static long numberLong(long min, long max) {
+        return ThreadLocalRandom.current().nextLong(min, max);
     }
 
     public static double numberDouble() {
