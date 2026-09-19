@@ -1,27 +1,26 @@
 package com.jonatas.finance.wallet;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatException;
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.assertThatNullPointerException;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.jonatas.finance.auth.User;
-import com.jonatas.finance.common.exception.DomainException;
-import com.jonatas.finance.wallet.Transaction.Amount;
-import com.jonatas.finance.wallet.Transaction.Description;
-import com.jonatas.finance.wallet.Transaction.Timestamp;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import com.jonatas.finance.auth.User;
+import com.jonatas.finance.common.exception.DomainException;
+import com.jonatas.finance.faker.Faker;
+import com.jonatas.finance.wallet.Transaction.Amount;
+import com.jonatas.finance.wallet.Transaction.Description;
+import com.jonatas.finance.wallet.Transaction.Timestamp;
 
 class TransactionTest {
 
@@ -49,8 +48,7 @@ class TransactionTest {
     @DisplayName("should create transaction without description")
     void shouldCreateTransactionWithoutDescription() {
         Timestamp now = Timestamp.now();
-        Transaction transaction = new Transaction(
-                                                  null,
+        Transaction transaction = new Transaction(null,
                                                   new Amount(BigDecimal.ONE),
                                                   now,
                                                   Wallet.reference(1L),
@@ -66,26 +64,11 @@ class TransactionTest {
     }
 
     @Test
-    @DisplayName("should not allowed create transaction without amount")
-    void shouldNotAllowedCreateTransactionWithoutAmount() {
-        assertThrows(
-                     NullPointerException.class,
-                     () -> new Transaction(
-                                           new Description("test"),
-                                           null,
-                                           Timestamp.now(),
-                                           Wallet.reference(1L),
-                                           User.reference(1L),
-                                           Category.reference(1L)));
-    }
-
-    @Test
     @DisplayName("should not allowed create transaction with amount less than zero")
     void shouldNotAllowedCreateTransactionWithAmountLessThanZero() {
         assertThrows(
                      DomainException.class,
-                     () -> new Transaction(
-                                           new Description("test"),
+                     () -> new Transaction(new Description("test"),
                                            new Amount(BigDecimal.valueOf(-1)),
                                            Timestamp.now(),
                                            Wallet.reference(1L),
@@ -98,8 +81,7 @@ class TransactionTest {
     void shouldNotAllowedCreateTransactionWithZeroAmount() {
         assertThrows(
                      DomainException.class,
-                     () -> new Transaction(
-                                           new Description("test"),
+                     () -> new Transaction(new Description("test"),
                                            new Amount(BigDecimal.ZERO),
                                            Timestamp.now(),
                                            Wallet.reference(1L),
@@ -107,74 +89,56 @@ class TransactionTest {
                                            Category.reference(1L)));
     }
 
-    @Test
-    @DisplayName("should not allowed create transaction without transactionAt")
-    void shouldNotAllowedCreateTransactionWithoutTransactionAt() {
-        assertThrows(
-                     NullPointerException.class,
-                     () -> new Transaction(
-                                           new Description("test"),
-                                           new Amount(BigDecimal.ONE),
-                                           null,
-                                           Wallet.reference(1L),
-                                           User.reference(1L),
-                                           Category.reference(1L)));
+    @ParameterizedTest(name="{0}")
+    @MethodSource("providerNullRequiredFields")
+    void shouldNotAllowCreateTransactionWhenRequiredFieldIsNull(String scenery,
+                                                                String description,
+                                                                BigDecimal amount,
+                                                                LocalDateTime transactionAt,
+                                                                Wallet wallet,
+                                                                User user,
+                                                                Category category) {
+
+        var transactionFaker = Faker.transaction()
+                                    .withDescription(description)
+                                    .withAmount(amount)
+                                    .withTransactionAt(transactionAt)
+                                    .withWallet(wallet)
+                                    .withUser(user)
+                                    .withCategory(category);
+
+        assertThatNullPointerException().isThrownBy(transactionFaker::get)
+                                        .withMessageContaining("is required");
+
     }
 
-    @Test
-    @DisplayName("should not allowed create transaction without user wallet")
-    void shouldNotAllowedCreateTransactionWithoutUserWallet() {
-        assertThrows(
-                     NullPointerException.class,
-                     () -> new Transaction(
-                                           new Description("test transaction"),
-                                           new Amount(BigDecimal.ONE),
-                                           Timestamp.now(),
-                                           null,
-                                           User.reference(1L),
-                                           Category.reference(1L)));
+    static Stream<Arguments> providerNullRequiredFields() {
+        var description = Faker.text(4);
+        var now = LocalDateTime.now();
+        var wallet = Faker.wallet().get();
+        var category = Faker.category().get();
+        return Stream.of(
+                Arguments.of("amount is null", description, null, now, wallet, wallet.getUser(), category),
+                Arguments.of("transactionAt is null", description, BigDecimal.ONE, null, wallet, wallet.getUser(), category),
+                Arguments.of("wallet is null", description, BigDecimal.ONE, now, null, wallet.getUser(), category),
+                Arguments.of("user is null", description, BigDecimal.ONE, now, wallet, null, category),
+                Arguments.of("category is null", description, BigDecimal.ONE, now, wallet, wallet.getUser(), null)
+        );
+
     }
 
-    @Test
-    @DisplayName("should not allowed create transaction without user")
-    void shouldNotAllowedCreateTransactionWithoutUser() {
-        assertThrows(
-                     NullPointerException.class,
-                     () -> new Transaction(
-                                           new Description("test transaction"),
-                                           new Amount(BigDecimal.ONE),
-                                           Timestamp.now(),
-                                           Wallet.reference(1L),
-                                           null,
-                                           Category.reference(1L)));
-    }
-
-    @Test
-    @DisplayName("should not allowed create transaction without category")
-    void shouldNotAllowedCreateTransactionWithoutCategory() {
-        assertThrows(
-                     NullPointerException.class,
-                     () -> new Transaction(
-                                           new Description("test transaction"),
-                                           new Amount(BigDecimal.ONE),
-                                           Timestamp.now(),
-                                           Wallet.reference(1L),
-                                           User.reference(1L),
-                                           null));
-    }
 
     @Nested
     class DescriptionTest {
 
         @ParameterizedTest(name = "{0}")
         @MethodSource("validValues")
-        void shouldInstanceDescription(String scenary, String value) {
+        void shouldInstanceDescription(String scenery, String value) {
             assertThatNoException().isThrownBy(() -> Description.of(value));
         }
 
         static Stream<Arguments> validValues() {
-            return Stream.of(
-                             Arguments.of("empty value", ""),
+            return Stream.of(Arguments.of("empty value", ""),
                              Arguments.of("blank value", " "),
                              Arguments.of("null value", null),
                              Arguments.of("one character", "a"),
@@ -184,13 +148,12 @@ class TransactionTest {
 
         @ParameterizedTest(name = "{0}")
         @MethodSource("invalidValues")
-        void shouldThrowExceptionWhenLengthExceedMaximun(String scenary, String value) {
+        void shouldThrowExceptionWhenLengthExceedMaximum(String scenery, String value) {
             assertThatException().isThrownBy(() -> Description.of(value)).isInstanceOf(DomainException.class);
         }
 
         static Stream<Arguments> invalidValues() {
-            return Stream.of(
-                             Arguments.of("1 above maximum length", "a".repeat(Description.MAX_LENGTH + 1)),
+            return Stream.of(Arguments.of("1 above maximum length", "a".repeat(Description.MAX_LENGTH + 1)),
                              Arguments.of("50 above maximum length", "a".repeat(Description.MAX_LENGTH + 50)));
         }
     }
@@ -200,17 +163,13 @@ class TransactionTest {
 
         @MethodSource("validValues")
         @ParameterizedTest(name = "{0}")
-        void shouldInstanceAmount(String scenary, BigDecimal value) {
+        void shouldInstanceAmount(String scenery, BigDecimal value) {
             assertThat(Amount.of(value)).extracting(Amount::value)
-                                        .satisfies(
-                                                   v -> {
-                                                       assertThat(v).isEqualTo(value.setScale(2, RoundingMode.HALF_UP));
-                                                   });
+                                        .isEqualTo(value.setScale(2, RoundingMode.HALF_UP));
         }
 
         static Stream<Arguments> validValues() {
-            return Stream.of(
-                             Arguments.of("1 value", BigDecimal.ONE),
+            return Stream.of(Arguments.of("1 value", BigDecimal.ONE),
                              Arguments.of("10 value", BigDecimal.TEN),
                              Arguments.of("fractional value 1.5", BigDecimal.valueOf(1.5)),
                              Arguments.of("large number", new BigDecimal("999999999.99")));
@@ -223,13 +182,13 @@ class TransactionTest {
 
         @MethodSource("invalidValues")
         @ParameterizedTest(name = "{0}")
-        void shouldThrowExceptionWhenGivenInvalidInput(String scenary, BigDecimal value) {
-            assertThatException().isThrownBy(() -> Amount.of(value)).isInstanceOf(DomainException.class);
+        void shouldThrowExceptionWhenGivenInvalidInput(String scenery, BigDecimal value) {
+            assertThatException().isThrownBy(() -> Amount.of(value))
+                                 .isInstanceOf(DomainException.class);
         }
 
         static Stream<Arguments> invalidValues() {
-            return Stream.of(
-                             Arguments.of("amount zero", BigDecimal.ZERO),
+            return Stream.of(Arguments.of("amount zero", BigDecimal.ZERO),
                              Arguments.of("amount negative", BigDecimal.TEN.multiply(BigDecimal.ONE.negate())));
         }
     }
