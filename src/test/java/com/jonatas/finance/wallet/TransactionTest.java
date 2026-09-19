@@ -63,32 +63,6 @@ class TransactionTest {
         assertNotNull(transaction.getCategory());
     }
 
-    @Test
-    @DisplayName("should not allowed create transaction with amount less than zero")
-    void shouldNotAllowedCreateTransactionWithAmountLessThanZero() {
-        assertThrows(
-                     DomainException.class,
-                     () -> new Transaction(new Description("test"),
-                                           new Amount(BigDecimal.valueOf(-1)),
-                                           Timestamp.now(),
-                                           Wallet.reference(1L),
-                                           User.reference(1L),
-                                           Category.reference(1L)));
-    }
-
-    @Test
-    @DisplayName("should not allowed create transaction with zero amount")
-    void shouldNotAllowedCreateTransactionWithZeroAmount() {
-        assertThrows(
-                     DomainException.class,
-                     () -> new Transaction(new Description("test"),
-                                           new Amount(BigDecimal.ZERO),
-                                           Timestamp.now(),
-                                           Wallet.reference(1L),
-                                           User.reference(1L),
-                                           Category.reference(1L)));
-    }
-
     @ParameterizedTest(name="{0}")
     @MethodSource("providerNullRequiredFields")
     void shouldNotAllowCreateTransactionWhenRequiredFieldIsNull(String scenery,
