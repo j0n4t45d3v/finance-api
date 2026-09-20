@@ -26,7 +26,7 @@ class AuthServiceTest {
     private UserRepository userRepository;
 
     @InjectMocks
-    private AuthServiceImpl authService;
+    private AuthService authService;
 
     @Nested
     class Register {
