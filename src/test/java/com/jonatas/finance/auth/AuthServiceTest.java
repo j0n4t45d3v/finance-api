@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 
+import com.jonatas.finance.common.dto.Token;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,9 +16,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.jonatas.finance.faker.Faker;
+import com.jonatas.finance.infra.security.JwtService;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
+
+    @Mock
+    private JwtService jwtService;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -87,6 +92,47 @@ class AuthServiceTest {
             assertThat(result).isInstanceOf(RegisterResult.FailRegister.class);
 
             verify(userRepository, never()).save(any(User.class));
+        }
+
+    }
+
+    @Nested
+    class Login {
+        @Test
+        void shouldLoginWithSuccess() {
+            var user = Faker.user().get();
+
+            when(jwtService.generateToken(eq(user))).thenReturn(new Token(Faker.text(20),
+                                                                          Faker.numberLong()));
+            when(jwtService.generateRefreshToken(eq(user))).thenReturn(new Token(Faker.text(20),
+                                                                                 Faker.numberLong()));
+            when(userRepository.findByEmail(eq(user.getEmail()))).thenReturn(Optional.of(user));
+            when(passwordEncoder.matches(eq(user.getPasswordValue()),
+                                         eq(user.getPassword()))).thenReturn(true);
+
+            var result = authService.login(user.getEmail(), user.getPasswordValue());
+            assertThat(result).isInstanceOf(LoginResult.Success.class)
+                              .extracting("access", "refresh")
+                              .doesNotContainNull();
+        }
+
+        @Test
+        void shouldResultInvalidCredentialsWhenEmailDoesNotExists() {
+            when(userRepository.findByEmail(any(Email.class))).thenReturn(Optional.empty());
+
+            var result = authService.login(Email.of(Faker.email()), Faker.text(10));
+
+            assertThat(result).isInstanceOf(LoginResult.InvalidCredentials.class);
+        }
+
+        @Test
+        void shouldResultInvalidCredentialsWhenPasswordNotMatchWithUserFound() {
+            when(userRepository.findByEmail(any(Email.class))).thenReturn(Optional.of(Faker.user().get()));
+            when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
+
+            var result = authService.login(Email.of(Faker.email()), Faker.text(10));
+
+            assertThat(result).isInstanceOf(LoginResult.InvalidCredentials.class);
         }
 
     }
