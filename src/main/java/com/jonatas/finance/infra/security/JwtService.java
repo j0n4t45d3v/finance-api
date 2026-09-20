@@ -14,6 +14,7 @@ import javax.crypto.SecretKey;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+@Deprecated(forRemoval = true)
 @Component
 public record JwtService(JwtConfig jwtConfig) {
 
