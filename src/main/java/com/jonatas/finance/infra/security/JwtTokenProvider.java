@@ -2,7 +2,7 @@ package com.jonatas.finance.infra.security;
 
 import com.jonatas.finance.adapter.security.DecodedToken;
 import com.jonatas.finance.adapter.security.PairToken;
-import com.jonatas.finance.adapter.security.Token;
+import com.jonatas.finance.adapter.security.TokenInfo;
 import com.jonatas.finance.adapter.security.TokenProvider;
 import com.jonatas.finance.auth.User;
 import io.jsonwebtoken.Claims;
@@ -37,7 +37,7 @@ public class JwtTokenProvider implements TokenProvider {
         return new PairToken(accessToken, refreshToken);
     }
 
-    private Token buildToken(User subject,
+    private TokenInfo buildToken(User subject,
                              Map<String, Object> claims,
                              JwtConfig.TokenSignatureConfig signature) {
         Instant exp = Instant.now().plusSeconds(signature.exp());
@@ -50,7 +50,7 @@ public class JwtTokenProvider implements TokenProvider {
                            .expiration(new Date(exp.toEpochMilli()))
                            .signWith(secretKey(signature.secret()))
                            .compact();
-        return new Token(token, exp);
+        return new TokenInfo(token, exp);
     }
 
     @Override

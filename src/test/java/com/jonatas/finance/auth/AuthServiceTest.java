@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.jonatas.finance.adapter.security.TokenInfo;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -104,10 +105,10 @@ class AuthServiceTest {
         void shouldLoginWithSuccess() {
             var user = Faker.user().get();
 
-            when(tokenProvider.generatePairToken(user)).thenReturn(new PairToken(new com.jonatas.finance.adapter.security.Token(Faker.text(10),
-                                                                                                                                Faker.instant()),
-                                                                                 new com.jonatas.finance.adapter.security.Token(Faker.text(10),
-                                                                                                                                Faker.instant())));
+            when(tokenProvider.generatePairToken(user)).thenReturn(new PairToken(new TokenInfo(Faker.text(10),
+                                                                                               Faker.instant()),
+                                                                                 new TokenInfo(Faker.text(10),
+                                                                                               Faker.instant())));
 
             when(userRepository.findByEmail(eq(user.getEmail()))).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(eq(user.getPasswordValue()),
@@ -157,10 +158,10 @@ class AuthServiceTest {
             when(tokenProvider.validateRefreshToken(anyString())).thenReturn(validatedToken);
 
             when(userRepository.findByEmail(eq(user.getEmail()))).thenReturn(Optional.of(user));
-            when(tokenProvider.generatePairToken(user)).thenReturn(new PairToken(new com.jonatas.finance.adapter.security.Token(Faker.text(10),
-                                                                                                                                Faker.instant()),
-                                                                                 new com.jonatas.finance.adapter.security.Token(Faker.text(10),
-                                                                                                                                Faker.instant())));
+            when(tokenProvider.generatePairToken(user)).thenReturn(new PairToken(new TokenInfo(Faker.text(10),
+                                                                                               Faker.instant()),
+                                                                                 new TokenInfo(Faker.text(10),
+                                                                                               Faker.instant())));
 
             var result = authService.refresh(new AuthController.RefreshTokenRequest(Faker.text(20)));
 

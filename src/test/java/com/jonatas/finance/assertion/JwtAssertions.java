@@ -4,10 +4,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
 
+import com.jonatas.finance.adapter.security.TokenInfo;
 import org.assertj.core.api.Assertions;
 
 import com.jayway.jsonpath.JsonPath;
-import com.jonatas.finance.adapter.security.Token;
 
 public class JwtAssertions {
 
@@ -19,7 +19,7 @@ public class JwtAssertions {
         this.payload = payload;
     }
 
-    public static JwtAssertions assertThat(Token token) {
+    public static JwtAssertions assertThat(TokenInfo token) {
         return assertThat(token.value());
     }
 

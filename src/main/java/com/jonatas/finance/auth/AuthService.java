@@ -2,6 +2,7 @@ package com.jonatas.finance.auth;
 
 import java.util.Optional;
 
+import com.jonatas.finance.adapter.security.TokenInfo;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,16 +39,8 @@ public class AuthService {
         }
 
         var pairToken = this.tokenProvider.generatePairToken(user);
-        Token accessToken = new Token(pairToken.access()
-                                               .value(),
-                                      pairToken.access()
-                                               .expiration()
-                                               .getEpochSecond());
-        Token refreshToken = new Token(pairToken.refresh()
-                                                .value(),
-                                       pairToken.refresh()
-                                                .expiration()
-                                                .getEpochSecond());
+        Token accessToken = makeToken(pairToken.access());
+        Token refreshToken = makeToken(pairToken.refresh());
         return new LoginResult.Success(accessToken, refreshToken);
     }
 
@@ -59,17 +52,15 @@ public class AuthService {
             return new RefreshTokenResult.InvalidSubject();
         }
         var pairToken = this.tokenProvider.generatePairToken(subjectFound.get());
-        Token newAccessToken = new Token(pairToken.access()
-                                                  .value(),
-                                         pairToken.access()
-                                                  .expiration()
-                                                  .getEpochSecond());
-        Token newRefreshToken = new Token(pairToken.refresh()
-                                                   .value(),
-                                          pairToken.refresh()
-                                                   .expiration()
-                                                   .getEpochSecond());
+        Token newAccessToken = makeToken(pairToken.access());
+        Token newRefreshToken = makeToken(pairToken.refresh());
         return new RefreshTokenResult.Success(newAccessToken, newRefreshToken);
+    }
+
+    private Token makeToken(TokenInfo tokenInfo) {
+        return new Token(tokenInfo.value(),
+                         tokenInfo.expiration()
+                                  .getEpochSecond());
     }
 
     public RegisterResult register(RegisterUserRequest request) {
