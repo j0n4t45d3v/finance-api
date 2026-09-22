@@ -20,9 +20,9 @@ import java.util.UUID;
 @Component
 public class JwtTokenProvider implements TokenProvider {
 
-    public static final  String CLAIM_KEY_TYPE = "type";
-    public static final  String CLAIM_TYPE_ACCESS = "access";
-    public static final  String CLAIM_TYPE_REFRESH = "refresh";
+    public static final String CLAIM_KEY_TYPE = "type";
+    public static final String CLAIM_TYPE_ACCESS = "access";
+    public static final String CLAIM_TYPE_REFRESH = "refresh";
 
     private final JwtConfig jwtConfig;
 
@@ -75,8 +75,8 @@ public class JwtTokenProvider implements TokenProvider {
     }
 
     private Claims getClaims(String token,
-                            String type,
-                            JwtConfig.TokenSignatureConfig signature) {
+                             String type,
+                             JwtConfig.TokenSignatureConfig signature) {
         return Jwts.parser()
                    .verifyWith(secretKey(signature.secret()))
                    .requireIssuer(this.jwtConfig.issuer())
