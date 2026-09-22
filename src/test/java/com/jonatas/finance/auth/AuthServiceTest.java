@@ -4,7 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import java.util.Optional;
+import java.util.UUID;
 
+import com.jonatas.finance.adapter.security.DecodedToken;
+import com.jonatas.finance.adapter.security.PairToken;
+import com.jonatas.finance.adapter.security.TokenProvider;
 import com.jonatas.finance.common.dto.Token;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -20,6 +24,9 @@ import com.jonatas.finance.infra.security.JwtService;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
+
+    @Mock
+    private TokenProvider tokenProvider;
 
     @Mock
     private JwtService jwtService;
@@ -134,6 +141,55 @@ class AuthServiceTest {
 
             assertThat(result).isInstanceOf(LoginResult.InvalidCredentials.class);
         }
+
+    }
+
+    @Nested
+    class Refresh {
+
+        @Test
+        void shouldRefreshTokenWithSuccess() {
+            var validatedToken = new DecodedToken(UUID.randomUUID().toString(),
+                                                  Faker.email(),
+                                                  "refresh",
+                                                  Faker.instant(),
+                                                  Faker.instant());
+
+            var user = Faker.user()
+                            .withEmail(validatedToken.subject())
+                            .get();
+            when(tokenProvider.validateRefreshToken(anyString())).thenReturn(validatedToken);
+
+            when(userRepository.findByEmail(eq(user.getEmail()))).thenReturn(Optional.of(user));
+            when(tokenProvider.generatePairToken(user)).thenReturn(new PairToken(new com.jonatas.finance.adapter.security.Token(Faker.text(10),
+                                                                                                                                Faker.instant()),
+                                                                                 new com.jonatas.finance.adapter.security.Token(Faker.text(10),
+                                                                                                                                Faker.instant())));
+
+            var result = authService.refresh(new AuthController.RefreshTokenRequest(Faker.text(20)));
+
+            assertThat(result).isInstanceOf(RefreshTokenResult.Success.class)
+                              .extracting("access", "refresh")
+                              .doesNotContainNull();
+        }
+
+        @Test
+        void shouldAllowRefreshTokenWhenNotFoundUserToSubject() {
+            var validatedToken = new DecodedToken(UUID.randomUUID().toString(),
+                                                  Faker.email(),
+                                                  "refresh",
+                                                  Faker.instant(),
+                                                  Faker.instant());
+
+            when(tokenProvider.validateRefreshToken(anyString())).thenReturn(validatedToken);
+
+            when(userRepository.findByEmail(any(Email.class))).thenReturn(Optional.empty());
+
+            var result = authService.refresh(new AuthController.RefreshTokenRequest(Faker.text(20)));
+
+            assertThat(result).isInstanceOf(RefreshTokenResult.InvalidSubject.class);
+        }
+
 
     }
 

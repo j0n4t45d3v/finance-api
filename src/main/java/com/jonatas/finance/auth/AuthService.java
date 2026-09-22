@@ -1,12 +1,16 @@
 package com.jonatas.finance.auth;
 
+import java.util.Optional;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.jonatas.finance.adapter.security.DecodedToken;
+import com.jonatas.finance.adapter.security.TokenProvider;
 import com.jonatas.finance.auth.AuthController.RefreshTokenRequest;
 import com.jonatas.finance.auth.AuthController.RegisterUserRequest;
 import com.jonatas.finance.common.dto.Token;
 import com.jonatas.finance.infra.security.JwtService;
-import java.util.Optional;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
@@ -14,14 +18,16 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final TokenProvider tokenProvider;
 
-    public AuthService(
-                           UserRepository userRepository,
-                           JwtService jwtService,
-                           PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository,
+                       JwtService jwtService,
+                       PasswordEncoder passwordEncoder,
+                       TokenProvider tokenProvider) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.tokenProvider = tokenProvider;
     }
 
     public LoginResult login(Email email, String password) {
@@ -41,37 +47,24 @@ public class AuthService {
     }
 
     public RefreshTokenResult refresh(RefreshTokenRequest request) {
-        Optional<JwtService.TokenParsed> tokenParsed = this.tryParseValidRefreshToken(request.refreshToken());
-        if (tokenParsed.isEmpty()) {
-            return new RefreshTokenResult.InvalidRefreshToken();
-        }
+        DecodedToken decodedToken = this.tokenProvider.validateRefreshToken(request.refreshToken());
 
-        Optional<User> subjectFound = this.findSubject(tokenParsed.get());
+        Optional<User> subjectFound = this.userRepository.findByEmail(Email.of(decodedToken.subject()));
         if (subjectFound.isEmpty()) {
             return new RefreshTokenResult.InvalidSubject();
         }
-
-        User subject = subjectFound.get();
-        Token newAccessToken = this.jwtService.generateToken(subject);
-        Token newRefreshToken = this.jwtService.generateRefreshToken(subject);
+        var pairToken = this.tokenProvider.generatePairToken(subjectFound.get());
+        Token newAccessToken = new Token(pairToken.access()
+                                                  .value(),
+                                         pairToken.access()
+                                                  .expiration()
+                                                  .getEpochSecond());
+        Token newRefreshToken = new Token(pairToken.refresh()
+                                                   .value(),
+                                          pairToken.refresh()
+                                                   .expiration()
+                                                   .getEpochSecond());
         return new RefreshTokenResult.Success(newAccessToken, newRefreshToken);
-    }
-
-    private Optional<JwtService.TokenParsed> tryParseValidRefreshToken(String refreshToken) {
-        Optional<JwtService.TokenParsed> refreshTokenParsed = this.jwtService.tryParseRefreshToken(refreshToken);
-        if (refreshTokenParsed.isEmpty()) {
-            return Optional.empty();
-        }
-
-        JwtService.TokenParsed tokenParsed = refreshTokenParsed.get();
-        if (!tokenParsed.isValid()) {
-            return Optional.empty();
-        }
-        return Optional.of(tokenParsed);
-    }
-
-    private Optional<User> findSubject(JwtService.TokenParsed tokenParsed) {
-        return this.userRepository.findByEmail(tokenParsed.getSubject());
     }
 
     public RegisterResult register(RegisterUserRequest request) {
