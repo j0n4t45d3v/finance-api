@@ -117,6 +117,11 @@ class AuthControllerIT extends BaseIntegrationTest {
             var content = response.getResponse().getContentAsString();
             assertAccessToken(content, user);
             assertRefreshToken(content, user);
+
+            var accessToken = extractTokenFromResponse(content, JSON_PATH_ACCESS_TOKEN);
+            apiClient().get("/v1/users/me", accessToken)
+                       .isOk()
+                       .jsonPathEquals("$.data.email", user.getUsername());
         }
 
         @Test
