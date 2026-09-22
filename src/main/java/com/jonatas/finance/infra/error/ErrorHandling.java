@@ -1,9 +1,8 @@
 package com.jonatas.finance.infra.error;
 
-import com.jonatas.finance.common.dto.Response;
-import com.jonatas.finance.common.exception.DomainException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +13,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+
+import com.jonatas.finance.common.dto.Response;
+import com.jonatas.finance.common.exception.DomainException;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 
 @RestControllerAdvice
 public class ErrorHandling {
@@ -56,6 +61,14 @@ public class ErrorHandling {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<Void> methodNotAllowed(HttpRequestMethodNotSupportedException error) {
         return ResponseEntity.status(405).build();
+    }
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<Response<Void, Error<String>>> jwtException(JwtException exception) {
+        var error = new Error<>("invalid_token", "Invalid token");
+        if (exception instanceof ExpiredJwtException)
+            error =  new Error<>("invalid_token", "token is expired");
+        return ResponseEntity.badRequest().body(Response.ofError(error, Response.Status.BAD_REQUEST));
     }
 
     @ExceptionHandler(Exception.class)
