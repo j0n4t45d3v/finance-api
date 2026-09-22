@@ -3,11 +3,14 @@ package com.jonatas.finance.helper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import com.jayway.jsonpath.JsonPath;
 import java.util.Base64;
 import java.util.function.Consumer;
+
 import org.assertj.core.api.Assertions;
 
+import com.jayway.jsonpath.JsonPath;
+
+@Deprecated
 public class JWTHelper {
 
     private String issuer;
