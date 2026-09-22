@@ -6,10 +6,6 @@ import static org.mockito.Mockito.*;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.jonatas.finance.adapter.security.DecodedToken;
-import com.jonatas.finance.adapter.security.PairToken;
-import com.jonatas.finance.adapter.security.TokenProvider;
-import com.jonatas.finance.common.dto.Token;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,17 +15,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.jonatas.finance.adapter.security.DecodedToken;
+import com.jonatas.finance.adapter.security.PairToken;
+import com.jonatas.finance.adapter.security.TokenProvider;
 import com.jonatas.finance.faker.Faker;
-import com.jonatas.finance.infra.security.JwtService;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
     @Mock
     private TokenProvider tokenProvider;
-
-    @Mock
-    private JwtService jwtService;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -109,10 +104,11 @@ class AuthServiceTest {
         void shouldLoginWithSuccess() {
             var user = Faker.user().get();
 
-            when(jwtService.generateToken(eq(user))).thenReturn(new Token(Faker.text(20),
-                                                                          Faker.numberLong()));
-            when(jwtService.generateRefreshToken(eq(user))).thenReturn(new Token(Faker.text(20),
-                                                                                 Faker.numberLong()));
+            when(tokenProvider.generatePairToken(user)).thenReturn(new PairToken(new com.jonatas.finance.adapter.security.Token(Faker.text(10),
+                                                                                                                                Faker.instant()),
+                                                                                 new com.jonatas.finance.adapter.security.Token(Faker.text(10),
+                                                                                                                                Faker.instant())));
+
             when(userRepository.findByEmail(eq(user.getEmail()))).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(eq(user.getPasswordValue()),
                                          eq(user.getPassword()))).thenReturn(true);
@@ -189,7 +185,6 @@ class AuthServiceTest {
 
             assertThat(result).isInstanceOf(RefreshTokenResult.InvalidSubject.class);
         }
-
 
     }
 

@@ -10,23 +10,19 @@ import com.jonatas.finance.adapter.security.TokenProvider;
 import com.jonatas.finance.auth.AuthController.RefreshTokenRequest;
 import com.jonatas.finance.auth.AuthController.RegisterUserRequest;
 import com.jonatas.finance.common.dto.Token;
-import com.jonatas.finance.infra.security.JwtService;
 
 @Service
 public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
     private final TokenProvider tokenProvider;
 
     public AuthService(UserRepository userRepository,
-                       JwtService jwtService,
                        PasswordEncoder passwordEncoder,
                        TokenProvider tokenProvider) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
         this.tokenProvider = tokenProvider;
     }
 
@@ -41,8 +37,17 @@ public class AuthService {
             return new LoginResult.InvalidCredentials();
         }
 
-        Token accessToken = this.jwtService.generateToken(user);
-        Token refreshToken = this.jwtService.generateRefreshToken(user);
+        var pairToken = this.tokenProvider.generatePairToken(user);
+        Token accessToken = new Token(pairToken.access()
+                                               .value(),
+                                      pairToken.access()
+                                               .expiration()
+                                               .getEpochSecond());
+        Token refreshToken = new Token(pairToken.refresh()
+                                                .value(),
+                                       pairToken.refresh()
+                                                .expiration()
+                                                .getEpochSecond());
         return new LoginResult.Success(accessToken, refreshToken);
     }
 
