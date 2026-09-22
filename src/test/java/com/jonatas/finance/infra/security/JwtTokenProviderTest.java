@@ -2,16 +2,13 @@ package com.jonatas.finance.infra.security;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -20,7 +17,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
-import com.jonatas.finance.adapter.security.Token;
+import com.jonatas.finance.assertion.JwtAssertions;
 import com.jonatas.finance.faker.Faker;
 
 import io.jsonwebtoken.*;
@@ -56,24 +53,19 @@ class JwtTokenProviderTest {
                                  .extracting("access", "refresh")
                                  .doesNotContainNull();
 
-            assertToken(pairToken.access(), TOKEN_ACCESS_EXPIRATION, "access");
-            assertToken(pairToken.refresh(), TOKEN_REFRESH_EXPIRATION, "refresh");
-        }
+            JwtAssertions.assertThat(pairToken.access())
+                         .hasAlgorithm("HS384")
+                         .hasIssuer(TOKEN_ISSUER)
+                         .hasSubject(user.getUsername())
+                         .hasExpiration(TOKEN_ACCESS_EXPIRATION)
+                         .has("type", "access");
 
-        private void assertToken(Token token, long expirationTime, String expectedType) {
-            var expectedExpiration = Instant.now()
-                                            .plus(expirationTime,
-                                                  ChronoUnit.MILLIS);
-
-            String payload = token.value().split("\\.")[1];
-            String payloadJson = new String(Base64.getDecoder().decode(payload), StandardCharsets.UTF_8);
-            assertThat(token).isNotNull();
-            assertThat(token.value()).isNotBlank();
-            assertThat(token.expiration()).isNotNull()
-                                          .isAfterOrEqualTo(expectedExpiration);
-            String typeClaim = JsonPath.read(payloadJson, "$.type");
-            assertThat(typeClaim).isNotBlank()
-                                 .isEqualTo(expectedType);
+            JwtAssertions.assertThat(pairToken.refresh())
+                         .hasAlgorithm("HS384")
+                         .hasIssuer(TOKEN_ISSUER)
+                         .hasSubject(user.getUsername())
+                         .hasExpiration(TOKEN_REFRESH_EXPIRATION)
+                         .has("type", "refresh");
         }
 
     }
