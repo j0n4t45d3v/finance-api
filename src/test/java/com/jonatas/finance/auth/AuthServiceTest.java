@@ -54,7 +54,7 @@ class AuthServiceTest {
 
             var result = authService.register(command);
 
-            assertThat(result).isInstanceOf(RegisterResult.Success.class);
+            assertThat(result.isFailure()).isFalse();
 
             var userCapture = ArgumentCaptor.forClass(User.class);
             verify(userRepository, times(1)).save(userCapture.capture());
@@ -75,7 +75,8 @@ class AuthServiceTest {
 
             var result = authService.register(command);
 
-            assertThat(result).isInstanceOf(RegisterResult.NotMatchPasswords.class);
+            assertThat(result.isFailure()).isTrue();
+            assertThat(result.getError()).isEqualTo(AuthErrorCode.PASSWORD_MISMATCH);
 
             verify(userRepository, never()).save(any(User.class));
         }
@@ -92,7 +93,8 @@ class AuthServiceTest {
 
             var result = authService.register(command);
 
-            assertThat(result).isInstanceOf(RegisterResult.FailRegister.class);
+            assertThat(result.isFailure()).isTrue();
+            assertThat(result.getError()).isEqualTo(AuthErrorCode.FAIL_REGISTER);
 
             verify(userRepository, never()).save(any(User.class));
         }

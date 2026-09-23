@@ -3,6 +3,7 @@ package com.jonatas.finance.auth;
 import java.util.Optional;
 
 import com.jonatas.finance.adapter.security.TokenInfo;
+import com.jonatas.finance.common.Result;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -63,18 +64,18 @@ public class AuthService {
                                   .getEpochSecond());
     }
 
-    public RegisterResult register(RegisterUserRequest request) {
+    public Result<Void> register(RegisterUserRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
-            return new RegisterResult.NotMatchPasswords();
+            return Result.failure(AuthErrorCode.PASSWORD_MISMATCH);
         }
 
         Email email = new Email(request.email());
         Optional<User> userFound = this.userRepository.findByEmail(email);
         if (userFound.isPresent()) {
-            return new RegisterResult.FailRegister();
+            return Result.failure(AuthErrorCode.FAIL_REGISTER);
         }
         Password passwordEncoded = new Password(this.passwordEncoder.encode(request.password()));
         this.userRepository.save(new User(email, passwordEncoded));
-        return new RegisterResult.Success();
+        return Result.successVoid();
     }
 }

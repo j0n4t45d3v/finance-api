@@ -1,11 +1,10 @@
 package com.jonatas.finance.integrationTest;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -28,6 +27,8 @@ import com.jayway.jsonpath.JsonPath;
 import com.jonatas.finance.auth.AuthController;
 import com.jonatas.finance.common.ErrorCode;
 import com.jonatas.finance.faker.Faker;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("test")
 @Testcontainers
@@ -158,14 +159,33 @@ public abstract class BaseIntegrationTest {
             return this;
         }
 
+        public Assertions isBadRequest() throws Exception {
+            resultActions.andExpect(status().isBadRequest());
+            return this;
+        }
+
         public Assertions isUnprocessableContent() throws Exception {
             resultActions.andExpect(status().isUnprocessableContent());
+            return this;
+        }
+
+        public Assertions hasLocation(String expectedLocation) throws Exception {
+            return hasHeader("Location", Matchers.equalTo(expectedLocation));
+        }
+
+        public Assertions hasHeader(String header, Matcher<String> matcher) throws Exception {
+            resultActions.andExpect(header().string(header, matcher));
             return this;
         }
 
         public void hasErrorCode(ErrorCode errorCode) throws Exception {
             this.jsonPathEquals(JSON_PATH_ERROR_CODE, errorCode.code())
                 .jsonPathEquals(JSON_PATH_ERROR_MESSAGE, errorCode.message());
+        }
+
+        public Assertions hasEmptyBody() throws Exception {
+            resultActions.andExpect(content().string(Matchers.emptyOrNullString()));
+            return this;
         }
 
         public Assertions jsonPathStatus(int status) throws Exception {

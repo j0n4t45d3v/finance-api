@@ -2,16 +2,11 @@ package com.jonatas.finance.integrationTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.jayway.jsonpath.JsonPath;
-import com.jonatas.finance.auth.Email;
-import com.jonatas.finance.auth.Password;
-import com.jonatas.finance.auth.User;
-import com.jonatas.finance.auth.UserRepository;
 import java.util.Base64;
+
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +16,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.jayway.jsonpath.JsonPath;
+import com.jonatas.finance.auth.*;
+import com.jonatas.finance.faker.Faker;
 
 @Transactional
 class AuthControllerIT extends BaseIntegrationTest {
@@ -45,7 +44,8 @@ class AuthControllerIT extends BaseIntegrationTest {
     private static final String JSON_PATH_ERROR_TYPE = "$.error.type";
 
     private User createUser(String email) {
-        var validUser = new User(new Email(email), new Password(this.passwordEncoder.encode(DEFAULT_PASSWORD)));
+        var validUser = new User(new Email(email),
+                                 new Password(this.passwordEncoder.encode(DEFAULT_PASSWORD)));
         return this.userRepository.save(validUser);
     }
 
@@ -54,50 +54,42 @@ class AuthControllerIT extends BaseIntegrationTest {
 
         private static final String REGISTER_ENDPOINT = "/v1/auth/register";
 
-        private static final String ERROR_NOT_MATCH_PASSWORD = "not_match_passwords";
-        private static final String ERROR_FAIL_REGISTER = "fail_register_user";
-
         @Test
         void shouldReturnCreatedWhenBodyIsValid() throws Exception {
-            mockMvc.perform(this.makeRegisterUserRequest("jonh@doe.test", "jonh123", "jonh123"))
-                   .andExpect(status().isCreated())
-                   .andExpect(header().string("Location", "/v1/users/me"));
+            var passwd = Faker.text(10);
+            var body = new AuthController.RegisterUserRequest(Faker.email(), passwd, passwd);
+
+            apiClient().post(REGISTER_ENDPOINT, body)
+                       .isCreated()
+                       .hasEmptyBody()
+                       .hasLocation("/v1/users/me");
 
             assertEquals(2, userRepository.count());
         }
 
         @Test
         void shouldReturnBadRequestWhenPasswordsNotMatches() throws Exception {
-            mockMvc.perform(this.makeRegisterUserRequest("jonh@doe.test", "jonh123", "jonh12"))
-                   .andExpect(status().isBadRequest())
-                   .andExpect(jsonPath(JSON_PATH_ERROR_TYPE).value(ERROR_NOT_MATCH_PASSWORD));
+            var body = new AuthController.RegisterUserRequest(Faker.email(),
+                                                              Faker.text(10),
+                                                              Faker.text(11));
+            apiClient().post(REGISTER_ENDPOINT, body)
+                       .isBadRequest()
+                       .hasErrorCode(AuthErrorCode.PASSWORD_MISMATCH);
         }
 
         @Test
         void shouldReturnBadRequestWhenEmailAlreadyExists() throws Exception {
-            createUser("conflict@email.test");
-            mockMvc.perform(this.makeRegisterUserRequest("conflict@email.test", "jonh123", "jonh123"))
-                   .andExpect(status().isBadRequest())
-                   .andExpect(jsonPath(JSON_PATH_ERROR_TYPE).value(ERROR_FAIL_REGISTER));
+            var email = Faker.email();
+            var passwd = Faker.text(10);
+            createUser(email);
+
+            var body = new AuthController.RegisterUserRequest(email, passwd, passwd);
+
+            apiClient().post(REGISTER_ENDPOINT, body)
+                       .isBadRequest()
+                       .hasErrorCode(AuthErrorCode.FAIL_REGISTER);
         }
 
-        private RequestBuilder makeRegisterUserRequest(
-                                                       String email,
-                                                       String password,
-                                                       String confirmPassword) {
-            var payload = this.registerPayload(email, password, confirmPassword);
-            return post(REGISTER_ENDPOINT).contentType(MediaType.APPLICATION_JSON).content(payload);
-        }
-
-        private String registerPayload(String email, String password, String confirmPassword) {
-            return """
-                   {
-                       "email": "%s",
-                       "password": "%s",
-                       "confirmPassword": "%s"
-                   }
-                   """.formatted(email, password, confirmPassword);
-        }
     }
 
     @Nested

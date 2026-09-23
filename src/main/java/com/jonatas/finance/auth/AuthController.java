@@ -77,8 +77,7 @@ public class AuthController {
     }
 
     @Schema(description = "Request do cadastro de usuário")
-    public record RegisterUserRequest(
-                                      @Schema(example = "john@doe.example") String email,
+    public record RegisterUserRequest(@Schema(example = "john@doe.example") String email,
                                       @Schema(example = "1234") String password,
                                       @Schema(example = "1234") String confirmPassword) {}
 
@@ -89,18 +88,14 @@ public class AuthController {
     @ApiResponse(responseCode = "201", description = "Created", headers = { @Header(name = "Location") }, content = {})
     public ResponseEntity<?> register(@RequestBody RegisterUserRequest request) {
         var registerResult = this.authService.register(request);
-
-        if (registerResult instanceof RegisterResult.NotMatchPasswords) {
-            Error<String> error = new Error<>("not_match_passwords", "not match passwords");
-            return ResponseEntity.badRequest().body(Response.ofError(error, Response.Status.BAD_REQUEST));
+        if (registerResult.isFailure()) {
+            return ResponseEntity.badRequest()
+                                 .body(Response.ofError(registerResult.getError(),
+                                                        Response.Status.BAD_REQUEST));
         }
-
-        if (registerResult instanceof RegisterResult.FailRegister) {
-            Error<String> error = new Error<>("fail_register_user", "Fail register user try later");
-            return ResponseEntity.badRequest().body(Response.ofError(error, Response.Status.BAD_REQUEST));
-        }
-
-        URI location = UriComponentsBuilder.fromPath("/v1/users/me").buildAndExpand().toUri();
+        URI location = UriComponentsBuilder.fromPath("/v1/users/me")
+                                           .buildAndExpand()
+                                           .toUri();
         return ResponseEntity.created(location).build();
     }
 }
