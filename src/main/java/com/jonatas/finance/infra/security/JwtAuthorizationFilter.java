@@ -73,7 +73,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             Optional<UserDetails> userDetailsOptional = this.tryLoadUser(subject);
             if (userDetailsOptional.isEmpty()) {
                 Error<String> error = new Error<>("INVALID_TOKEN", "subject not found");
-                this.writeErrorMessage(response,400, error);
+                this.writeErrorMessage(response, 400, error);
                 return;
             }
 
