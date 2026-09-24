@@ -1,9 +1,13 @@
 package com.jonatas.finance.infra.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jonatas.finance.adapter.security.DecodedToken;
+import com.jonatas.finance.adapter.security.TokenProvider;
 import com.jonatas.finance.common.dto.Response;
 import com.jonatas.finance.common.dto.Response.Status;
 import com.jonatas.finance.infra.error.Error;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,25 +29,23 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
+    private final TokenProvider tokenProvider;
     private final UserDetailsService userDetailsService;
     private final ObjectMapper objectMapper;
     private final AntPathMatcher antPathMatcher;
 
-    public JwtAuthorizationFilter(
-                                  JwtService jwtService,
+    public JwtAuthorizationFilter(TokenProvider tokenProvider,
                                   UserDetailsService userDetailsService,
                                   ObjectMapper objectMapper,
                                   AntPathMatcher antPathMatcher) {
-        this.jwtService = jwtService;
+        this.tokenProvider = tokenProvider;
         this.userDetailsService = userDetailsService;
         this.objectMapper = objectMapper;
         this.antPathMatcher = antPathMatcher;
     }
 
     @Override
-    protected void doFilterInternal(
-                                    @Nonnull HttpServletRequest request,
+    protected void doFilterInternal(@Nonnull HttpServletRequest request,
                                     @Nonnull HttpServletResponse response,
                                     @Nonnull FilterChain filterChain)
             throws ServletException, IOException {
@@ -65,28 +67,31 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return;
         }
 
-        var tokenParsedOpt = this.jwtService.tryParseAccessToken(token);
-        if (tokenParsedOpt.isEmpty() || !tokenParsedOpt.get().isValid()) {
-            Error<String> error = new Error<>("INVALID_TOKEN", "invalid token");
-            this.writeErrorMessage(response, error);
+        try {
+            DecodedToken decodedAccessToken = this.tokenProvider.validateAccessToken(token);
+            String subject = decodedAccessToken.subject();
+            Optional<UserDetails> userDetailsOptional = this.tryLoadUser(subject);
+            if (userDetailsOptional.isEmpty()) {
+                Error<String> error = new Error<>("INVALID_TOKEN", "subject not found");
+                this.writeErrorMessage(response,400, error);
+                return;
+            }
+
+            UserDetails userDetails = userDetailsOptional.get();
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                var authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        } catch (ExpiredJwtException exception) {
+            Error<String> error = new Error<>("EXPIRED_TOKEN", exception.getMessage());
+            this.writeErrorMessage(response, 401, error);
             return;
-        }
-
-        var tokenParsed = tokenParsedOpt.get();
-        String subject = tokenParsed.getSubject().value();
-        Optional<UserDetails> userDetailsOptional = this.tryLoadUser(subject);
-        if (userDetailsOptional.isEmpty()) {
-            Error<String> error = new Error<>("INVALID_TOKEN", "subject not found");
-            this.writeErrorMessage(response, error);
+        } catch (JwtException ignore) {
+            Error<String> error = new Error<>("INVALID_TOKEN", "cannot be parse token, provide a valid access token.");
+            this.writeErrorMessage(response, 400, error);
             return;
-        }
-
-        UserDetails userDetails = userDetailsOptional.get();
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            var authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authToken);
         }
 
         filterChain.doFilter(request, response);
@@ -100,10 +105,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
     }
 
-    private <TError> void writeErrorMessage(HttpServletResponse response, Error<TError> error) throws IOException {
+    private <TError> void writeErrorMessage(HttpServletResponse response, int status, Error<TError> error) throws IOException {
         OutputStream out = response.getOutputStream();
         Response<Void, Error<TError>> data = Response.ofError(error, Status.BAD_REQUEST);
-        response.setStatus(401);
+        response.setStatus(status);
         response.setHeader("Content-Type", "application/json");
         out.write(this.objectMapper.writeValueAsBytes(data));
         out.flush();
