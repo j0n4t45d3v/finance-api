@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.jayway.jsonpath.JsonPath;
 import com.jonatas.finance.auth.*;
+import com.jonatas.finance.faker.Faker;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -12,7 +13,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 public final class TestUtils {
 
-    public static final String DEFAULT_PASSWORD = "secret";
+    public static final String DEFAULT_PASSWORD = Faker.text(10);
 
     private TestUtils() {}
 
