@@ -38,8 +38,8 @@ public class JwtTokenProvider implements TokenProvider {
     }
 
     private TokenInfo buildToken(User subject,
-                             Map<String, Object> claims,
-                             JwtConfig.TokenSignatureConfig signature) {
+                                 Map<String, Object> claims,
+                                 JwtConfig.TokenSignatureConfig signature) {
         Instant exp = Instant.now().plusSeconds(signature.exp());
         String token = Jwts.builder()
                            .id(UUID.randomUUID().toString())

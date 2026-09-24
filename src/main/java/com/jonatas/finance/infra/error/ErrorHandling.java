@@ -67,7 +67,7 @@ public class ErrorHandling {
     public ResponseEntity<Response<Void, Error<String>>> jwtException(JwtException exception) {
         var error = new Error<>("invalid_token", "Invalid token");
         if (exception instanceof ExpiredJwtException)
-            error =  new Error<>("invalid_token", "token is expired");
+            error = new Error<>("invalid_token", "token is expired");
         return ResponseEntity.badRequest().body(Response.ofError(error, Response.Status.BAD_REQUEST));
     }
 

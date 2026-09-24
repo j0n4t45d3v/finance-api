@@ -6,5 +6,4 @@ public record DecodedToken(String id,
                            String subject,
                            String type,
                            Instant expiredAt,
-                           Instant issuedAt) {
-}
+                           Instant issuedAt) {}
