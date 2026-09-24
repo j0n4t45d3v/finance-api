@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.jonatas.finance.adapter.security.TokenInfo;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,11 +13,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.jonatas.finance.adapter.security.DecodedToken;
-import com.jonatas.finance.adapter.security.PairToken;
-import com.jonatas.finance.adapter.security.TokenProvider;
+import com.jonatas.finance.adapter.security.*;
 import com.jonatas.finance.faker.Faker;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,7 +24,7 @@ class AuthServiceTest {
     private TokenProvider tokenProvider;
 
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private PasswordHasher passwordHasher;
 
     @Mock
     private UserRepository userRepository;
@@ -49,8 +45,7 @@ class AuthServiceTest {
             var email = new Email(command.email());
 
             when(userRepository.findByEmail(eq(email))).thenReturn(Optional.empty());
-
-            when(passwordEncoder.encode(eq(passwd))).thenReturn(passwdEncoded);
+            when(passwordHasher.hash(eq(RawPassword.of(passwd)))).thenReturn(HashPassword.of(passwdEncoded));
 
             var result = authService.register(command);
 
@@ -111,10 +106,9 @@ class AuthServiceTest {
                                                                                                Faker.instant()),
                                                                                  new TokenInfo(Faker.text(10),
                                                                                                Faker.instant())));
-
             when(userRepository.findByEmail(eq(user.getEmail()))).thenReturn(Optional.of(user));
-            when(passwordEncoder.matches(eq(user.getPasswordValue()),
-                                         eq(user.getPassword()))).thenReturn(true);
+            when(passwordHasher.matches(eq(RawPassword.of(user.getPasswordValue())),
+                                        eq(user.getHashPassword()))).thenReturn(true);
 
             var result = authService.login(user.getEmail(), user.getPasswordValue());
             assertThat(result).isInstanceOf(LoginResult.Success.class)
@@ -134,7 +128,9 @@ class AuthServiceTest {
         @Test
         void shouldResultInvalidCredentialsWhenPasswordNotMatchWithUserFound() {
             when(userRepository.findByEmail(any(Email.class))).thenReturn(Optional.of(Faker.user().get()));
-            when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
+
+            when(passwordHasher.matches(any(RawPassword.class),
+                                        any(HashPassword.class))).thenReturn(false);
 
             var result = authService.login(Email.of(Faker.email()), Faker.text(10));
 

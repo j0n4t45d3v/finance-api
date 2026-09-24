@@ -24,7 +24,7 @@ public class User implements UserDetails {
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "password"))
-    private Password password;
+    private HashPassword password;
 
     protected User() {}
 
@@ -32,11 +32,11 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public User(Email email, Password password) {
+    public User(Email email, HashPassword password) {
         this(null, email, password);
     }
 
-    public User(Long id, Email email, Password password) {
+    public User(Long id, Email email, HashPassword password) {
         this.id = id;
         this.email = Objects.requireNonNull(email, "email is required");
         this.password = Objects.requireNonNull(password, "password is required");
@@ -50,12 +50,16 @@ public class User implements UserDetails {
         return id;
     }
 
+    public HashPassword getHashPassword() {
+        return this.password;
+    }
+
     public String getPasswordValue() {
         return this.password.value();
     }
 
     public void setPassword(String password) {
-        this.password = new Password(password);
+        this.password = HashPassword.of(password);
     }
 
     public Email getEmail() {

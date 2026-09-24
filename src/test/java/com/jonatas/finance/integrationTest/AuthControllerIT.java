@@ -13,11 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jayway.jsonpath.JsonPath;
+import com.jonatas.finance.adapter.security.PasswordHasher;
 import com.jonatas.finance.auth.*;
 import com.jonatas.finance.faker.Faker;
 
@@ -28,7 +28,7 @@ class AuthControllerIT extends BaseIntegrationTest {
     private UserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private PasswordHasher passwordHasher;
 
     @Value("${security.jwt.access.exp}")
     private Long jwtAccessExpirationTime;
@@ -37,7 +37,7 @@ class AuthControllerIT extends BaseIntegrationTest {
     private Long jwtRefreshExpirationTime;
 
     private static final String LOGIN_ENDPOINT = "/v1/auth/login";
-    private static final String DEFAULT_PASSWORD = "secret";
+    private static final String DEFAULT_PASSWORD = Faker.text(10);
 
     private static final String JSON_PATH_ACCESS_TOKEN = "$.data.access.token";
     private static final String JSON_PATH_REFRESH_TOKEN = "$.data.refresh.token";
@@ -45,7 +45,7 @@ class AuthControllerIT extends BaseIntegrationTest {
 
     private User createUser(String email) {
         var validUser = new User(new Email(email),
-                                 new Password(this.passwordEncoder.encode(DEFAULT_PASSWORD)));
+                                 this.passwordHasher.hash(RawPassword.of(DEFAULT_PASSWORD)));
         return this.userRepository.save(validUser);
     }
 

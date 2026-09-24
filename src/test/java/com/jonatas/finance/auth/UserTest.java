@@ -17,7 +17,7 @@ class UserTest {
     @Test
     @DisplayName("should create a valid user")
     void shouldCreateAValidUser() {
-        var user = new User(new Email("john@doe.com"), new Password("secret-password"));
+        var user = new User(new Email("john@doe.com"), HashPassword.of("secret-password"));
         assertEquals("secret-password", user.getPasswordValue());
         assertEquals("john@doe.com", user.getEmailValue());
     }

@@ -1,18 +1,7 @@
 package com.jonatas.finance.auth;
 
-import com.jonatas.finance.common.dto.Response;
-import com.jonatas.finance.common.dto.Token;
-import com.jonatas.finance.infra.error.Error;
-import com.jonatas.finance.infra.swagger.annotation.AuthTag;
-import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
-import com.jonatas.finance.infra.swagger.schemas.SuccessLoginResponse;
-import io.swagger.v3.oas.annotations.Hidden;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.headers.Header;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.net.URI;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +9,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import com.jonatas.finance.common.dto.Response;
+import com.jonatas.finance.common.dto.Token;
+import com.jonatas.finance.infra.error.Error;
+import com.jonatas.finance.infra.swagger.annotation.AuthTag;
+import com.jonatas.finance.infra.swagger.annotation.DefaultErrorResponses;
+import com.jonatas.finance.infra.swagger.schemas.SuccessLoginResponse;
+
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @AuthTag
 @RestController

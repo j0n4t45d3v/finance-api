@@ -1,10 +1,10 @@
 package com.jonatas.finance.faker;
 
-import com.jonatas.finance.auth.Email;
-import com.jonatas.finance.auth.Password;
-import com.jonatas.finance.auth.User;
-
 import java.util.concurrent.ThreadLocalRandom;
+
+import com.jonatas.finance.auth.Email;
+import com.jonatas.finance.auth.HashPassword;
+import com.jonatas.finance.auth.User;
 
 public final class UserFaker extends Faker<User> {
 
@@ -35,6 +35,6 @@ public final class UserFaker extends Faker<User> {
 
     @Override
     public User get() {
-        return new User(id, Email.of(email), Password.of(password));
+        return new User(id, Email.of(email), HashPassword.of(password));
     }
 }

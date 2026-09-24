@@ -2,6 +2,7 @@ package com.jonatas.finance.auth;
 
 import java.util.Optional;
 
+import com.jonatas.finance.adapter.security.PasswordHasher;
 import com.jonatas.finance.adapter.security.TokenInfo;
 import com.jonatas.finance.common.Result;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,14 +18,14 @@ import com.jonatas.finance.common.dto.Token;
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordHasher passwordHasher;
     private final TokenProvider tokenProvider;
 
     public AuthService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder,
+                       PasswordHasher passwordHasher,
                        TokenProvider tokenProvider) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.passwordHasher = passwordHasher;
         this.tokenProvider = tokenProvider;
     }
 
@@ -35,7 +36,7 @@ public class AuthService {
         }
 
         User user = userFound.get();
-        if (!this.passwordEncoder.matches(password, user.getPassword())) {
+        if (!this.passwordHasher.matches(RawPassword.of(password), user.getHashPassword())) {
             return new LoginResult.InvalidCredentials();
         }
 
@@ -74,8 +75,9 @@ public class AuthService {
         if (userFound.isPresent()) {
             return Result.failure(AuthErrorCode.FAIL_REGISTER);
         }
-        Password passwordEncoded = new Password(this.passwordEncoder.encode(request.password()));
-        this.userRepository.save(new User(email, passwordEncoded));
+        var rawPassword = RawPassword.of(request.password());
+        var hashPassword = this.passwordHasher.hash(rawPassword);
+        this.userRepository.save(new User(email, hashPassword));
         return Result.successVoid();
     }
 }

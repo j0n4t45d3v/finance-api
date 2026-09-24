@@ -1,17 +1,10 @@
 package com.jonatas.finance.infra.security;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-import com.jayway.jsonpath.JsonPath;
-import com.jonatas.finance.auth.Email;
-import com.jonatas.finance.auth.Password;
-import com.jonatas.finance.auth.User;
-import com.jonatas.finance.helper.JWTHelper;
-import io.jsonwebtoken.Claims;
 import java.util.Date;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -19,6 +12,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
+
+import com.jayway.jsonpath.JsonPath;
+import com.jonatas.finance.auth.Email;
+import com.jonatas.finance.auth.HashPassword;
+import com.jonatas.finance.auth.User;
+import com.jonatas.finance.helper.JWTHelper;
+
+import io.jsonwebtoken.Claims;
 
 class JwtServiceTest {
 
@@ -46,7 +47,7 @@ class JwtServiceTest {
     }
 
     private User mockSubject() {
-        return new User(new Email("testuser@mock.test"), new Password("password"));
+        return new User(new Email("testuser@mock.test"), HashPassword.of("password"));
     }
 
     @Nested

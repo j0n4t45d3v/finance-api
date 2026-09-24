@@ -4,10 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.jayway.jsonpath.JsonPath;
-import com.jonatas.finance.auth.Email;
-import com.jonatas.finance.auth.Password;
-import com.jonatas.finance.auth.User;
-import com.jonatas.finance.auth.UserRepository;
+import com.jonatas.finance.auth.*;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,11 +16,10 @@ public final class TestUtils {
 
     private TestUtils() {}
 
-    public static User createUser(
-                                  UserRepository userRepository,
+    public static User createUser(UserRepository userRepository,
                                   PasswordEncoder passwordEncoder,
                                   String email) {
-        var user = new User(new Email(email), new Password(passwordEncoder.encode(DEFAULT_PASSWORD)));
+        var user = new User(new Email(email), HashPassword.of(passwordEncoder.encode(DEFAULT_PASSWORD)));
         return userRepository.save(user);
     }
 
